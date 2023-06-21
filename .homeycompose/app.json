@@ -1,5 +1,5 @@
 {
-  "id": "com.textmebot",
+  "id": "com.whatsapp",
   "version": "0.0.1",
   "compatibility": ">=5.0.0",
   "sdk": 3,
@@ -8,7 +8,7 @@
   ],
   "brandColor": "#000000",
   "name": {
-    "en": "TextMeBot (Whatsapp)"
+    "en": "Whatsapp"
   },
   "description": {
     "en": "Connect your own WhatsApp Account to this APP and start sending messages from your number."
