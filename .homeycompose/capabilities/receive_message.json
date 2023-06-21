@@ -1,0 +1,11 @@
+{
+    "platforms": ["local"],
+    "type": "boolean",
+    "title": {
+      "en": "Receive message"
+    },
+    "getable": true,
+    "setable": true,
+    "uiComponent": null
+  }
+  

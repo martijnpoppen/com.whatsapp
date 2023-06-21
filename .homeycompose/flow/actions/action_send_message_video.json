@@ -1,0 +1,39 @@
+{
+  "title": {
+    "en": "Send Whatsapp message"
+  },
+  "titleFormatted": {
+    "en": "Send Whatsapp [[message]] [[file]] to [[recipient]]"
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "placeholder": {
+        "en": "Select device",
+        "nl": "Selecteer apparaat"
+      },
+      "filter": "driver_id=Whatsapp&capabilities=send_data"
+    },
+    {
+        "type": "text",
+        "name": "recipient",
+        "required": true,
+        "title": { "en": "+31601020304" }
+      },
+    {
+      "type": "text",
+      "name": "message",
+      "required": true,
+      "title": { "en": "Message" }
+    },
+    {
+        "type": "text",
+        "name": "file",
+        "required": true,
+        "hint": {"en": "for example a url to a mp4 file"},
+        "title": { "en": "Video link" }
+      }
+  ],
+  "platforms": ["local"]
+}

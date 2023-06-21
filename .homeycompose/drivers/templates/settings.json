@@ -1,0 +1,24 @@
+{
+  "settings": [
+    {
+      "type": "group",
+      "label": {
+        "en": "App settings",
+        "nl": "App instellingen"
+      },
+      "children": [
+        {
+          "id": "enable_receive_message",
+          "type": "checkbox",
+          "label": {
+            "en": "Enable: Receive Message"
+          },
+          "hint": {
+            "en": "By selecting this checkbox, you will enable the option to receive WhatsApp messages on Homey. However, please be aware that choosing this option may result in a lack of notifications on other devices when using WhatsApp web."
+          },
+          "value": false
+        }
+      ]
+    }
+  ]
+}

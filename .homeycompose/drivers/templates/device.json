@@ -1,0 +1,10 @@
+{
+  "icon": "{{driverAssetsPath}}/icon.svg",
+  "images": {
+    "large": "{{driverAssetsPath}}/images/large.jpg",
+    "small": "{{driverAssetsPath}}/images/small.jpg"
+  },
+  "class": "other",
+  "connectivity": ["cloud"],
+  "platforms": ["local"]
+}

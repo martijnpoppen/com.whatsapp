@@ -1,0 +1,56 @@
+{
+  "pair": [
+    {
+        "id": "whatsapp_email",
+        "options": {
+          "title": {
+            "en": "Fill in your email"
+          },
+          "usernameLabel": { "en": "E-mail address" },
+          "usernamePlaceholder": { "en": "john@doe.com" }
+        }
+      },
+      {
+        "id": "whatsapp_apikey",
+        "options": {
+          "title": {
+            "en": "Fill in your apiKey (which you got in the email from TextMebot)"
+          },
+          "usernameLabel": { "en": "ApiKey" },
+          "usernamePlaceholder": { "en": "abcdef1234" }
+        }
+      },
+      {
+        "id": "whatsapp_phone",
+        "options": {
+          "title": {
+            "en": "Fill in your phone number (which you use in whatsapp)"
+          },
+          "usernameLabel": { "en": "Phone number" },
+          "usernamePlaceholder": { "en": "+31601234567" }
+        }
+      },
+      {
+        "id": "whatsapp_qr",
+        "options": {
+          "title": {
+            "en": "Scan QR with Whatsapp"
+          },
+          "navigation": {
+            "next": "list_devices"
+          }
+        }
+      },
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "navigation": {
+        "next": "add_devices"
+      }
+    },
+    {
+      "id": "add_devices",
+      "template": "add_devices"
+    }
+  ]
+}

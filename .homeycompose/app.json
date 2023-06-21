@@ -1,0 +1,70 @@
+{
+  "id": "com.textmebot",
+  "version": "0.0.1",
+  "compatibility": ">=5.0.0",
+  "sdk": 3,
+  "platforms": [
+    "local"
+  ],
+  "brandColor": "#000000",
+  "name": {
+    "en": "TextMeBot (Whatsapp)"
+  },
+  "description": {
+    "en": "Connect your own WhatsApp Account to this APP and start sending messages from your number."
+  },
+  "tags": {
+    "en": [
+      "Whatsapp",
+      "Texts",
+      "Messaging",
+      "Messages",
+      "App",
+      "TextMeBot",
+      "Bot",
+      "Text",
+      "Telegram",
+      "CallMeBot"
+    ]
+  },
+  "category": [
+    "appliances"
+  ],
+  "images": {
+    "large": "/assets/images/large.jpg",
+    "small": "/assets/images/small.jpg"
+  },
+  "author": {
+    "name": "Martijn Poppen",
+    "email": "textmebot@martijnpoppen.nl"
+  },
+  "contributors": {
+    "developers": [
+      {
+        "name": "Martijn Poppen",
+        "email": "textmebot@martijnpoppen.nl"
+      }
+    ],
+    "translators": [
+      {
+        "name": "🇬🇧 Martijn Poppen"
+      }
+    ]
+  },
+  "contributing": {
+    "donate": {
+      "paypal": {
+        "username": "martijnpoppen"
+      },
+      "bunq": {
+        "username": "martijnpoppen"
+      }
+    }
+  },
+  "bugs": {
+    "url": "https://community.homey.app/t/app-pro-controlmyspa/57870"
+  },
+  "source": "https://github.com/martijnpoppen/com.textmebot",
+  "homeyCommunityTopicId": 57870,
+  "support": "https://community.homey.app/t/app-pro-controlmyspa/57870"
+}

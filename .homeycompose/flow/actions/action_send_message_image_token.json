@@ -1,0 +1,34 @@
+{
+  "title": {
+    "en": "Send Whatsapp message"
+  },
+  "titleFormatted": {
+    "en": "Send Whatsapp [[message]] [[droptoken]] to [[recipient]]"
+  },
+  "droptoken": [
+    "image"
+  ],
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "placeholder": {
+        "en": "Select device",
+        "nl": "Selecteer apparaat"
+      },
+      "filter": "driver_id=Whatsapp&capabilities=send_data"
+    },
+    {
+        "type": "text",
+        "name": "recipient",
+        "title": { "en": "+31601020304" }
+      },
+    {
+      "type": "text",
+      "name": "message",
+      "required": true,
+      "title": { "en": "Message" }
+    }
+  ],
+  "platforms": ["local"]
+}

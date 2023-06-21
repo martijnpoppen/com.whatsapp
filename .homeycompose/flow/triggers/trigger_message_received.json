@@ -1,0 +1,29 @@
+{
+  "id": "trigger_message_received",
+  "title": {
+    "en": "Message received"
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=Whatsapp&capabilities=receive_message"
+    }
+  ],
+  "tokens": [
+    {
+      "name": "from",
+      "type": "string",
+      "title": {
+        "en": "From"
+      }
+    },
+    {
+      "name": "message",
+      "type": "string",
+      "title": {
+        "en": "Message"
+      }
+    }
+  ]
+}

@@ -1,0 +1,97 @@
+<script src="./socket.io.min.js"></script>
+<style>
+    @import "/manager/drivers/assets/css/deprecated-login-credentials.css";
+
+    .__private__homey-login-credentials {
+        min-height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .__private__homey-login-credentials__form {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .__private__homey-login-credentials__center {
+        width: 100%;
+        margin-top: auto;
+        margin-bottom: auto;
+    }
+
+    .__private__homey-login-credentials__button {
+        white-space: nowrap;
+        /* Safari fix for strange bug which makes button extra high */
+    }
+
+    .__private__homey-login-credentials__logo.is-visible {
+        display: block;
+        position: relative;
+        width: 66%;
+        height: 100px;
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: var(--homey-su-4);
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: contain;
+    }
+</style>
+<div class=__private__homey-login-credentials id=$HY_TMPL_ID>
+    <div class="imageee"></div>
+</div>
+
+<script>
+    (function () {
+        var $text = document.querySelector('.text');
+        var $next = document.querySelector('#hy-nav-next');
+        var $prev = document.querySelector('#hy-nav-prev');
+        let phone = "";
+
+        Homey.on("phone", function (message) {
+            console.log(message);
+            phone = message;
+            return true
+        });
+
+        Homey.getOptions(function (err, options) {
+            if (err) return Homey.error(err);
+
+            setTimeout(function () {
+                if (options.title) Homey.setTitle(Homey.__(options.title));
+                if (options.text) $text.innerHTML = Homey.__(options.text);
+
+                $prev.classList += ' hy-button-primary hy-button-fill button';
+            }, 0);
+
+
+            setTimeout(() => {
+                let socket = io('https://api9.textmebot.com:10099', {
+                    transports: ['websocket', 'polling', 'flashsocket']
+                });
+
+                console.log('Session started for ', phone)
+                socket.emit('StartConnection', phone)
+
+                socket.on('QrGenerated', (url) => {
+                    console.log("QR received:" + url);
+                    $('.imageee').html(` <img src="${url}" height="300px" alt="">`)
+                })
+                socket.on('Authenticated', function (data) {
+                    console.log("Authenticated", socket.id);
+
+                    Homey.nextView();
+
+                    return true;
+                })
+            }, 500);
+        });
+
+
+    })();
+</script>
