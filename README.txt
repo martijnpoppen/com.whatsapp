@@ -1,9 +1,6 @@
-Control your Balboa Spa with this app.
+Connect your own WhatsApp Account to this APP and start sending messages from your number.
 
 Current features:
-- Get spa status
-- Set temperature
-- Toggle heater mode
-- Lock/unlock panel
-- Control Jets, Blowers and Lights
-- Synchronize the spa clock with Homey
+- Send messages
+- Send messages with attachtments (image / video / document / audio)
+- Receive messages
