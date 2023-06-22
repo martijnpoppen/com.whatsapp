@@ -78,13 +78,12 @@ module.exports = class mainDevice extends Homey.Device {
             let recipient = params.recipient;
             let fileUrl = params.droptoken || params.file || null;
             const fileType = type;
+            const isGroup = validateUrl(recipient);
 
             this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage - isGroup and ValidateMobile`, isGroup, validateMobile(recipient));
 
-            if (isGroup && !validateUrl(recipient)) {
-                throw new Error('Invalid invite link');
-            } else if (!isGroup && !validateMobile(recipient)) {
-                throw new Error('Invalid mobile number');
+            if (!validateMobile(recipient) && !validateUrl(recipient)) {
+                throw new Error('Invalid mobile number OR Invalid group invite link');
             }
 
             if (!!fileUrl && !!fileUrl.cloudUrl) {
@@ -96,11 +95,13 @@ module.exports = class mainDevice extends Homey.Device {
 
                 await this.WhatsappClient.connectPhoneNumberToApiKey(settings.phone);
 
-                if (isGroup && validateUrl(recipient)) {
+                if (isGroup) {
                     this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage - fetching group ID`, recipient);
                     const groupLink = recipient.split('/').pop();
 
                     recipient = await this.WhatsappClient.getGroupId(groupLink);
+
+                    await sleep(7500)
                 }
 
                 this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage sendTextMessage`, { recipient, message, fileUrl, fileType });

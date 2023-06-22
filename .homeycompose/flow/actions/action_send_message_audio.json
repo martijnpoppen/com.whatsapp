@@ -19,7 +19,7 @@
       "type": "text",
       "name": "recipient",
       "required": true,
-      "hint": { "en": "Use with country code! e.g.( +31 -> +31601020304 ) " },
+      "hint": { "en": "Phone number: Phone number: Use with country code! e.g.( +31 -> +31601020304 ) || Groups: Copy the invite link of your whatsapp group and paste it here. Based on the link the app will know to which group to send a message || Groups: Copy the invite link of your whatsapp group and paste it here. Based on the link the app will know to which group to send a message " },
       "title": { "en": "Mobile number" }
     },
     {
