@@ -19,7 +19,7 @@
       "type": "text",
       "name": "recipient",
       "required": true,
-      "title": { "en": "+31601020304" }
+      "title": { "en": "Mobile number" }
     },
     {
       "type": "text",

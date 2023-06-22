@@ -1,6 +1,6 @@
 const Homey = require('homey');
 const WhatsappClient = require('../../lib/textmebot/whatsapp');
-const { sleep } = require('../../lib/helpers');
+const { sleep, validateMobile, validateUrl } = require('../../lib/helpers');
 
 module.exports = class mainDevice extends Homey.Device {
     async onInit() {
@@ -42,7 +42,7 @@ module.exports = class mainDevice extends Homey.Device {
 
             this.WhatsappClient = new WhatsappClient({ apiKey: settings.apiKey });
 
-            this.homey.app.log(`[Device] ${this.getName()} - setWhatsappClient Set webhook` );
+            this.homey.app.log(`[Device] ${this.getName()} - setWhatsappClient Set webhook`);
             await this.setWhatsappWebhook(settings.enable_receive_message, settings.phone, settings.apiKey);
 
             await this.setAvailable();
@@ -55,46 +55,59 @@ module.exports = class mainDevice extends Homey.Device {
         this.homey.app.log(`[Device] ${this.getName()} - setWhatsappWebhook`, enabled);
 
         let webhookUrl = null;
-        if(enabled) {
+        if (enabled) {
             const homeyId = await this.homey.cloud.getHomeyId();
             webhookUrl = `https://webhooks.athom.com/webhook/${Homey.env.WEBHOOK_ID}?homey=${homeyId}&phone=${phone}`;
 
-            this.homey.app.log(`[Device] ${this.getName()} - setWhatsappWebhook connectPhoneNumberToApiKey` );
+            this.homey.app.log(`[Device] ${this.getName()} - setWhatsappWebhook connectPhoneNumberToApiKey`);
             await this.WhatsappClient.connectPhoneNumberToApiKey(phone);
         } else {
-            this.homey.app.log(`[Device] ${this.getName()} - setWhatsappWebhook disconnectPhoneNumberToApiKey` );
+            this.homey.app.log(`[Device] ${this.getName()} - setWhatsappWebhook disconnectPhoneNumberToApiKey`);
             await this.WhatsappClient.disconnectPhoneNumberToApiKey();
         }
 
         await this.WhatsappClient.createWebhook(webhookUrl);
     }
 
-    async onCapability_SendMessage(params, type) {
+    async onCapability_SendMessage(params, type, isGroup = false) {
         try {
             this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage`, { ...params, device: 'LOG' });
 
             const settings = this.getSettings();
-            const recipient = params.recipient;
             const message = params.message || ' ';
+            let recipient = params.recipient;
             let fileUrl = params.droptoken || params.file || null;
             const fileType = type;
-            const isGroup = !validateMobile(recipient);
+
+            this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage - isGroup and ValidateMobile`, isGroup, validateMobile(recipient));
+
+            if (isGroup && !validateUrl(recipient)) {
+                throw new Error('Invalid invite link');
+            } else if (!isGroup && !validateMobile(recipient)) {
+                throw new Error('Invalid mobile number');
+            }
 
             if (!!fileUrl && !!fileUrl.cloudUrl) {
                 fileUrl = fileUrl.cloudUrl;
             }
 
             if (recipient && (message || fileUrl)) {
-               
-                this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage connectPhoneNumberToApiKey` );
-                
+                this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage connectPhoneNumberToApiKey`);
+
                 await this.WhatsappClient.connectPhoneNumberToApiKey(settings.phone);
 
-                this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage sendTextMessage`, {recipient, isGroup, message, fileUrl, fileType});
-                const data = await this.WhatsappClient.sendTextMessage(recipient, isGroup, message, fileUrl, fileType);
+                if (isGroup && validateUrl(recipient)) {
+                    this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage - fetching group ID`, recipient);
+                    const groupLink = recipient.split('/').pop();
 
-                if(!settings.enable_receive_message) {
-                    this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage disconnectPhoneNumberToApiKey` );
+                    recipient = await this.WhatsappClient.getGroupId(groupLink);
+                }
+
+                this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage sendTextMessage`, { recipient, message, fileUrl, fileType });
+                const data = await this.WhatsappClient.sendTextMessage(recipient, message, fileUrl, fileType);
+
+                if (!settings.enable_receive_message) {
+                    this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage disconnectPhoneNumberToApiKey`);
                     await this.WhatsappClient.disconnectPhoneNumberToApiKey();
                 }
 
@@ -108,9 +121,9 @@ module.exports = class mainDevice extends Homey.Device {
 
             return false;
         } catch (error) {
-            this.homey.app.log(error.message);
+            this.homey.app.log(error);
 
-            return Promise.reject(error.message);
+            return Promise.reject(error);
         }
     }
 
@@ -128,15 +141,13 @@ module.exports = class mainDevice extends Homey.Device {
         const deviceCapabilities = this.getCapabilities();
 
         if (!settings.enable_receive_message) {
-            driverCapabilities = driverCapabilities.filter(d => d !== 'receive_message');
+            driverCapabilities = driverCapabilities.filter((d) => d !== 'receive_message');
         }
 
         this.homey.app.log(`[Device] ${this.getName()} - Found capabilities =>`, deviceCapabilities);
         this.homey.app.log(`[Device] ${this.getName()} - Driver capabilities =>`, driverCapabilities);
 
-
         await this.updateCapabilities(driverCapabilities, deviceCapabilities);
-
 
         return true;
     }

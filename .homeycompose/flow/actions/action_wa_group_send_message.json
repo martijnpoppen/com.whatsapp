@@ -1,11 +1,10 @@
 {
   "title": {
-    "en": "Send Whatsapp message with image token"
+    "en": "[Group]  Send Whatsapp message"
   },
   "titleFormatted": {
-    "en": "Send Whatsapp [[message]] with [[droptoken]] to [[recipient]]"
+    "en": "[Group] Send Whatsapp [[message]] to [[recipient]]"
   },
-  "droptoken": ["image"],
   "args": [
     {
       "type": "device",
@@ -20,12 +19,12 @@
       "type": "text",
       "name": "recipient",
       "required": true,
-      "hint": { "en": "Use with country code! e.g.( +31 -> +31601020304 ) " },
-      "title": { "en": "Mobile number" }
+      "title": { "en": "group" }
     },
     {
       "type": "text",
       "name": "message",
+      "required": true,
       "title": { "en": "Message" }
     }
   ],

@@ -1,6 +1,6 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
-  "id": "com.textmebot",
+  "id": "com.whatsapp",
   "version": "0.0.1",
   "compatibility": ">=5.0.0",
   "sdk": 3,
@@ -9,7 +9,7 @@
   ],
   "brandColor": "#000000",
   "name": {
-    "en": "TextMeBot (Whatsapp)"
+    "en": "Whatsapp"
   },
   "description": {
     "en": "Connect your own WhatsApp Account to this APP and start sending messages from your number."
@@ -116,7 +116,7 @@
               "en": "Select device",
               "nl": "Selecteer apparaat"
             },
-            "filter": "driver_id=Whatsapp"
+            "filter": "driver_id=Whatsapp&capabilities=receive_message"
           }
         ],
         "platforms": [
@@ -139,7 +139,7 @@
               "en": "Select device",
               "nl": "Selecteer apparaat"
             },
-            "filter": "driver_id=Whatsapp"
+            "filter": "driver_id=Whatsapp&capabilities=receive_message"
           }
         ],
         "platforms": [
@@ -169,7 +169,7 @@
             "name": "recipient",
             "required": true,
             "title": {
-              "en": "+31601020304"
+              "en": "Mobile number"
             }
           },
           {
@@ -188,10 +188,10 @@
       },
       {
         "title": {
-          "en": "Send Whatsapp message"
+          "en": "Send Whatsapp message with audio"
         },
         "titleFormatted": {
-          "en": "Send Whatsapp [[message]] [[file]] to [[recipient]]"
+          "en": "Send Whatsapp [[message]] with [[file]] to [[recipient]]"
         },
         "args": [
           {
@@ -207,14 +207,16 @@
             "type": "text",
             "name": "recipient",
             "required": true,
+            "hint": {
+              "en": "Use with country code! e.g.( +31 -> +31601020304 ) "
+            },
             "title": {
-              "en": "+31601020304"
+              "en": "Mobile number"
             }
           },
           {
             "type": "text",
             "name": "message",
-            "required": true,
             "title": {
               "en": "Message"
             }
@@ -238,10 +240,10 @@
       },
       {
         "title": {
-          "en": "Send Whatsapp message"
+          "en": "Send Whatsapp message with document"
         },
         "titleFormatted": {
-          "en": "Send Whatsapp [[message]] [[file]] to [[recipient]]"
+          "en": "Send Whatsapp [[message]] with [[file]] to [[recipient]]"
         },
         "args": [
           {
@@ -257,14 +259,16 @@
             "type": "text",
             "name": "recipient",
             "required": true,
+            "hint": {
+              "en": "Use with country code! e.g.( +31 -> +31601020304 ) "
+            },
             "title": {
-              "en": "+31601020304"
+              "en": "Mobile number"
             }
           },
           {
             "type": "text",
             "name": "message",
-            "required": true,
             "title": {
               "en": "Message"
             }
@@ -288,10 +292,10 @@
       },
       {
         "title": {
-          "en": "Send Whatsapp message"
+          "en": "Send Whatsapp message with image"
         },
         "titleFormatted": {
-          "en": "Send Whatsapp [[message]] [[file]] to [[recipient]]"
+          "en": "Send Whatsapp [[message]] with [[file]] to [[recipient]]"
         },
         "args": [
           {
@@ -308,16 +312,15 @@
             "name": "recipient",
             "required": true,
             "hint": {
-              "en": "Use with country code! e.g.( +31 ) "
+              "en": "Use with country code! e.g.( +31 -> +31601020304 ) "
             },
             "title": {
-              "en": "+31601020304"
+              "en": "Mobile number"
             }
           },
           {
             "type": "text",
             "name": "message",
-            "required": true,
             "title": {
               "en": "Message"
             }
@@ -341,10 +344,10 @@
       },
       {
         "title": {
-          "en": "Send Whatsapp message"
+          "en": "Send Whatsapp message with image token"
         },
         "titleFormatted": {
-          "en": "Send Whatsapp [[message]] [[droptoken]] to [[recipient]]"
+          "en": "Send Whatsapp [[message]] with [[droptoken]] to [[recipient]]"
         },
         "droptoken": [
           "image"
@@ -362,14 +365,17 @@
           {
             "type": "text",
             "name": "recipient",
+            "required": true,
+            "hint": {
+              "en": "Use with country code! e.g.( +31 -> +31601020304 ) "
+            },
             "title": {
-              "en": "+31601020304"
+              "en": "Mobile number"
             }
           },
           {
             "type": "text",
             "name": "message",
-            "required": true,
             "title": {
               "en": "Message"
             }
@@ -382,10 +388,10 @@
       },
       {
         "title": {
-          "en": "Send Whatsapp message"
+          "en": "Send Whatsapp message with video"
         },
         "titleFormatted": {
-          "en": "Send Whatsapp [[message]] [[file]] to [[recipient]]"
+          "en": "Send Whatsapp [[message]] with [[file]] to [[recipient]]"
         },
         "args": [
           {
@@ -401,14 +407,16 @@
             "type": "text",
             "name": "recipient",
             "required": true,
+            "hint": {
+              "en": "Use with country code! e.g.( +31 -> +31601020304 ) "
+            },
             "title": {
-              "en": "+31601020304"
+              "en": "Mobile number"
             }
           },
           {
             "type": "text",
             "name": "message",
-            "required": true,
             "title": {
               "en": "Message"
             }
@@ -429,6 +437,297 @@
           "local"
         ],
         "id": "action_send_message_video"
+      },
+      {
+        "title": {
+          "en": "[Group]  Send Whatsapp message"
+        },
+        "titleFormatted": {
+          "en": "[Group] Send Whatsapp [[message]] to [[recipient]]"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "placeholder": {
+              "en": "Select device",
+              "nl": "Selecteer apparaat"
+            },
+            "filter": "driver_id=Whatsapp&capabilities=send_data"
+          },
+          {
+            "type": "text",
+            "name": "recipient",
+            "required": true,
+            "title": {
+              "en": "group"
+            }
+          },
+          {
+            "type": "text",
+            "name": "message",
+            "required": true,
+            "title": {
+              "en": "Message"
+            }
+          }
+        ],
+        "platforms": [
+          "local"
+        ],
+        "id": "action_wa_group_send_message"
+      },
+      {
+        "title": {
+          "en": "[Group] Send Whatsapp message with audio"
+        },
+        "titleFormatted": {
+          "en": "[Group] Send Whatsapp [[message]] with [[file]] to group [[recipient]]"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "placeholder": {
+              "en": "Select device",
+              "nl": "Selecteer apparaat"
+            },
+            "filter": "driver_id=Whatsapp&capabilities=send_data"
+          },
+          {
+            "type": "text",
+            "name": "recipient",
+            "required": true,
+            "hint": {
+              "en": "Copy the invite link of your whatsapp group and paste it here. Based on the link the app will know to which group to send a message "
+            },
+            "title": {
+              "en": "group"
+            }
+          },
+          {
+            "type": "text",
+            "name": "message",
+            "title": {
+              "en": "Message"
+            }
+          },
+          {
+            "type": "text",
+            "name": "file",
+            "required": true,
+            "hint": {
+              "en": "for example a url to a mp3 file"
+            },
+            "title": {
+              "en": "Audio link"
+            }
+          }
+        ],
+        "platforms": [
+          "local"
+        ],
+        "id": "action_wa_group_send_message_audio"
+      },
+      {
+        "title": {
+          "en": "[Group]  Send Whatsapp message with document"
+        },
+        "titleFormatted": {
+          "en": "[Group] Send Whatsapp [[message]] with [[file]] to [[recipient]]"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "placeholder": {
+              "en": "Select device",
+              "nl": "Selecteer apparaat"
+            },
+            "filter": "driver_id=Whatsapp&capabilities=send_data"
+          },
+          {
+            "type": "text",
+            "name": "recipient",
+            "required": true,
+            "hint": {
+              "en": "Copy the invite link of your whatsapp group and paste it here. Based on the link the app will know to which group to send a message "
+            },
+            "title": {
+              "en": "group"
+            }
+          },
+          {
+            "type": "text",
+            "name": "message",
+            "title": {
+              "en": "Message"
+            }
+          },
+          {
+            "type": "text",
+            "name": "file",
+            "required": true,
+            "hint": {
+              "en": "for example a url to a pdf file"
+            },
+            "title": {
+              "en": "Document link"
+            }
+          }
+        ],
+        "platforms": [
+          "local"
+        ],
+        "id": "action_wa_group_send_message_document"
+      },
+      {
+        "title": {
+          "en": "[Group] Send Whatsapp message image"
+        },
+        "titleFormatted": {
+          "en": "[Group] Send Whatsapp [[message]] with [[file]] to [[recipient]]"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "placeholder": {
+              "en": "Select device",
+              "nl": "Selecteer apparaat"
+            },
+            "filter": "driver_id=Whatsapp&capabilities=send_data"
+          },
+          {
+            "type": "text",
+            "name": "recipient",
+            "required": true,
+            "hint": {
+              "en": "Copy the invite link of your whatsapp group and paste it here. Based on the link the app will know to which group to send a message "
+            },
+            "title": {
+              "en": "group"
+            }
+          },
+          {
+            "type": "text",
+            "name": "message",
+            "title": {
+              "en": "Message"
+            }
+          },
+          {
+            "type": "text",
+            "name": "file",
+            "required": true,
+            "hint": {
+              "en": "for example a url to a jpg or gif file"
+            },
+            "title": {
+              "en": "Image link"
+            }
+          }
+        ],
+        "platforms": [
+          "local"
+        ],
+        "id": "action_wa_group_send_message_image"
+      },
+      {
+        "title": {
+          "en": "[Group] Send Whatsapp message with image token"
+        },
+        "titleFormatted": {
+          "en": "[Group] Send Whatsapp [[message]] with [[droptoken]] to [[recipient]]"
+        },
+        "droptoken": [
+          "image"
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "placeholder": {
+              "en": "Select device",
+              "nl": "Selecteer apparaat"
+            },
+            "filter": "driver_id=Whatsapp&capabilities=send_data"
+          },
+          {
+            "type": "text",
+            "name": "recipient",
+            "required": true,
+            "hint": {
+              "en": "Copy the invite link of your whatsapp group and paste it here. Based on the link the app will know to which group to send a message "
+            },
+            "title": {
+              "en": "Group"
+            }
+          },
+          {
+            "type": "text",
+            "name": "message",
+            "title": {
+              "en": "Message"
+            }
+          }
+        ],
+        "platforms": [
+          "local"
+        ],
+        "id": "action_wa_group_send_message_image_token"
+      },
+      {
+        "title": {
+          "en": "Send Whatsapp message to group with video"
+        },
+        "titleFormatted": {
+          "en": "Send Whatsapp [[message]] with [[file]] to [[recipient]]"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "placeholder": {
+              "en": "Select device",
+              "nl": "Selecteer apparaat"
+            },
+            "filter": "driver_id=Whatsapp&capabilities=send_data"
+          },
+          {
+            "type": "text",
+            "name": "recipient",
+            "required": true,
+            "hint": {
+              "en": "Copy the invite link of your whatsapp group and paste it here. Based on the link the app will know to which group to send a message "
+            },
+            "title": {
+              "en": "Mobile number"
+            }
+          },
+          {
+            "type": "text",
+            "name": "message",
+            "title": {
+              "en": "Message"
+            }
+          },
+          {
+            "type": "text",
+            "name": "file",
+            "required": true,
+            "hint": {
+              "en": "for example a url to a mp4 file"
+            },
+            "title": {
+              "en": "Video link"
+            }
+          }
+        ],
+        "platforms": [
+          "local"
+        ],
+        "id": "action_wa_group_send_message_video"
       }
     ]
   },
@@ -532,14 +831,46 @@
               "value": false
             }
           ]
+        },
+        {
+          "type": "group",
+          "label": {
+            "en": "Login settings",
+            "nl": "App instellingen"
+          },
+          "children": [
+            {
+              "id": "apiKey",
+              "type": "label",
+              "label": {
+                "en": "API Key"
+              },
+              "value": ""
+            },
+            {
+              "id": "email",
+              "type": "label",
+              "label": {
+                "en": "Email"
+              },
+              "value": ""
+            },
+            {
+              "id": "phone",
+              "type": "label",
+              "label": {
+                "en": "Phone number"
+              },
+              "value": ""
+            }
+          ]
         }
       ],
       "name": {
         "en": "Whatsapp"
       },
       "capabilities": [
-        "send_data",
-        "receive_message"
+        "send_data"
       ],
       "id": "Whatsapp"
     }

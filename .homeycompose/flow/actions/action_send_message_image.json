@@ -1,9 +1,9 @@
 {
   "title": {
-    "en": "Send Whatsapp message"
+    "en": "Send Whatsapp message with image"
   },
   "titleFormatted": {
-    "en": "Send Whatsapp [[message]] [[file]] to [[recipient]]"
+    "en": "Send Whatsapp [[message]] with [[file]] to [[recipient]]"
   },
   "args": [
     {
@@ -19,13 +19,12 @@
       "type": "text",
       "name": "recipient",
       "required": true,
-      "hint": { "en": "Use with country code! e.g.( +31 ) " },
-      "title": { "en": "+31601020304" }
+      "hint": { "en": "Use with country code! e.g.( +31 -> +31601020304 ) " },
+      "title": { "en": "Mobile number" }
     },
     {
       "type": "text",
       "name": "message",
-      "required": true,
       "title": { "en": "Message" }
     },
     {

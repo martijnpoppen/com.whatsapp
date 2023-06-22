@@ -19,6 +19,40 @@
           "value": false
         }
       ]
-    }
+    },
+    {
+        "type": "group",
+        "label": {
+          "en": "Login settings",
+          "nl": "App instellingen"
+        },
+        
+            "children": [
+                {
+                  "id": "apiKey",
+                  "type": "label",
+                  "label": {
+                    "en": "API Key"
+                  },
+                  "value": ""
+                },
+                {
+                    "id": "email",
+                    "type": "label",
+                    "label": {
+                      "en": "Email"
+                    },
+                    "value": ""
+                  },
+                  {
+                    "id": "phone",
+                    "type": "label",
+                    "label": {
+                      "en": "Phone number"
+                    },
+                    "value": ""
+                  }
+              ]
+      }
   ]
 }

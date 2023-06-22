@@ -1,11 +1,10 @@
 {
   "title": {
-    "en": "Send Whatsapp message with image token"
+    "en": "Send Whatsapp message to group with video"
   },
   "titleFormatted": {
-    "en": "Send Whatsapp [[message]] with [[droptoken]] to [[recipient]]"
+    "en": "Send Whatsapp [[message]] with [[file]] to [[recipient]]"
   },
-  "droptoken": ["image"],
   "args": [
     {
       "type": "device",
@@ -20,13 +19,20 @@
       "type": "text",
       "name": "recipient",
       "required": true,
-      "hint": { "en": "Use with country code! e.g.( +31 -> +31601020304 ) " },
+      "hint": { "en": "Copy the invite link of your whatsapp group and paste it here. Based on the link the app will know to which group to send a message " },
       "title": { "en": "Mobile number" }
     },
     {
       "type": "text",
       "name": "message",
       "title": { "en": "Message" }
+    },
+    {
+      "type": "text",
+      "name": "file",
+      "required": true,
+      "hint": { "en": "for example a url to a mp4 file" },
+      "title": { "en": "Video link" }
     }
   ],
   "platforms": ["local"]

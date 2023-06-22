@@ -13,7 +13,7 @@
         "en": "Select device",
         "nl": "Selecteer apparaat"
       },
-      "filter": "driver_id=Whatsapp"
+      "filter": "driver_id=Whatsapp&capabilities=receive_message"
     }
   ],
   "platforms": ["local"]
