@@ -51,22 +51,21 @@ module.exports = class mainDevice extends Homey.Device {
         }
     }
 
-    async setWhatsappWebhook(enabled = false, phone, apikey) {
+    async setWhatsappWebhook(enabled = false, phone) {
         this.homey.app.log(`[Device] ${this.getName()} - setWhatsappWebhook`, enabled);
 
-        let webhookUrl = null;
         if (enabled) {
             const homeyId = await this.homey.cloud.getHomeyId();
-            webhookUrl = `https://webhooks.athom.com/webhook/${Homey.env.WEBHOOK_ID}?homey=${homeyId}&phone=${phone}`;
+            const webhookUrl = `https://webhooks.athom.com/webhook/${Homey.env.WEBHOOK_ID}?homey=${homeyId}&phone=${phone}`;
 
             this.homey.app.log(`[Device] ${this.getName()} - setWhatsappWebhook connectPhoneNumberToApiKey`);
             await this.WhatsappClient.connectPhoneNumberToApiKey(phone);
+            await this.WhatsappClient.createWebhook(webhookUrl);
         } else {
             this.homey.app.log(`[Device] ${this.getName()} - setWhatsappWebhook disconnectPhoneNumberToApiKey`);
             await this.WhatsappClient.disconnectPhoneNumberToApiKey();
+            await this.WhatsappClient.deleteWebhook();
         }
-
-        await this.WhatsappClient.createWebhook(webhookUrl);
     }
 
     async onCapability_SendMessage(params, type, isGroup = false) {
@@ -74,7 +73,7 @@ module.exports = class mainDevice extends Homey.Device {
             this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage`, { ...params, device: 'LOG' });
 
             const settings = this.getSettings();
-            const message = params.message || ' ';
+            const message = params.message.length ? params.message : '‎';
             let recipient = params.recipient;
             let fileUrl = params.droptoken || params.file || null;
             const fileType = type;
@@ -99,9 +98,16 @@ module.exports = class mainDevice extends Homey.Device {
                     this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage - fetching group ID`, recipient);
                     const groupLink = recipient.split('/').pop();
 
-                    recipient = await this.WhatsappClient.getGroupId(groupLink);
+                    if(!this.getStoreValue(groupLink)) {
 
-                    await sleep(7500)
+                        recipient = await this.WhatsappClient.getGroupId(groupLink);
+
+                        await this.setStoreValue(groupLink, recipient);
+                        await sleep(7500)
+                    } else {
+                        recipient = this.getStoreValue(groupLink);
+                        this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage - fetching group ID from store`, recipient);
+                    }
                 }
 
                 this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage sendTextMessage`, { recipient, message, fileUrl, fileType });
@@ -113,11 +119,12 @@ module.exports = class mainDevice extends Homey.Device {
                 }
 
                 if (data) {
-                    // this.setCapabilityValue('measure_updated_at', getCurrentDatetime());
+                    await this.coolDown();
                     return true;
                 }
 
-                return true;
+                await this.coolDown();
+                return false;
             }
 
             return false;
@@ -131,6 +138,10 @@ module.exports = class mainDevice extends Homey.Device {
     async onCapability_setReceiveMessages(enabled) {
         await this.setSettings({ enable_receive_message: enabled });
         await this.checkCapabilities();
+    }
+    
+    async coolDown() {
+        return await sleep(5000);
     }
 
     // ------------- Capabilities -------------

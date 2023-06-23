@@ -172,7 +172,7 @@
               "en": "Phone number: Use with country code! e.g.( +31 -> +31601020304 ) || Groups: Copy the invite link of your whatsapp group and paste it here. Based on the link the app will know to which group to send a message "
             },
             "title": {
-              "en": "Mobile number"
+              "en": "Mobile number / Group invite link"
             }
           },
           {
@@ -214,7 +214,7 @@
               "en": "Phone number: Phone number: Use with country code! e.g.( +31 -> +31601020304 ) || Groups: Copy the invite link of your whatsapp group and paste it here. Based on the link the app will know to which group to send a message || Groups: Copy the invite link of your whatsapp group and paste it here. Based on the link the app will know to which group to send a message "
             },
             "title": {
-              "en": "Mobile number"
+              "en": "Mobile number / Group invite link"
             }
           },
           {
@@ -266,7 +266,7 @@
               "en": "Phone number: Use with country code! e.g.( +31 -> +31601020304 ) || Groups: Copy the invite link of your whatsapp group and paste it here. Based on the link the app will know to which group to send a message "
             },
             "title": {
-              "en": "Mobile number"
+              "en": "Mobile number / Group invite link"
             }
           },
           {
@@ -318,7 +318,7 @@
               "en": "Phone number: Use with country code! e.g.( +31 -> +31601020304 ) || Groups: Copy the invite link of your whatsapp group and paste it here. Based on the link the app will know to which group to send a message "
             },
             "title": {
-              "en": "Mobile number"
+              "en": "Mobile number / Group invite link"
             }
           },
           {
@@ -373,7 +373,7 @@
               "en": "Phone number: Use with country code! e.g.( +31 -> +31601020304 ) || Groups: Copy the invite link of your whatsapp group and paste it here. Based on the link the app will know to which group to send a message "
             },
             "title": {
-              "en": "Mobile number"
+              "en": "Mobile number / Group invite link"
             }
           },
           {
@@ -414,7 +414,7 @@
               "en": "Phone number: Use with country code! e.g.( +31 -> +31601020304 ) || Groups: Copy the invite link of your whatsapp group and paste it here. Based on the link the app will know to which group to send a message "
             },
             "title": {
-              "en": "Mobile number"
+              "en": "Mobile number / Group invite link"
             }
           },
           {
@@ -524,26 +524,6 @@
         }
       ],
       "settings": [
-        {
-          "type": "group",
-          "label": {
-            "en": "App settings",
-            "nl": "App instellingen"
-          },
-          "children": [
-            {
-              "id": "enable_receive_message",
-              "type": "checkbox",
-              "label": {
-                "en": "Enable: Receive Message"
-              },
-              "hint": {
-                "en": "By selecting this checkbox, you will enable the option to receive WhatsApp messages on Homey. However, please be aware that choosing this option may result in a lack of notifications on other devices when using WhatsApp web."
-              },
-              "value": false
-            }
-          ]
-        },
         {
           "type": "group",
           "label": {
