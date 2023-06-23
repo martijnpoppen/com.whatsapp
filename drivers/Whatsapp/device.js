@@ -40,7 +40,7 @@ module.exports = class mainDevice extends Homey.Device {
             const settings = this.getSettings();
             this.homey.app.log(`[Device] - ${this.getName()} => setWhatsappClient`);
 
-            this.WhatsappClient = new WhatsappClient({ apiKey: settings.apiKey });
+            this.WhatsappClient = new WhatsappClient({ apiKey: settings.apiKey, debug: true });
 
             this.homey.app.log(`[Device] ${this.getName()} - setWhatsappClient Set webhook`);
             await this.setWhatsappWebhook(settings.enable_receive_message, settings.phone, settings.apiKey);
@@ -100,10 +100,18 @@ module.exports = class mainDevice extends Homey.Device {
 
                     if(!this.getStoreValue(groupLink)) {
 
-                        recipient = await this.WhatsappClient.getGroupId(groupLink);
+                        const groupId = await this.WhatsappClient.getGroupId(groupLink);
 
-                        await this.setStoreValue(groupLink, recipient);
-                        await sleep(7500)
+
+                        if(groupId) {
+                            recipient = groupId;
+
+                            await this.setStoreValue(groupLink, recipient);
+                            await sleep(7500)
+                        } else {
+                            throw new Error('Could not get group ID. Is the group link correct?');
+                        }
+                        
                     } else {
                         recipient = this.getStoreValue(groupLink);
                         this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage - fetching group ID from store`, recipient);
