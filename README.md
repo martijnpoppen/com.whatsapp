@@ -47,7 +47,8 @@ Whatsapp for Homey is a complete intergration without the intervention of a bot.
 
 ## Result
 ---
-![wa](https://github.com/LRvdLinden/wa_discription/assets/77990847/fb976fb9-7948-48eb-ad9a-1881011825eb)
+
+![wa png](https://github.com/martijnpoppen/com.whatsapp/assets/77990847/6ce276c0-5923-422c-9a50-4327176a3a23)
 
 
 
