@@ -42,7 +42,7 @@ Whatsapp for Homey is a complete intergration without the intervention of a bot.
 ## Contributors: 🔧
 ---
 - <a href="https://github.com/LRvdLinden">LRvdLinden</a>
-- <a href="https://textmebot.com">TextMeBot</a>
+- <a href="https://textmebot.com">TextMeBot</a> (creator of the apiKey)
 
 
 ## Result
