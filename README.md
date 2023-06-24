@@ -75,15 +75,3 @@ c) You are the only one responsible for the messages and the content that you se
 d) TextMeBot is not responsible for any ban or block performed by WhatsApp on your number. And I cant do anything to unblock it
 
 
-
-
-
-
-
-
-
-
----
-Enjoy my card? Help me out for a couple of :beers: or a :coffee:!
-
-[![coffee](https://www.buymeacoffee.com/assets/img/custom_images/black_img.png)](https://www.buymeacoffee.com/LRvdLinden)
