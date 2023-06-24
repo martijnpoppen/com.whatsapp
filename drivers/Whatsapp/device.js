@@ -40,7 +40,7 @@ module.exports = class mainDevice extends Homey.Device {
             const settings = this.getSettings();
             this.homey.app.log(`[Device] - ${this.getName()} => setWhatsappClient`);
 
-            this.WhatsappClient = new WhatsappClient({ apiKey: settings.apiKey, debug: true });
+            this.WhatsappClient = new WhatsappClient({ apiKey: settings.apiKey, debug: false });
 
             this.homey.app.log(`[Device] ${this.getName()} - setWhatsappClient Set webhook`);
             await this.setWhatsappWebhook(settings.enable_receive_message, settings.phone, settings.apiKey);

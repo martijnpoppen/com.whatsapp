@@ -25,6 +25,7 @@
     {
       "type": "text",
       "name": "message",
+      "required": false,
       "title": { "en": "Message" }
     },
     {
