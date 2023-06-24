@@ -44,11 +44,11 @@
       {
         "name": "Martijn Poppen",
         "email": "textmebot@martijnpoppen.nl"
-      }
+      },
       {
         "name": "Léon van der Linden",
         "email": "homey@vdlinden.xyz"
-      },
+      }
     ],
     "translators": [
       {
@@ -69,7 +69,7 @@
   "bugs": {
     "url": "https://community.homey.app/t/app-pro-controlmyspa/57870"
   },
-  "source": "https://github.com/martijnpoppen/com.textmebot",
+  "source": "https://github.com/martijnpoppen/com.whatsapp",
   "homeyCommunityTopicId": 57870,
   "support": "https://community.homey.app/t/app-pro-controlmyspa/57870",
   "flow": {
@@ -224,6 +224,7 @@
           {
             "type": "text",
             "name": "message",
+            "required": false,
             "title": {
               "en": "Message"
             }
@@ -276,6 +277,7 @@
           {
             "type": "text",
             "name": "message",
+            "required": false,
             "title": {
               "en": "Message"
             }
@@ -328,6 +330,7 @@
           {
             "type": "text",
             "name": "message",
+            "required": false,
             "title": {
               "en": "Message"
             }
@@ -383,6 +386,7 @@
           {
             "type": "text",
             "name": "message",
+            "required": false,
             "title": {
               "en": "Message"
             }
@@ -424,6 +428,7 @@
           {
             "type": "text",
             "name": "message",
+            "required": false,
             "title": {
               "en": "Message"
             }
