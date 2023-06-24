@@ -28,7 +28,7 @@
     ]
   },
   "category": [
-    "appliances"
+    "internet"
   ],
   "images": {
     "large": "/assets/images/large.jpg",
@@ -52,6 +52,9 @@
     "translators": [
       {
         "name": "🇬🇧 Martijn Poppen"
+      },
+      {
+        "name": "ChatGPT (translations)"
       }
     ]
   },

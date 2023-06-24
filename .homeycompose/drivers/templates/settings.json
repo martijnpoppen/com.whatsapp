@@ -1,38 +1,48 @@
 {
   "settings": [
     {
-        "type": "group",
-        "label": {
-          "en": "Login settings",
-          "nl": "App instellingen"
+      "type": "group",
+      "label": {
+        "en": "Login settings",
+        "nl": "App instellingen"
+      },
+
+      "children": [
+        {
+          "id": "apiKey",
+          "type": "label",
+          "label": {
+            "en": "API Key"
+          },
+          "value": ""
         },
-        
-            "children": [
-                {
-                  "id": "apiKey",
-                  "type": "label",
-                  "label": {
-                    "en": "API Key"
-                  },
-                  "value": ""
-                },
-                {
-                    "id": "email",
-                    "type": "label",
-                    "label": {
-                      "en": "Email"
-                    },
-                    "value": ""
-                  },
-                  {
-                    "id": "phone",
-                    "type": "label",
-                    "label": {
-                      "en": "Phone number"
-                    },
-                    "value": ""
-                  }
-              ]
-      }
+        {
+          "id": "email",
+          "type": "label",
+          "label": {
+            "en": "Email"
+          },
+          "value": ""
+        },
+        {
+          "id": "phone",
+          "type": "label",
+          "label": {
+            "en": "Phone number",
+            "nl": "Telefoonnummer",
+            "de": "Telefonnummer",
+            "fr": "Numéro de téléphone",
+            "it": "Numero di telefono",
+            "sv": "Telefonnummer",
+            "no": "Telefonnummer",
+            "es": "Número de teléfono",
+            "da": "Telefonnummer",
+            "ru": "Номер телефона",
+            "pl": "Numer telefonu"
+          },
+          "value": ""
+        }
+      ]
+    }
   ]
 }
