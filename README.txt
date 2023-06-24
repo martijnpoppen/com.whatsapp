@@ -1,8 +1,17 @@
-Connect your own WhatsApp Account to this APP and start sending messages from your number.
+Whatsapp for Homey is a complete intergration without the intervention of a bot. With this Homey app, you send messages, videos, photos, documents and audio messages to a mobile number or Whatsapp group from your own name.
+
+Usage:
+- Install this app on your Homey
+- Go to add devices
+- Provide your mobile number and apiKey (from TextMeBot). Click Next
+- Scan the QR code whith the Whatsapp from your mobile number
+
 
 Current features:
-- Send messages
-- Send messages with attachtments (image / video / document / audio)
-- Receive messages
-
-This APP uses the textmebot API. https://textmebot.com
+-  Send from your personal number to Groups or just one receiver
+-  Send Text Messages
+-  Send Images
+-  Send Documents
+-  Send Video
+-  Of course, you can put all available Homey tags in the text field and send snapshots/artworks via the dedicated image tag card.
+  
