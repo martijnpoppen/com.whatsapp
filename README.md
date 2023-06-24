@@ -37,7 +37,7 @@ Whatsapp for Homey is a complete intergration without the intervention of a bot.
 -  Send Images
 -  Send Documents
 -  Send Video
--  Of course, you can put any homey tag in the text field and send snapshots/artworks via the dedicated image tag card.
+-  Of course, you can put all available Homey tags in the text field and send snapshots/artworks via the dedicated image tag card.
   
 ## Contributors: 🔧
 ---
