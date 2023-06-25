@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://homey.app/nl-nl/apps/author/5e2daad2e3e0da0ca754b6a8/page/0/">
-    <img src="https://www.mobiledekho.com/wp-content/uploads/2017/11/952x501-5.jpg" />
+    <img src="https://cdn.maxvandaag.nl/2022/04/GILNEok7-WhatsAppFraude-shutterstock-900-500-890x500.jpg" />
   </a>
 </p>
 
