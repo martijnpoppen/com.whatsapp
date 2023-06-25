@@ -52,7 +52,7 @@ Whatsapp for Homey is a complete intergration without the intervention of a bot.
 
 
 
-## ⚠️NOTE⚠️ (apiKey from TextMeBot)
+## NOTE (apiKey from TextMeBot)
 ---
 The apiKey from TextMeBot is limited free.
 It is not ours but a external compagny. It is the best Whatsapp api on the market.
