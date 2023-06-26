@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://homey.app/nl-nl/apps/author/5e2daad2e3e0da0ca754b6a8/page/0/">
-    <img src="https://cdn.maxvandaag.nl/2022/04/GILNEok7-WhatsAppFraude-shutterstock-900-500-890x500.jpg" />
+    <img src="https://raw.githubusercontent.com/martijnpoppen/com.whatsapp/main/assets/images/large.jpg" />
   </a>
 </p>
 
@@ -49,7 +49,7 @@ Whatsapp for Homey is a complete intergration without the intervention of a bot.
 ## Result
 ---
 
-![wa png](https://raw.githubusercontent.com/martijnpoppen/com.whatsapp/main/assets/images/large.jpg)
+![wa png](https://github.com/martijnpoppen/com.whatsapp/assets/77990847/6ce276c0-5923-422c-9a50-4327176a3a23)
 
 
 
