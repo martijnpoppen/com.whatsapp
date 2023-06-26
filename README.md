@@ -49,7 +49,7 @@ Whatsapp for Homey is a complete intergration without the intervention of a bot.
 ## Result
 ---
 
-![wa png](https://github.com/martijnpoppen/com.whatsapp/assets/77990847/6ce276c0-5923-422c-9a50-4327176a3a23)
+![wa png](https://raw.githubusercontent.com/martijnpoppen/com.whatsapp/main/assets/images/large.jpg)
 
 
 
