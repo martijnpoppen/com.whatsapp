@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://homey.app/nl-nl/apps/author/5e2daad2e3e0da0ca754b6a8/page/0/">
-    <img src="https://www.mobiledekho.com/wp-content/uploads/2017/11/952x501-5.jpg" />
+    <img src="https://cdn.maxvandaag.nl/2022/04/GILNEok7-WhatsAppFraude-shutterstock-900-500-890x500.jpg" />
   </a>
 </p>
 
@@ -32,12 +32,13 @@ Whatsapp for Homey is a complete intergration without the intervention of a bot.
 
 ## Current features: 🔧
 ---
--  Send from your personal number to Groups or just one receiver
--  Send Text Messages
--  Send Images
--  Send Documents
--  Send Video
--  Of course, you can put all available Homey tags in the text field and send snapshots/artworks via the dedicated image tag card.
+- [x] Send from your personal number to Groups or just one receiver
+- [x] Send Text Messages
+- [x] Send Images
+- [x] Send Documents
+- [x] Send Video
+- [x] Of course, you can put all available Homey tags in the text field and send snapshots/artworks via the dedicated image tag card. :tada:
+
   
 ## Contributors: 🔧
 ---
@@ -52,6 +53,10 @@ Whatsapp for Homey is a complete intergration without the intervention of a bot.
 
 
 
+## NOTE (apiKey from TextMeBot)
+---
+The apiKey from TextMeBot is limited free.
+It is not ours but a external compagny. It is the best Whatsapp api on the market.
 
 
 
