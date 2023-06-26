@@ -20,7 +20,7 @@ Whatsapp for Homey is a complete intergration without the intervention of a bot.
 ## Prerequisite
 ---
 - Creat a [Whatsapp apiKey](https://textmebot.com/#lepopup-NewApiKey) 
-- When you have the apiKey from [ThextMeBot](https://textmebot.com/#lepopup-NewApiKey), go directley into Homey
+- When you have the apiKey from [TextMeBot](https://textmebot.com/#lepopup-NewApiKey), go directley into Homey
 
 ## Usage
 ---
