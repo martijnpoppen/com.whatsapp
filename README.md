@@ -70,14 +70,11 @@ Some recommendations to avoid getting your phone number blocked by WhatsApp
 2) Do not send messages to people that you do not know.
 3) It is recommended to have the recipient of the message in your phone contact list
 4) Use a dedicated phone number for the API. If WhatsApp block your number, you do not loose your personal chats, images, contacts, documents, etc.
-5) A loop in your code will send 100s of message and whatsapp will block your number. Be careful!
 
 
 ## 🚨Disclaimer🚨 (please read and remember):
 ---
-a) This API is inended for Personal Usage only. If you decide to use it for Business, it is at your own risk.
-b) Ensure to have a robust contingenct plan. Like Twilio. To be used in case of API downtime.
-c) You are the only one responsible for the messages and the content that you sent. Rember that messages will be sent from your phone number.
-d) TextMeBot is not responsible for any ban or block performed by WhatsApp on your number. And I cant do anything to unblock it
+1) You are the only one responsible for the messages and the content that you sent. Rember that messages will be sent from your phone number.
+2) TextMeBot is not responsible for any ban or block performed by WhatsApp on your number. And I cant do anything to unblock it
 
 
