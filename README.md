@@ -41,22 +41,20 @@ Whatsapp for Homey is a complete intergration without the intervention of a bot.
 
   
 ## Contributors: 🔧
----
 - <a href="https://github.com/LRvdLinden">LRvdLinden</a>
 - <a href="https://textmebot.com">TextMeBot</a> (creator of the apiKey)
-
+---
 
 ## Result
----
-
 ![wa png](https://github.com/martijnpoppen/com.whatsapp/assets/77990847/6ce276c0-5923-422c-9a50-4327176a3a23)
 
-
+---
 
 ## NOTE (apiKey from TextMeBot)
+The apiKey from TextMeBot is limited free. <br>
+It is not ours but a external company. It is the best Whatsapp api on the market.
+
 ---
-The apiKey from TextMeBot is limited free.
-It is not ours but a external compagny. It is the best Whatsapp api on the market.
 
 
 
