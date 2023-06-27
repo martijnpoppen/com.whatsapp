@@ -27,7 +27,7 @@ Whatsapp for Homey is a complete intergration without the intervention of a bot.
 - Install this app on your Homey
 - Go to add devices
 - Provide your mobile number and apiKey (from TextMeBot). Click Next
-- Scan the QR code whith the Whatsapp from your mobile number
+- Scan ONLY the QR code that Whatsapp Homey app generates with your Whatsapp app on your mobile phone
 
 ---
 
