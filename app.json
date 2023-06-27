@@ -885,7 +885,7 @@
           "children": [
             {
               "id": "apiKey",
-              "type": "label",
+              "type": "text",
               "label": {
                 "en": "API Key"
               },
@@ -893,7 +893,7 @@
             },
             {
               "id": "email",
-              "type": "label",
+              "type": "text",
               "label": {
                 "en": "Email"
               },
@@ -901,7 +901,7 @@
             },
             {
               "id": "phone",
-              "type": "label",
+              "type": "text",
               "label": {
                 "en": "Phone number",
                 "nl": "Telefoonnummer",
