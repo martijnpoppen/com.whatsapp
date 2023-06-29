@@ -92,7 +92,7 @@ module.exports = class mainDevice extends Homey.Device {
             if (recipient && (message || fileUrl)) {
                 if (isGroup) {
                     this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage - fetching group ID`, recipient);
-                    const groupLink = recipient.split('/').pop();
+                    const groupLink = recipient.replace(' ', '').split('/').pop();
 
                     if(!this.getStoreValue(groupLink)) {
 
