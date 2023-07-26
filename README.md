@@ -99,7 +99,7 @@ Some recommendations to avoid getting your phone number blocked by WhatsApp
 
 ---
 ## Developer: 🔧
-- <a href="https://homey.app/nl-nl/apps/author/5e2daad2e3e0da0ca754b6a8/page/0/">Martijn Poppen/a>
+- <a href="https://homey.app/nl-nl/apps/author/5e2daad2e3e0da0ca754b6a8/page/0/">Martijn Poppen</a>
 
 💻 Apps made by @martijnpoppen
 
