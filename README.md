@@ -1,4 +1,4 @@
-<h1 align="center">Whatsapp for Homey</h1>
+<h1 align="center">WhatsApp for Homey</h1>
 
 <p align="center">
   <a href="https://homey.app/nl-nl/apps/author/5e2daad2e3e0da0ca754b6a8/page/0/">
@@ -13,7 +13,7 @@
   
 
 ## General
-Whatsapp for Homey is a complete intergration without the intervention of a bot. With this Homey app, you send messages, videos, photos, documents and audio messages to a mobile number or Whatsapp group from your own name.
+WhatsApp for Homey is a complete intergration without the intervention of a bot. With this Homey app, you send messages, videos, photos, documents and audio messages to a mobile number or Whatsapp group from your own name.
 
 
 ---
@@ -28,7 +28,7 @@ Whatsapp for Homey is a complete intergration without the intervention of a bot.
 ---
 
 ## Prerequisite
-- Creat a [Whatsapp apiKey](https://textmebot.com/#lepopup-NewApiKey) 
+- Creat a [WhatsApp apiKey](https://textmebot.com/#lepopup-NewApiKey) 
 - When you have the apiKey from [TextMeBot](https://textmebot.com/#lepopup-NewApiKey), go directley into Homey
 
 ---
@@ -37,7 +37,7 @@ Whatsapp for Homey is a complete intergration without the intervention of a bot.
 - Install this app on your Homey
 - Go to add devices
 - Provide your mobile number and apiKey (from TextMeBot). Click Next
-- Scan ONLY the QR code that Whatsapp Homey app generates with your Whatsapp app on your mobile phone
+- Scan ONLY the QR code that Whatsapp Homey app generates with your WhatsApp app on your mobile phone
 
 ---
 
