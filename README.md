@@ -80,6 +80,8 @@ It is not ours but a external company. It is the best Whatsapp api on the market
 </pre>
 </details>
 
+---
+
 ## ⚠️Warning⚠️ (please read and remember)
 WhatsApp will block your number if you send messages to people who is not expecting to receive a message from you.
 Please use this app with caution and responsibility.
