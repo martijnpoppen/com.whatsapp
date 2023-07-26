@@ -92,8 +92,9 @@ Some recommendations to avoid getting your phone number blocked by WhatsApp
 1) You are the only one responsible for the messages and the content that you sent. Rember that messages will be sent from your phone number.
 2) TextMeBot is not responsible for any ban or block performed by WhatsApp on your number. And I cant do anything to unblock it
 
+---
 
-** Contributors: 🔧 <a href="https://homey.app/nl-nl/apps/author/5d4da77a2c836a50f6936070/page/0/">Léon van der Linden</a>
+** Contributors: 🔧 <a href="https://homey.app/nl-nl/apps/author/5d4da77a2c836a50f6936070/page/0/">Léon van der Linden</a>**
 
 💻 Apps made by @LRvdLinden
 
