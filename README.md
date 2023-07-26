@@ -50,12 +50,6 @@ Whatsapp for Homey is a complete intergration without the intervention of a bot.
 - [x] Of course, you can put all available Homey tags in the text field and send snapshots/artworks via the dedicated image tag card. :tada:
 
 ---
-  
-## Contributors: 🔧
-- <a href="https://github.com/LRvdLinden">LRvdLinden</a>
-- <a href="https://textmebot.com">TextMeBot</a> (creator of the apiKey)
-
----
 
 ## Result
 ![wa png](https://github.com/martijnpoppen/com.whatsapp/assets/77990847/6ce276c0-5923-422c-9a50-4327176a3a23)
@@ -99,9 +93,20 @@ Some recommendations to avoid getting your phone number blocked by WhatsApp
 2) TextMeBot is not responsible for any ban or block performed by WhatsApp on your number. And I cant do anything to unblock it
 
 
+## Contributors: 🔧 <a href="https://homey.app/nl-nl/apps/author/5d4da77a2c836a50f6936070/page/0/">Léon van der Linden</a>
+
+💻 Apps made by @LRvdLinden
+
+| Icon | App name | Community |
+|------|:--------------:|:-------:|
+| 💬 | [WhatsApp](https://homey.app/nl-nl/app/martijnpoppen/com.whatsapp) | [Support](https://community.homey.app/t/app-pro-facebook-messenger-coming-soon/84702) |
+| 💬 | [Facebook Messenger](https://homey.app/nl-nl/app/nl.lrvdlinden.fb/Facebook-Messenger/test/) | [Support](https://community.homey.app/t/app-pro-facebook-messenger-coming-soon/84702) |
+| 💬 | [Signal](https://homey.app/nl-nl/app/nl.lrvdlinden.signal/test/) | [Support](https://community.homey.app/t/app-pro-signal-messenger/83624) |
+| 🚨 | [P2000](https://homey.app/nl-nl/app/nl.lrvdlinden.p2000/test/) | [Support](https://community.homey.app/t/app-pro-p2000/83738) |
+| 🚁 | [Lifeliner](https://homey.app/nl-nl/app/nl.lrvdlinden.lifeliner/test/) | [Support](https://community.homey.app/t/app-pro-lifeline-alerts-for-homey/83742) |
+
 ---
-## Developer: 🔧
-- <a href="https://homey.app/nl-nl/apps/author/5e2daad2e3e0da0ca754b6a8/page/0/">Martijn Poppen</a>
+## Developer: 🔧 <a href="https://homey.app/nl-nl/apps/author/5e2daad2e3e0da0ca754b6a8/page/0/">Martijn Poppen</a>
 
 💻 Apps made by @martijnpoppen
 
@@ -130,20 +135,6 @@ Some recommendations to avoid getting your phone number blocked by WhatsApp
 * [WhatsApp](https://homey.app/nl-nl/app/martijnpoppen/com.whatsapp)
 
 
---- 
-  
-## Contributors: 🔧
-- <a href="https://homey.app/nl-nl/apps/author/5d4da77a2c836a50f6936070/page/0/">Léon van der Linden</a>
-
-💻 Apps made by @LRvdLinden
-
-| Icon | App name | Community |
-|------|:--------------:|:-------:|
-| 💬 | [WhatsApp](https://homey.app/nl-nl/app/martijnpoppen/com.whatsapp) | [Support](https://community.homey.app/t/app-pro-facebook-messenger-coming-soon/84702) |
-| 💬 | [Facebook Messenger](https://homey.app/nl-nl/app/nl.lrvdlinden.fb/Facebook-Messenger/test/) | [Support](https://community.homey.app/t/app-pro-facebook-messenger-coming-soon/84702) |
-| 💬 | [Signal](https://homey.app/nl-nl/app/nl.lrvdlinden.signal/test/) | [Support](https://community.homey.app/t/app-pro-signal-messenger/83624) |
-| 🚨 | [P2000](https://homey.app/nl-nl/app/nl.lrvdlinden.p2000/test/) | [Support](https://community.homey.app/t/app-pro-p2000/83738) |
-| 🚁 | [Lifeliner](https://homey.app/nl-nl/app/nl.lrvdlinden.lifeliner/test/) | [Support](https://community.homey.app/t/app-pro-lifeline-alerts-for-homey/83742) |
 
 ---
 ## Contributions
