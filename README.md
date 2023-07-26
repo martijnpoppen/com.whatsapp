@@ -93,7 +93,7 @@ Some recommendations to avoid getting your phone number blocked by WhatsApp
 2) TextMeBot is not responsible for any ban or block performed by WhatsApp on your number. And I cant do anything to unblock it
 
 
-**Contributors: 🔧 <a href="https://homey.app/nl-nl/apps/author/5d4da77a2c836a50f6936070/page/0/">Léon van der Linden</a>
+** Contributors: 🔧 <a href="https://homey.app/nl-nl/apps/author/5d4da77a2c836a50f6936070/page/0/">Léon van der Linden</a>
 
 💻 Apps made by @LRvdLinden
 
@@ -106,7 +106,7 @@ Some recommendations to avoid getting your phone number blocked by WhatsApp
 | 🚁 | [Lifeliner](https://homey.app/nl-nl/app/nl.lrvdlinden.lifeliner/test/) | [Support](https://community.homey.app/t/app-pro-lifeline-alerts-for-homey/83742) |
 
 ---
-**Developer: 🔧 <a href="https://homey.app/nl-nl/apps/author/5e2daad2e3e0da0ca754b6a8/page/0/">Martijn Poppen</a>
+** Developer: 🔧 <a href="https://homey.app/nl-nl/apps/author/5e2daad2e3e0da0ca754b6a8/page/0/">Martijn Poppen</a>
 
 💻 Apps made by @martijnpoppen
 
