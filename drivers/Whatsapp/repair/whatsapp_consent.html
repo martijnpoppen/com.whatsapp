@@ -1,28 +1,15 @@
-<script src="https://cdn.jsdelivr.net/npm/qrcanvas@3"></script>
-</script>
 <style>
-    p>strong {
+    p > strong {
         font-weight: bold;
     }
 </style>
-<div class="hy-tmpl-login_credentials" id="consent"></div>
-<div id="qrcode"></div>
-
-
+<div class="hy-tmpl-login_credentials" id="instructions"></div>
+<div class="text"></div>
 </div>
 <script>
     (function () {
         var $text = document.querySelector('.text');
         var $next = document.querySelector('#hy-nav-next');
-
-        Homey.on("qr", function (data) {
-            const canvas = qrcanvas.qrcanvas({
-                data
-            });
-            document.getElementById('qrcode').appendChild(canvas);
-
-            return true
-        });
 
         Homey.getOptions(function (err, options) {
             if (err) return Homey.error(err);

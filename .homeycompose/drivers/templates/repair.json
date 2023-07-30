@@ -1,0 +1,40 @@
+{
+  "repair": [
+    {
+        "id": "loading",
+        "template": "loading"
+    },
+    {
+      "id": "whatsapp_qr",
+      "options": {
+        "title": {
+          "en": "Scan QR with Whatsapp",
+          "nl": "Scan QR met Whatsapp",
+          "de": "QR mit Whatsapp scannen",
+          "fr": "Scannez le QR avec Whatsapp",
+          "it": "Scansiona il QR con Whatsapp",
+          "sv": "Skanna QR med Whatsapp",
+          "no": "Skann QR med Whatsapp",
+          "es": "Escanear QR con Whatsapp",
+          "da": "Scan QR med Whatsapp",
+          "ru": "Отсканируйте QR-код с помощью WhatsApp",
+          "pl": "Zeskanuj kod QR za pomocą Whatsapp"
+        },
+        "navigation": {
+          "next": "list_devices"
+        }
+      }
+    },
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "navigation": {
+        "next": "add_devices"
+      }
+    },
+    {
+      "id": "add_devices",
+      "template": "add_devices"
+    }
+  ]
+}

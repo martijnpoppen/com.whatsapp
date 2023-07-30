@@ -3,7 +3,6 @@ Whatsapp dla Homey to kompletna integracja bez interwencji bota. Dzięki tej apl
 Instrukcje:
 - Zainstaluj tę aplikację na swoim Homey
 - Przejdź do dodawania urządzeń
-- Podaj swój numer telefonu komórkowego i klucz API (od TextMeBot). Kliknij Dalej
 - Zeskanuj kod QR z Whatsapp na swoim numerze telefonu komórkowego
 
 Aktualne funkcje:

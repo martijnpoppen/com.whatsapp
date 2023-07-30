@@ -1,56 +1,73 @@
 const Homey = require('homey');
-const WhatsappClient = require('../../lib/textmebot/whatsapp');
+const path = require("path");
+const { BaileysClass } = require("@bot-wa/bot-wa-baileys");
+const { GetGUID } = require('../../lib/helpers');
 
 module.exports = class mainDriver extends Homey.Driver {
     onInit() {
         this.homey.app.log('[Driver] - init', this.id);
         this.homey.app.log(`[Driver] - version`, Homey.manifest.version);
-
-        this.homey.app.setDevices(this.getDevices());
     }
 
     async onPair(session) {
-        this.config = {};
-        this.WhatsappClient = new WhatsappClient({});
+        this.type = 'pair';
+        this.setPairingSession(session);
+    }
 
-        session.setHandler('showView', async (view) => {
-            if (view === 'whatsapp_qr') {
-                await session.emit('phone', this.config.phone.replace('+', ''));
+    async onRepair(session) {
+        this.type = 'repair';
+        this.setPairingSession(session);
+    }
+
+    async setPairingSession(session) {
+        this.consent = false;
+        this.guid = GetGUID();
+
+        this.WhatsappClient = new BaileysClass({
+            name: this.guid,
+            dir: `${path.resolve(__dirname, '../../userdata')}/`,
+            plugin: false
+        });
+
+        this.WhatsappClient.on("qr", (qr) => {
+            this.homey.app.log(`[Driver] ${this.id} - got QR`, qr);
+
+            this.qr = qr;
+
+            if(this.consent) {
+                session.showView('whatsapp_qr');
             }
         });
 
-        session.setHandler('set_email', async ({ email }) => {
-            this.config.email = email;
-            this.WhatsappClient.newUserEmail(email);
+        this.WhatsappClient.once("ready", () => {
+            this.homey.app.log(`[Driver] ${this.id} - ready`);
 
-            return true;
+            session.showView('list_devices');
         });
 
-        session.setHandler('set_apikey', async ({ apikey }) => {
-            this.config.apiKey = apikey;
+        session.setHandler('showView', async (view) => {
+            if (view === 'whatsapp_qr') {
+                await session.emit('qr', this.qr);
+            }
 
-            return true;
-        });
+            if (view === 'loading') {
+                this.consent = true;
 
-        session.setHandler('set_phone', async ({ phone }) => {
-            this.config.phone = phone;
-            this.WhatsappClient.connectPhoneNumberToApiKey(phone, this.config.apiKey);
-
-            return true;
+                if(this.qr) {
+                    session.showView('whatsapp_qr');
+                }
+            }
         });
 
         session.setHandler('list_devices', async () => {
-            this.results = [];
-            this.homey.app.log(`[Driver] ${this.id} - this.config`, this.config);
-            this.results.push({
+            this.WhatsappClient = null;
+
+            this.results = [{
                 name: `Whatsapp`,
                 data: {
-                    id: this.config.apiKey
-                },
-                settings: {
-                    ...this.config
+                    id: this.guid
                 }
-            });
+            }];
 
             this.homey.app.log(`[Driver] ${this.id} - Found devices - `, this.results);
 

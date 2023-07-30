@@ -1,64 +1,22 @@
 {
   "pair": [
     {
-      "id": "whatsapp_email",
-      "options": {
-        "title": {
-          "en": "Fill in your email",
-          "nl": "Vul uw e-mailadres in",
-          "de": "Geben Sie Ihre E-Mail-Adresse ein",
-          "fr": "Remplissez votre adresse e-mail",
-          "it": "Compila il tuo indirizzo email",
-          "sv": "Fyll i din e-postadress",
-          "no": "Fyll inn din e-postadresse",
-          "es": "Complete su dirección de correo electrónico",
-          "da": "Udfyld din e-mailadresse",
-          "ru": "Введите ваш адрес электронной почты",
-          "pl": "Wpisz swój adres e-mail"
+        "id": "whatsapp_consent",
+        "options": {
+            "title": {
+                "en": "🚨Disclaimer🚨"
+              },
+              "text": {
+                "en": "<ol><li>You are the only one responsible for the messages and the content that you sent. Remember that messages will be sent from your phone number.<br><br></li><li>This app is not responsible for any <strong>ban or block</strong> performed by WhatsApp on your number. And the developer cant do anything to unblock it<br><br></li><li>Never send a Whatsapp message to a new conversation. Make sure the conversation had interaction with your number before you send a message from this app<br><br></li><li>This project is not affiliated, associated, authorized, endorsed by, or in any way officially connected with WhatsApp or any of its subsidiaries or its affiliates. The official WhatsApp website can be found at https://whatsapp.com. 'WhatsApp' as well as related names, marks, emblems and images are registered trademarks of their respective owners<br><br></li></ol>"
+              }
         },
-        "usernameLabel": { "en": "E-mail address" },
-        "usernamePlaceholder": { "en": "john@doe.com" }
-      }
-    },
+          "navigation": {
+            "next": "loading"
+          }
+      },
     {
-      "id": "whatsapp_apikey",
-      "options": {
-        "title": {
-          "en": "Fill in your apiKey (which you got in the email from TextMebot)",
-          "nl": "Vul uw apiKey in (die u heeft ontvangen in de e-mail van TextMebot)",
-          "de": "Geben Sie Ihren apiKey ein (den Sie in der E-Mail von TextMebot erhalten haben)",
-          "fr": "Remplissez votre apiKey (que vous avez reçu dans l'e-mail de TextMebot)",
-          "it": "Compila il tuo apiKey (che hai ricevuto nell'e-mail da TextMebot)",
-          "sv": "Fyll i din apiKey (som du fick i e-posten från TextMebot)",
-          "no": "Fyll inn din apiKey (som du fikk i e-posten fra TextMebot)",
-          "es": "Complete su apiKey (que recibió en el correo electrónico de TextMebot)",
-          "da": "Udfyld din apiKey (som du fik i e-mailen fra TextMebot)",
-          "ru": "Введите ваш apiKey (который вы получили в письме от TextMebot)",
-          "pl": "Wpisz swój apiKey (który otrzymałeś w wiadomości e-mail od TextMebot)"
-        },
-        "usernameLabel": { "en": "ApiKey" },
-        "usernamePlaceholder": { "en": "abcdef1234" }
-      }
-    },
-    {
-      "id": "whatsapp_phone",
-      "options": {
-        "title": {
-          "en": "Fill in your phone number (which you use in whatsapp)",
-          "nl": "Vul uw telefoonnummer in (dat u gebruikt in WhatsApp)",
-          "de": "Geben Sie Ihre Telefonnummer ein (die Sie in WhatsApp verwenden)",
-          "fr": "Remplissez votre numéro de téléphone (que vous utilisez dans WhatsApp)",
-          "it": "Compila il tuo numero di telefono (che usi su WhatsApp)",
-          "sv": "Fyll i ditt telefonnummer (som du använder på WhatsApp)",
-          "no": "Fyll inn ditt telefonnummer (som du bruker på WhatsApp)",
-          "es": "Complete su número de teléfono (que utiliza en WhatsApp)",
-          "da": "Udfyld dit telefonnummer (som du bruger på WhatsApp)",
-          "ru": "Введите ваш номер телефона (который вы используете в WhatsApp)",
-          "pl": "Wpisz swój numer telefonu (który używasz w WhatsApp)"
-        },
-        "usernameLabel": { "en": "Phone number" },
-        "usernamePlaceholder": { "en": "+31601234567" }
-      }
+        "id": "loading",
+        "template": "loading"
     },
     {
       "id": "whatsapp_qr",

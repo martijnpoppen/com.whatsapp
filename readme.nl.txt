@@ -3,7 +3,6 @@ Whatsapp voor Homey is een volledige integratie zonder tussenkomst van een bot. 
 Gebruik:
     - Installeer deze app op je Homey.
     - Ga naar "apparaten toevoegen".
-    - Voer je mobiele nummer en apiKey (van TextMeBot) in. Klik op Volgende.
     - Scan de QR-code met Whatsapp vanaf je mobiele nummer.
 
 Huidige functies:

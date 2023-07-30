@@ -4,7 +4,6 @@ Bruk:
 
     - Installer denne appen på Homey-enheten din
     - Gå til "legg til enheter"
-    - Oppgi mobilnummeret ditt og apiKey (fra TextMeBot). Klikk på "Neste"
     - Skann QR-koden med Whatsapp fra mobilnummeret ditt
 
 Gjeldende funksjoner:

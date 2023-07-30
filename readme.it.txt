@@ -4,7 +4,6 @@ Utilizzo:
 
     - Installa questa app su Homey
     - Vai ad aggiungere dispositivi
-    - Fornisci il tuo numero di cellulare e l'apiKey (da TextMeBot). Fai clic su Avanti
     - Scansiona il codice QR con Whatsapp dal tuo numero di cellulare
 
 Funzionalità attuali:

@@ -1,6 +1,8 @@
 const Homey = require('homey');
-const WhatsappClient = require('../../lib/textmebot/whatsapp');
-const { sleep, validateMobile, validateUrl } = require('../../lib/helpers');
+const { BaileysClass } = require('@bot-wa/bot-wa-baileys');
+const path = require('path');
+
+const { sleep } = require('../../lib/helpers');
 
 module.exports = class mainDevice extends Homey.Device {
     async onInit() {
@@ -10,123 +12,98 @@ module.exports = class mainDevice extends Homey.Device {
 
             await this.checkCapabilities();
             await this.setWhatsappClient();
-
-            await this.setAvailable();
         } catch (error) {
             this.homey.app.log(`[Device] ${this.getName()} - OnInit Error`, error);
         }
     }
 
-    async onAdded() {
-        this.homey.app.setDevice(this);
-    }
-
-    onDeleted() {
-        const deviceObject = this.getData();
-        this.homey.app.removeDevice(deviceObject.id);
-    }
-
-    async onSettings({ oldSettings, newSettings, changedKeys }) {
-        this.homey.app.log(`[Device] ${this.getName()} - oldSettings`, oldSettings);
-        this.homey.app.log(`[Device] ${this.getName()} - newSettings`, newSettings);
-
-        this.checkCapabilities(newSettings);
-
-        this.homey.app.log(`[Device] ${this.getName()} - onSettings connectPhoneNumberToApiKey`);
-        this.WhatsappClient.connectPhoneNumberToApiKey(newSettings.phone);
-
-        this.setWhatsappWebhook(newSettings.enable_receive_message, newSettings.phone, newSettings.apiKey);
-    }
-
     // ------------- API -------------
     async setWhatsappClient() {
         try {
-            const settings = this.getSettings();
+            const deviceObject = this.getData();
             this.homey.app.log(`[Device] - ${this.getName()} => setWhatsappClient`);
 
-            this.WhatsappClient = new WhatsappClient({ apiKey: settings.apiKey, debug: false });
+            this.WhatsappClient = new BaileysClass({
+                name: deviceObject.id,
+                dir: `${path.resolve(__dirname, '../../userdata')}/`,
+                plugin: false
+            });
 
-            this.homey.app.log(`[Device] ${this.getName()} - setWhatsappClient Set webhook`);
-            await this.setWhatsappWebhook(settings.enable_receive_message, settings.phone, settings.apiKey);
-
-            await this.setAvailable();
+            this.listenToWhatsappEvents();
         } catch (error) {
             this.homey.app.log(`[Device] ${this.getName()} - setWhatsappClient - error =>`, error);
         }
     }
 
-    async setWhatsappWebhook(enabled = false, phone) {
-        this.homey.app.log(`[Device] ${this.getName()} - setWhatsappWebhook`, enabled);
+    async setContacts() {
+        try {
+            await sleep(2000);
+            this.contactsList = this.WhatsappClient.store.contacts;
+            this.contactsList = Object.values(this.contactsList).filter((c) => !!c.name).map(c => ({ name: c.name, id: c.id }));
 
-        if (enabled) {
-            const homeyId = await this.homey.cloud.getHomeyId();
-            const webhookUrl = `https://webhooks.athom.com/webhook/${Homey.env.WEBHOOK_ID}?homey=${homeyId}&phone=${phone}`;
-
-            await this.WhatsappClient.createWebhook(webhookUrl);
-        } else {
-            await this.WhatsappClient.deleteWebhook();
+            this.homey.app.log(`[Device] ${this.getName()} - setContacts`);
+        } catch (error) {
+            this.homey.app.log(`[Device] ${this.getName()} - setContacts - error =>`, error);
         }
     }
 
-    async onCapability_SendMessage(params, type, isGroup = false) {
+    listenToWhatsappEvents() {
+        this.WhatsappClient.once('qr', (qr) => {
+            this.homey.app.log(`[Device] ${this.getName()} - listenToWhatsappEvents - QR`);
+
+            this.setUnavailable(`Repair device and Scan QR code to connect`);
+        });
+
+        this.WhatsappClient.once('ready', () => {
+            this.homey.app.log(`[Device] ${this.getName()} - listenToWhatsappEvents - Ready`);
+
+            this.setContacts();
+            this.setAvailable();
+        });
+
+        this.WhatsappClient.once('auth_failure', (error) => {
+            this.homey.app.log(`[Device] ${this.getName()} - listenToWhatsappEvents - auth_failure`);
+
+            this.setUnavailable(error);
+        });
+    }
+
+    async onCapability_SendMessage(params, type) {
         try {
             this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage`, { ...params, device: 'LOG' });
 
-            const settings = this.getSettings();
             const message = params.message.length ? params.message : '‎';
-            let recipient = params.recipient;
+            const recipient = params.recipient && params.recipient.id;
+
             let fileUrl = params.droptoken || params.file || null;
             const fileType = type;
-            const isGroup = validateUrl(recipient);
 
-            this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage - isGroup and ValidateMobile`, isGroup, validateMobile(recipient));
+            this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage - to: `, recipient);
 
-            if (!validateMobile(recipient) && !validateUrl(recipient)) {
-                throw new Error('Invalid mobile number OR Invalid group invite link');
-            }
+            let data = null;
 
-            if (!!fileUrl && !!fileUrl.cloudUrl) {
-                fileUrl = fileUrl.cloudUrl;
-            }
+            if (recipient && message && !fileUrl) {
+                this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage sendText`, { recipient, message, fileUrl, fileType });
 
-            if (recipient && (message || fileUrl)) {
-                if (isGroup) {
-                    this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage - fetching group ID`, recipient);
-                    const groupLink = recipient.replace(' ', '').split('/').pop();
-
-                    if(!this.getStoreValue(groupLink)) {
-
-                        const groupId = await this.WhatsappClient.getGroupId(groupLink);
-
-
-                        if(groupId) {
-                            recipient = groupId;
-
-                            await this.setStoreValue(groupLink, recipient);
-                            await sleep(7500)
-                        } else {
-                            throw new Error('Could not get group ID. Is the group link correct?');
-                        }
-                        
-                    } else {
-                        recipient = this.getStoreValue(groupLink);
-                        this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage - fetching group ID from store`, recipient);
-                    }
+                data = await this.WhatsappClient.sendText(recipient, message);
+            } else if (recipient && fileUrl) {
+                if (!!fileUrl && !!fileUrl.cloudUrl) {
+                    fileUrl = fileUrl.cloudUrl;
                 }
 
-                this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage sendTextMessage`, { recipient, message, fileUrl, fileType });
-                const data = await this.WhatsappClient.sendTextMessage(recipient, message, fileUrl, fileType);
+                this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage send${fileType}`, { recipient, message, fileUrl, fileType });
 
-                if (data) {
-                    await this.coolDown();
-                    return true;
+                if (fileType === 'video' || fileType === 'image') {
+                    data = await this.WhatsappClient.sendMedia(recipient, fileUrl, message);
+                } else if (fileType === 'audio') {
+                    throw new Error('Audio is not supported yet');
+                } else if (fileType === 'document') {
+                    data = await this.WhatsappClient.sendFile(recipient, fileUrl);
                 }
-
-                await this.coolDown();
-                return false;
             }
 
-            return false;
+            await this.coolDown();
+            return !!data;
         } catch (error) {
             this.homey.app.log(error);
 
@@ -138,7 +115,7 @@ module.exports = class mainDevice extends Homey.Device {
         await this.setSettings({ enable_receive_message: enabled });
         await this.checkCapabilities();
     }
-    
+
     async coolDown() {
         return await sleep(5000);
     }
@@ -168,19 +145,26 @@ module.exports = class mainDevice extends Homey.Device {
             const newC = driverCapabilities.filter((d) => !deviceCapabilities.includes(d));
             const oldC = deviceCapabilities.filter((d) => !driverCapabilities.includes(d));
 
-            this.homey.app.log(`[Device] ${this.getName()} - Got old capabilities =>`, oldC);
-            this.homey.app.log(`[Device] ${this.getName()} - Got new capabilities =>`, newC);
+            if (oldC.length) {
+                this.homey.app.log(`[Device] ${this.getName()} - Got old capabilities =>`, oldC);
 
-            oldC.forEach((c) => {
-                this.homey.app.log(`[Device] ${this.getName()} - updateCapabilities => Remove `, c);
-                this.removeCapability(c);
-            });
-            await sleep(2000);
-            newC.forEach((c) => {
-                this.homey.app.log(`[Device] ${this.getName()} - updateCapabilities => Add `, c);
-                this.addCapability(c);
-            });
-            await sleep(2000);
+                oldC.forEach((c) => {
+                    this.homey.app.log(`[Device] ${this.getName()} - updateCapabilities => Remove `, c);
+                    this.removeCapability(c);
+                });
+
+                await sleep(2000);
+            }
+
+            if (newC.length) {
+                this.homey.app.log(`[Device] ${this.getName()} - Got new capabilities =>`, newC);
+
+                newC.forEach((c) => {
+                    this.homey.app.log(`[Device] ${this.getName()} - updateCapabilities => Add `, c);
+                    this.addCapability(c);
+                });
+                await sleep(2000);
+            }
         } catch (error) {
             this.homey.app.log(error);
         }
