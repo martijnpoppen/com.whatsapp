@@ -93,6 +93,7 @@ Some recommendations to avoid getting your phone number blocked by WhatsApp
 2) This app is not responsible for any <strong>ban or block</strong> performed by WhatsApp on your number. And the developer cant do anything to unblock it
 3) Never send a Whatsapp message to a new conversation. Make sure the conversation had interaction with your number before you send a message from this app
 4) This project is not affiliated, associated, authorized, endorsed by, or in any way officially connected with WhatsApp or any of its subsidiaries or its affiliates. The official WhatsApp website can be found at https://whatsapp.com. 'WhatsApp' as well as related names, marks, emblems and images are registered trademarks of their respective owners
+
 ---
 
 ## Contributors: 🔧 <a href="https://homey.app/nl-nl/apps/author/5d4da77a2c836a50f6936070/page/0/">Léon van der Linden</a>
