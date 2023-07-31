@@ -27,17 +27,10 @@ WhatsApp for Homey is a complete intergration without the intervention of a bot.
 
 ---
 
-## Prerequisite
-- Creat a [WhatsApp apiKey](https://textmebot.com/#lepopup-NewApiKey) 
-- When you have the apiKey from [TextMeBot](https://textmebot.com/#lepopup-NewApiKey), go directley into Homey
-
----
-
 ## Usage ⚙
 - Install this app on your Homey
 - Go to add devices
-- Provide your mobile number and apiKey (from TextMeBot). Click Next
-- Scan ONLY the QR code that Whatsapp Homey app generates with your WhatsApp app on your mobile phone
+- Scan the QR code whith the WhatsApp from your mobile number
 
 ---
 
@@ -54,17 +47,11 @@ WhatsApp for Homey is a complete intergration without the intervention of a bot.
 ## Result
 ![wa png](https://github.com/martijnpoppen/com.whatsapp/assets/77990847/6ce276c0-5923-422c-9a50-4327176a3a23)
 
----
-
-## NOTE (apiKey from TextMeBot)
-The apiKey from TextMeBot is limited free. <br>
-It is not ours but a external company. It is the best Whatsapp api on the market.
-
 
 ---
 
 ## Changelog
-- 1.0.0 TEST (21 May 2023) First Release
+- 1.0.0 TEST (31 Jul 2023) First Release
 
 <details>
 <summary>More changelog</summary>
