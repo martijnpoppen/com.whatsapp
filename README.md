@@ -28,8 +28,8 @@ WhatsApp for Homey is a complete intergration without the intervention of a bot.
 ---
 
 ## Developer: 
-- [@martijnpoppen]("https://homey.app/nl-nl/apps/author/5e2daad2e3e0da0ca754b6a8/page/0/")
-- [@LRvdLinden]("https://homey.app/nl-nl/apps/author/5d4da77a2c836a50f6936070/page/0/")
+- [@martijnpoppen](https://homey.app/nl-nl/apps/author/5e2daad2e3e0da0ca754b6a8/page/0/) Apps by @martijnpoppen
+- [@LRvdLinden](https://homey.app/nl-nl/apps/author/5d4da77a2c836a50f6936070/page/0/) [Apps by @LRvdLinden](https://community.homey.app/t/apps-made-by-lrvdlinden/85452/2)
   
 ---
 ## Usage ⚙
