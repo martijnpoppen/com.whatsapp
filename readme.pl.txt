@@ -1,9 +1,9 @@
-Whatsapp dla Homey to kompletna integracja bez interwencji bota. Dzięki tej aplikacji Homey możesz wysyłać wiadomości, wideo, zdjęcia, dokumenty i wiadomości dźwiękowe na numer telefonu komórkowego lub do grupy Whatsapp pod własnym imieniem.
+WhatsApp dla Homey to kompletna integracja bez interwencji bota. Dzięki tej aplikacji Homey możesz wysyłać wiadomości, wideo, zdjęcia, dokumenty i wiadomości dźwiękowe na numer telefonu komórkowego lub do grupy WhatsApp pod własnym imieniem.
 
 Instrukcje:
 - Zainstaluj tę aplikację na swoim Homey
 - Przejdź do dodawania urządzeń
-- Zeskanuj kod QR z Whatsapp na swoim numerze telefonu komórkowego
+- Zeskanuj kod QR z WhatsApp na swoim numerze telefonu komórkowego
 
 Aktualne funkcje:
 - Wysyłaj z własnego numeru do grup lub pojedynczego odbiorcy
