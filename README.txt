@@ -3,7 +3,7 @@ WhatsApp for Homey is a complete intergration without the intervention of a bot.
 Usage:
 - Install this app on your Homey
 - Go to add devices
-- Scan the QR code whith the Whatsapp from your mobile number
+- Scan the QR code whith the WhatsApp from your mobile number
 
 
 Current features:
