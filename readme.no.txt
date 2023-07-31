@@ -1,10 +1,10 @@
-Whatsapp for Homey er en komplett integrasjon uten inngrep fra en bot. Med denne Homey-appen kan du sende meldinger, videoer, bilder, dokumenter og lydmeldinger til et mobilnummer eller en Whatsapp-gruppe fra ditt eget navn.
+WhatsApp for Homey er en komplett integrasjon uten inngrep fra en bot. Med denne Homey-appen kan du sende meldinger, videoer, bilder, dokumenter og lydmeldinger til et mobilnummer eller en WhatsApp-gruppe fra ditt eget navn.
 
 Bruk:
 
     - Installer denne appen på Homey-enheten din
     - Gå til "legg til enheter"
-    - Skann QR-koden med Whatsapp fra mobilnummeret ditt
+    - Skann QR-koden med WhatsApp fra mobilnummeret ditt
 
 Gjeldende funksjoner:
 
