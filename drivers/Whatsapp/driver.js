@@ -1,7 +1,10 @@
 const Homey = require('homey');
 const path = require("path");
+const fs = require('fs-extra');
 const { BaileysClass } = require("@bot-wa/bot-wa-baileys");
-const { GetGUID } = require('../../lib/helpers');
+
+const { GetGUID, sleep } = require('../../lib/helpers');
+
 
 module.exports = class mainDriver extends Homey.Driver {
     onInit() {
@@ -11,18 +14,31 @@ module.exports = class mainDriver extends Homey.Driver {
 
     async onPair(session) {
         this.type = 'pair';
+        this.device = null;
+
         this.setPairingSession(session);
     }
 
     async onRepair(session, device) {
         this.type = 'repair';
-        this.setPairingSession(session, device);
+        this.device = device;
+
+        this.setPairingSession(session);
     }
 
-    async setPairingSession(session, device = null) {
+    async setPairingSession(session) {
         this.consent = false;
-        this.deviceObject = device && device.getData();
-        this.guid = this.deviceObject ? this.deviceObject.id : GetGUID();
+        this.deviceObject = this.device && this.device.getData();
+        this.guid = this.device ? this.deviceObject.id : GetGUID();
+
+        if(this.type === 'repair') {
+            this.device.removeWhatsappClient();
+
+            this.homey.app.log(`[Driver] ${this.id} - REPAIR - remove all`);
+            fs.rmSync(`${path.resolve(__dirname, '/userdata/')}/${this.guid}_sessions`, { recursive: true, force: true })
+
+            await sleep(2000);
+        }
 
         this.WhatsappClient = new BaileysClass({
             name: this.guid,
@@ -47,12 +63,16 @@ module.exports = class mainDriver extends Homey.Driver {
         });
 
         session.setHandler('showView', async (view) => {
+            this.homey.app.log(`[Driver] ${this.id} - currentView:`, { view, type: this.type });
+
             if (view === 'whatsapp_qr') {
                 await session.emit('qr', this.qr);
             }
 
             if (view === 'loading') {
                 this.consent = true;
+
+                await sleep(3000);
 
                 if(this.qr) {
                     session.showView('whatsapp_qr');
@@ -73,6 +93,9 @@ module.exports = class mainDriver extends Homey.Driver {
                 this.homey.app.log(`[Driver] ${this.id} - Found devices - `, this.results);
 
                 if(this.results.length && this.type === 'repair') {
+                    if(this.device) {
+                        this.device.setWhatsappClient();
+                    }
                     session.showView('done');
                 } else {
                     session.showView('list_devices');

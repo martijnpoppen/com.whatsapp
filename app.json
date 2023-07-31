@@ -729,6 +729,20 @@
       ],
       "repair": [
         {
+          "id": "whatsapp_consent",
+          "options": {
+            "title": {
+              "en": "🚨Disclaimer🚨"
+            },
+            "text": {
+              "en": "<ol><li>You are the only one responsible for the messages and the content that you sent. Remember that messages will be sent from your phone number.<br><br></li><li>This app is not responsible for any <strong>ban or block</strong> performed by WhatsApp on your number. And the developer cant do anything to unblock it<br><br></li><li>Never send a Whatsapp message to a new conversation. Make sure the conversation had interaction with your number before you send a message from this app<br><br></li><li>This project is not affiliated, associated, authorized, endorsed by, or in any way officially connected with WhatsApp or any of its subsidiaries or its affiliates. The official WhatsApp website can be found at https://whatsapp.com. 'WhatsApp' as well as related names, marks, emblems and images are registered trademarks of their respective owners<br><br></li></ol>"
+            }
+          },
+          "navigation": {
+            "next": "loading"
+          }
+        },
+        {
           "id": "loading",
           "template": "loading"
         },

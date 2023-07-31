@@ -23,6 +23,7 @@ module.exports = class mainDevice extends Homey.Device {
             const deviceObject = this.getData();
             this.homey.app.log(`[Device] - ${this.getName()} => setWhatsappClient`);
 
+
             this.WhatsappClient = new BaileysClass({
                 name: deviceObject.id,
                 dir: `${path.resolve(__dirname, '/userdata/')}/`,
@@ -32,6 +33,13 @@ module.exports = class mainDevice extends Homey.Device {
             this.listenToWhatsappEvents();
         } catch (error) {
             this.homey.app.log(`[Device] ${this.getName()} - setWhatsappClient - error =>`, error);
+        }
+    }
+
+    async removeWhatsappClient() {
+        if(this.WhatsappClient) {
+            this.WhatsappClient.removeAllListeners();
+            this.WhatsappClient = null;
         }
     }
 
@@ -61,6 +69,8 @@ module.exports = class mainDevice extends Homey.Device {
             this.homey.app.log(`[Device] ${this.getName()} - listenToWhatsappEvents - QR`);
 
             this.setUnavailable(`Repair device and Scan QR code to connect`);
+
+            this.removeWhatsappClient();
         });
 
         this.WhatsappClient.once('ready', () => {
