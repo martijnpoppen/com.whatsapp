@@ -7,5 +7,8 @@
   },
   "1.1.0": {
     "en": "FIX: moved from Textmebot to own API"
+  },
+  "1.1.1": {
+    "en": "FIX: memory"
   }
 }
