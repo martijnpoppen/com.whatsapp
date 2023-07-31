@@ -4,7 +4,7 @@ Brug:
 
    - Installer denne app på din Homey.
    - Gå til at tilføje enheder.
-   - Scan QR-koden med Whatsapp fra dit mobilnummer.
+   - Scan QR-koden med WhatsApp fra dit mobilnummer.
 
 Aktuelle funktioner:
 
