@@ -4,7 +4,7 @@ Verwendung:
 
     - Installiere diese App auf deinem Homey.
     - Gehe zu "Geräte hinzufügen".
-    - Scanne den QR-Code mit Whatsapp von deiner Mobilnummer.
+    - Scanne den QR-Code mit WhatsApp von deiner Mobilnummer.
 
 Aktuelle Funktionen:
 
