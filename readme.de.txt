@@ -1,4 +1,4 @@
-Whatsapp für Homey ist eine vollständige Integration ohne die Intervention eines Bots. Mit dieser Homey-App kannst du Nachrichten, Videos, Fotos, Dokumente und Sprachnachrichten unter deinem eigenen Namen an eine Mobilnummer oder eine Whatsapp-Gruppe senden.
+WhatsApp für Homey ist eine vollständige Integration ohne die Intervention eines Bots. Mit dieser Homey-App kannst du Nachrichten, Videos, Fotos, Dokumente und Sprachnachrichten unter deinem eigenen Namen an eine Mobilnummer oder eine WhatsApp-Gruppe senden.
 
 Verwendung:
 
