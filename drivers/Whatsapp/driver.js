@@ -60,7 +60,7 @@ module.exports = class mainDriver extends Homey.Driver {
             }
 
             if (view === 'loading2') {
-                this.WhatsappClien.removeAllListeners(['qr', 'ready']);
+                this.WhatsappClient.removeAllListeners(['qr', 'ready']);
                 this.WhatsappClient = null;
 
                 this.results = [{

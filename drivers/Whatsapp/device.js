@@ -40,7 +40,6 @@ module.exports = class mainDevice extends Homey.Device {
             await sleep(2000);
             this.contactsList = this.WhatsappClient.store.contacts;
 
-            console.log(this.contactsList)
             this.contactsList = Object.values(this.contactsList).filter((c) => !!c.name).map(c => ({ name: c.name, id: c.id }));
 
             this.homey.app.log(`[Device] ${this.getName()} - setContacts`);
