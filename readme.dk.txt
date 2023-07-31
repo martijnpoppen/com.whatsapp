@@ -1,4 +1,4 @@
-Whatsapp til Homey er en komplet integration uden indblanding fra en bot. Med denne Homey-app kan du sende beskeder, videoer, fotos, dokumenter og lydbeskeder til et mobilnummer eller en Whatsapp-gruppe fra dit eget navn.
+WhatsApp til Homey er en komplet integration uden indblanding fra en bot. Med denne Homey-app kan du sende beskeder, videoer, fotos, dokumenter og lydbeskeder til et mobilnummer eller en WhatsApp-gruppe fra dit eget navn.
 
 Brug:
 
