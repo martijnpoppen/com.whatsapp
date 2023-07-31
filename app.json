@@ -1,6 +1,6 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
-  "id": "com.whatsapp2",
+  "id": "com.whatsapp",
   "version": "1.0.0",
   "compatibility": ">=5.0.0",
   "sdk": 3,
@@ -9,7 +9,7 @@
   ],
   "brandColor": "#25d366",
   "name": {
-    "en": "Whatsapp 2"
+    "en": "Whatsapp"
   },
   "description": {
     "en": "Connect your own WhatsApp Account to this APP and start sending messages from your number."
@@ -703,9 +703,13 @@
               "pl": "Zeskanuj kod QR za pomocą Whatsapp"
             },
             "navigation": {
-              "next": "list_devices"
+              "next": "loading2"
             }
           }
+        },
+        {
+          "id": "loading2",
+          "template": "loading"
         },
         {
           "id": "list_devices",
@@ -717,6 +721,56 @@
         {
           "id": "add_devices",
           "template": "add_devices"
+        },
+        {
+          "id": "done",
+          "template": "done"
+        }
+      ],
+      "repair": [
+        {
+          "id": "loading",
+          "template": "loading"
+        },
+        {
+          "id": "whatsapp_qr",
+          "options": {
+            "title": {
+              "en": "Scan QR with Whatsapp",
+              "nl": "Scan QR met Whatsapp",
+              "de": "QR mit Whatsapp scannen",
+              "fr": "Scannez le QR avec Whatsapp",
+              "it": "Scansiona il QR con Whatsapp",
+              "sv": "Skanna QR med Whatsapp",
+              "no": "Skann QR med Whatsapp",
+              "es": "Escanear QR con Whatsapp",
+              "da": "Scan QR med Whatsapp",
+              "ru": "Отсканируйте QR-код с помощью WhatsApp",
+              "pl": "Zeskanuj kod QR za pomocą Whatsapp"
+            },
+            "navigation": {
+              "next": "loading2"
+            }
+          }
+        },
+        {
+          "id": "loading2",
+          "template": "loading"
+        },
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        },
+        {
+          "id": "done",
+          "template": "done"
         }
       ],
       "settings": [],

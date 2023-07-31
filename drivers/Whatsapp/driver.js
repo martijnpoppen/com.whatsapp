@@ -14,14 +14,15 @@ module.exports = class mainDriver extends Homey.Driver {
         this.setPairingSession(session);
     }
 
-    async onRepair(session) {
+    async onRepair(session, device) {
         this.type = 'repair';
-        this.setPairingSession(session);
+        this.setPairingSession(session, device);
     }
 
-    async setPairingSession(session) {
+    async setPairingSession(session, device = null) {
         this.consent = false;
-        this.guid = GetGUID();
+        this.deviceObject = device && device.getData();
+        this.guid = this.deviceObject ? this.deviceObject.id : GetGUID();
 
         this.WhatsappClient = new BaileysClass({
             name: this.guid,
@@ -42,7 +43,7 @@ module.exports = class mainDriver extends Homey.Driver {
         this.WhatsappClient.once("ready", () => {
             this.homey.app.log(`[Driver] ${this.id} - ready`);
 
-            session.showView('list_devices');
+            session.showView('loading2');
         });
 
         session.setHandler('showView', async (view) => {
@@ -57,20 +58,29 @@ module.exports = class mainDriver extends Homey.Driver {
                     session.showView('whatsapp_qr');
                 }
             }
+
+            if (view === 'loading2') {
+                this.WhatsappClien.removeAllListeners(['qr', 'ready']);
+                this.WhatsappClient = null;
+
+                this.results = [{
+                    name: `Whatsapp`,
+                    data: {
+                        id: this.guid
+                    }
+                }];
+    
+                this.homey.app.log(`[Driver] ${this.id} - Found devices - `, this.results);
+
+                if(this.results.length && this.type === 'repair') {
+                    session.showView('done');
+                } else {
+                    session.showView('list_devices');
+                }
+            }
         });
 
-        session.setHandler('list_devices', async () => {
-            this.WhatsappClient = null;
-
-            this.results = [{
-                name: `Whatsapp`,
-                data: {
-                    id: this.guid
-                }
-            }];
-
-            this.homey.app.log(`[Driver] ${this.id} - Found devices - `, this.results);
-
+        session.setHandler('list_devices', async () => {            
             return this.results;
         });
     }

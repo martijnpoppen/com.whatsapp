@@ -1,5 +1,5 @@
 {
-  "id": "com.whatsapp2",
+  "id": "com.whatsapp",
   "version": "1.0.0",
   "compatibility": ">=5.0.0",
   "sdk": 3,
@@ -8,7 +8,7 @@
   ],
   "brandColor": "#25d366",
   "name": {
-    "en": "Whatsapp 2"
+    "en": "Whatsapp"
   },
   "description": {
     "en": "Connect your own WhatsApp Account to this APP and start sending messages from your number."

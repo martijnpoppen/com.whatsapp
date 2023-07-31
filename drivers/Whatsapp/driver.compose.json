@@ -6,6 +6,7 @@
     "$extends": [
         "device",
         "pair",
+        "repair",
         "settings"
     ]
 }

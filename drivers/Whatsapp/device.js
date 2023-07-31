@@ -39,12 +39,22 @@ module.exports = class mainDevice extends Homey.Device {
         try {
             await sleep(2000);
             this.contactsList = this.WhatsappClient.store.contacts;
+
+            console.log(this.contactsList)
             this.contactsList = Object.values(this.contactsList).filter((c) => !!c.name).map(c => ({ name: c.name, id: c.id }));
 
             this.homey.app.log(`[Device] ${this.getName()} - setContacts`);
         } catch (error) {
             this.homey.app.log(`[Device] ${this.getName()} - setContacts - error =>`, error);
         }
+    }
+
+    setContactsInterval() {
+        this.setContacts();
+
+        this.homey.setInterval(() => {
+            this.setContacts();
+        }, 30000);
     }
 
     listenToWhatsappEvents() {
@@ -57,7 +67,7 @@ module.exports = class mainDevice extends Homey.Device {
         this.WhatsappClient.once('ready', () => {
             this.homey.app.log(`[Device] ${this.getName()} - listenToWhatsappEvents - Ready`);
 
-            this.setContacts();
+            this.setContactsInterval();
             this.setAvailable();
         });
 
@@ -102,6 +112,9 @@ module.exports = class mainDevice extends Homey.Device {
                 }
             }
 
+            this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage data`, data);
+
+
             await this.coolDown();
             return !!data;
         } catch (error) {
@@ -117,7 +130,7 @@ module.exports = class mainDevice extends Homey.Device {
     }
 
     async coolDown() {
-        return await sleep(5000);
+        return await sleep(1000);
     }
 
     // ------------- Capabilities -------------

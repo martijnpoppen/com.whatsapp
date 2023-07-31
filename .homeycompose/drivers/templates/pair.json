@@ -35,9 +35,13 @@
           "pl": "Zeskanuj kod QR za pomocą Whatsapp"
         },
         "navigation": {
-          "next": "list_devices"
+          "next": "loading2"
         }
       }
+    },
+    {
+        "id": "loading2",
+        "template": "loading"
     },
     {
       "id": "list_devices",
@@ -49,6 +53,10 @@
     {
       "id": "add_devices",
       "template": "add_devices"
-    }
+    },
+    {
+        "id": "done",
+        "template": "done"
+      }
   ]
 }
