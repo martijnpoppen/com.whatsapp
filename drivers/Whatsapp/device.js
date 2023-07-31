@@ -113,11 +113,11 @@ module.exports = class mainDevice extends Homey.Device {
                 }
             }
 
-            this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage data`, data);
+            this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage data`, Object.keys(data).length);
 
 
             await this.coolDown();
-            return !!data;
+            return Object.keys(data).length;
         } catch (error) {
             this.homey.app.log(error);
 
@@ -131,7 +131,7 @@ module.exports = class mainDevice extends Homey.Device {
     }
 
     async coolDown() {
-        return await sleep(1000);
+        return await sleep(100);
     }
 
     // ------------- Capabilities -------------
