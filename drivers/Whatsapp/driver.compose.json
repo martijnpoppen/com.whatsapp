@@ -1,6 +1,6 @@
 {
     "name": {
-        "en": "Whatsapp"
+        "en": "WhatsApp"
     },
     "capabilities": ["send_data"],
     "$extends": [
