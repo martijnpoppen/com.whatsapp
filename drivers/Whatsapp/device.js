@@ -25,7 +25,7 @@ module.exports = class mainDevice extends Homey.Device {
 
             this.WhatsappClient = new BaileysClass({
                 name: deviceObject.id,
-                dir: `${path.resolve(__dirname, '../../userdata')}/`,
+                dir: `${path.resolve(__dirname, '/userdata/')}/`,
                 plugin: false
             });
 
@@ -53,7 +53,7 @@ module.exports = class mainDevice extends Homey.Device {
 
         this.homey.setInterval(() => {
             this.setContacts();
-        }, 30000);
+        }, 360000);
     }
 
     listenToWhatsappEvents() {

@@ -26,7 +26,7 @@ module.exports = class mainDriver extends Homey.Driver {
 
         this.WhatsappClient = new BaileysClass({
             name: this.guid,
-            dir: `${path.resolve(__dirname, '../../userdata')}/`,
+            dir: `${path.resolve(__dirname, '/userdata/')}/`,
             plugin: false
         });
 
