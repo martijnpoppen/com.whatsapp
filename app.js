@@ -2,7 +2,6 @@
 
 const Homey = require('homey');
 const flowActions = require('./lib/flows/actions');
-const notificationHelper = require('./lib/helpers/notification.helper');
 
 class App extends Homey.App {
     log() {

@@ -35,7 +35,8 @@ module.exports = class mainDriver extends Homey.Driver {
             this.device.removeWhatsappClient();
 
             this.homey.app.log(`[Driver] ${this.id} - REPAIR - remove all`);
-            fs.rmSync(`${path.resolve(__dirname, '/userdata/')}/${this.guid}_sessions`, { recursive: true, force: true })
+            fs.rmSync(`${path.resolve(__dirname, '/userdata/')}/${this.guid}_sessions/creds.json`, { recursive: true, force: true })
+            fs.rmSync(`${path.resolve(__dirname, '/userdata/')}/${this.guid}_sessions/baileys_store.json`, { recursive: true, force: true })
 
             await sleep(2000);
         }
@@ -80,7 +81,7 @@ module.exports = class mainDriver extends Homey.Driver {
             }
 
             if (view === 'loading2') {
-                this.WhatsappClient.removeAllListeners(['qr', 'ready']);
+                this.WhatsappClient.removeAllListeners();
                 this.WhatsappClient = null;
 
                 this.results = [{

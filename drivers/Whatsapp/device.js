@@ -56,14 +56,6 @@ module.exports = class mainDevice extends Homey.Device {
         }
     }
 
-    setContactsInterval() {
-        this.setContacts();
-
-        this.homey.setInterval(() => {
-            this.setContacts();
-        }, 360000);
-    }
-
     listenToWhatsappEvents() {
         this.WhatsappClient.once('qr', (qr) => {
             this.homey.app.log(`[Device] ${this.getName()} - listenToWhatsappEvents - QR`);
@@ -76,7 +68,7 @@ module.exports = class mainDevice extends Homey.Device {
         this.WhatsappClient.once('ready', () => {
             this.homey.app.log(`[Device] ${this.getName()} - listenToWhatsappEvents - Ready`);
 
-            this.setContactsInterval();
+            this.setContacts();
             this.setAvailable();
         });
 
