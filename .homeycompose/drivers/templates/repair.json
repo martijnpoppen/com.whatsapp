@@ -8,17 +8,17 @@
       "id": "whatsapp_qr",
       "options": {
         "title": {
-          "en": "Scan QR with Whatsapp",
-          "nl": "Scan QR met Whatsapp",
+          "en": "Scan QR with WhatsApp",
+          "nl": "Scan QR met WhatsApp",
           "de": "QR mit Whatsapp scannen",
-          "fr": "Scannez le QR avec Whatsapp",
-          "it": "Scansiona il QR con Whatsapp",
-          "sv": "Skanna QR med Whatsapp",
-          "no": "Skann QR med Whatsapp",
-          "es": "Escanear QR con Whatsapp",
-          "da": "Scan QR med Whatsapp",
+          "fr": "Scannez le QR avec WhatsApp",
+          "it": "Scansiona il QR con WhatsApp",
+          "sv": "Skanna QR med WhatsApp",
+          "no": "Skann QR med WhatsApp",
+          "es": "Escanear QR con WhatsApp",
+          "da": "Scan QR med WhatsApp",
           "ru": "Отсканируйте QR-код с помощью WhatsApp",
-          "pl": "Zeskanuj kod QR za pomocą Whatsapp"
+          "pl": "Zeskanuj kod QR za pomocą WhatsApp"
         },
         "navigation": {
           "next": "loading2"
