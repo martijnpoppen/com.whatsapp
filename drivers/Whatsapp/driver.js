@@ -10,6 +10,24 @@ module.exports = class mainDriver extends Homey.Driver {
     onInit() {
         this.homey.app.log('[Driver] - init', this.id);
         this.homey.app.log(`[Driver] - version`, Homey.manifest.version);
+        this.WhatsappClients = [];
+
+        const devices = this.getDevices();
+
+        devices.forEach((device) => {
+            const deviceObject = device.getData();
+            this.setWhatsappClient(deviceObject.id);
+        });
+    }
+
+    setWhatsappClient(deviceId) {
+        this.WhatsappClients[deviceId] = new BaileysClass({
+            name: deviceId,
+            dir: `${path.resolve(__dirname, '/userdata/')}/`,
+            plugin: false
+        });
+
+        return this.WhatsappClients[deviceId];
     }
 
     async onPair(session) {
@@ -41,11 +59,7 @@ module.exports = class mainDriver extends Homey.Driver {
             await sleep(2000);
         }
 
-        this.WhatsappClient = new BaileysClass({
-            name: this.guid,
-            dir: `${path.resolve(__dirname, '/userdata/')}/`,
-            plugin: false
-        });
+        this.WhatsappClient = setWhatsappClient(this.guid);
 
         this.WhatsappClient.on("qr", (qr) => {
             this.homey.app.log(`[Driver] ${this.id} - got QR`, qr);

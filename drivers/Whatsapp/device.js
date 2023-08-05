@@ -44,11 +44,7 @@ module.exports = class mainDevice extends Homey.Device {
             const deviceObject = this.getData();
             this.homey.app.log(`[Device] - ${this.getName()} => setWhatsappClient`);
 
-            this.WhatsappClient = new BaileysClass({
-                name: deviceObject.id,
-                dir: `${path.resolve(__dirname, '/userdata/')}/`,
-                plugin: false
-            });
+            this.WhatsappClient = this.driver.WhatsappClients[deviceObject.id]
 
             this.listenToWhatsappEvents();
         } catch (error) {
