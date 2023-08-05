@@ -10,11 +10,32 @@ module.exports = class mainDevice extends Homey.Device {
             this.homey.app.log('[Device] - init =>', this.getName());
             this.setUnavailable(`Connecting to ${this.getName()}`);
 
+            await this.synchronousStart();
+
             await this.checkCapabilities();
             await this.setWhatsappClient();
         } catch (error) {
             this.homey.app.log(`[Device] ${this.getName()} - OnInit Error`, error);
         }
+    }
+
+    async onDeleted() {
+        await this.removeWhatsappClient();
+    }
+
+    async synchronousStart() {
+        const driverData = this.driver;
+        const driverDevices = driverData.getDevices();
+        const deviceObject = this.getData();
+
+        const sleepIndex = driverDevices.findIndex((device) => {
+            const driverDeviceObject = device.getData();
+            return deviceObject.id === driverDeviceObject.id;
+        });
+
+        await sleep(sleepIndex * 7500);
+
+        this.homey.app.log('[Device] - init - after sleep =>', sleepIndex, this.getName());
     }
 
     // ------------- API -------------
@@ -42,26 +63,6 @@ module.exports = class mainDevice extends Homey.Device {
         }
     }
 
-    async setContacts() {
-        try {
-            await sleep(2000);
-            const contactsList = this.WhatsappClient.store.contacts;
-
-            this.homey.app.log(`[Device] ${this.getName()} - setContacts`);
-
-            this.setStoreValue(
-                'contactList',
-                Object.values(contactsList)
-                    .filter((c) => !!c.name)
-                    .map((c) => ({ name: c.name, id: c.id }))
-            );
-
-            this.homey.app.log(`[Device] ${this.getName()} - setContacts - succes`);
-        } catch (error) {
-            this.homey.app.log(`[Device] ${this.getName()} - setContacts - error =>`, error);
-        }
-    }
-
     listenToWhatsappEvents() {
         this.WhatsappClient.once('qr', (qr) => {
             this.homey.app.log(`[Device] ${this.getName()} - listenToWhatsappEvents - QR`);
@@ -74,7 +75,6 @@ module.exports = class mainDevice extends Homey.Device {
         this.WhatsappClient.once('ready', () => {
             this.homey.app.log(`[Device] ${this.getName()} - listenToWhatsappEvents - Ready`);
 
-            this.setContacts();
             this.setAvailable();
         });
 
