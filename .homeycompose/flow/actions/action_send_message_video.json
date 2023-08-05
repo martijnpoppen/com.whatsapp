@@ -35,23 +35,24 @@
       },
       "filter": "driver_id=Whatsapp&capabilities=send_data"
     },
-     {
-      "type": "autocomplete",
-      "name": "recipient",
-      "title": {
-        "en": "Mobile number / Group",
-        "nl": "Mobiel nummer / Groep",
-        "de": "Mobiltelefonnummer / Gruppe",
-        "fr": "Numéro de téléphone mobile / Groupe",
-        "it": "Numero di cellulare / Gruppo",
-        "sv": "Mobilnummer / Grupp",
-        "no": "Mobilnummer / Gruppe",
-        "es": "Número de teléfono móvil / Grupo",
-        "da": "Mobilnummer / Gruppe",
-        "ru": "Мобильный номер / группу",
-        "pl": "Numer telefonu komórkowego / Grupy"
-      }
-    },
+  {
+    "type": "text",
+    "name": "recipient",
+    "required": false,
+    "title": {
+      "en": "Mobile number",
+      "nl": "Mobiel nummer",
+      "de": "Mobiltelefonnummer",
+      "fr": "Numéro de téléphone mobile",
+      "it": "Numero di cellulare",
+      "sv": "Mobilnummer",
+      "no": "Mobilnummer",
+      "es": "Número de teléfono móvil",
+      "da": "Mobilnummer",
+      "ru": "Мобильный номер",
+      "pl": "Numer telefonu komórkowego"
+    }
+  },
     {
       "type": "text",
       "name": "message",

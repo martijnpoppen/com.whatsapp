@@ -76,84 +76,7 @@
   "homeyCommunityTopicId": 57870,
   "support": "https://community.homey.app/t/app-pro-controlmyspa/57870",
   "flow": {
-    "triggers": [
-      {
-        "id": "trigger_message_received",
-        "title": {
-          "en": "Message received"
-        },
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "filter": "driver_id=Whatsapp&capabilities=receive_message"
-          }
-        ],
-        "tokens": [
-          {
-            "name": "from",
-            "type": "string",
-            "title": {
-              "en": "From"
-            }
-          },
-          {
-            "name": "message",
-            "type": "string",
-            "title": {
-              "en": "Message"
-            }
-          }
-        ]
-      }
-    ],
     "actions": [
-      {
-        "title": {
-          "en": "Disable: receive messages"
-        },
-        "titleFormatted": {
-          "en": "Disable: receive messages"
-        },
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "placeholder": {
-              "en": "Select device",
-              "nl": "Selecteer apparaat"
-            },
-            "filter": "driver_id=Whatsapp&capabilities=receive_message"
-          }
-        ],
-        "platforms": [
-          "local"
-        ],
-        "id": "action_disable_receive_messages"
-      },
-      {
-        "title": {
-          "en": "Enable: receive messages"
-        },
-        "titleFormatted": {
-          "en": "Enable: receive messages"
-        },
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "placeholder": {
-              "en": "Select device",
-              "nl": "Selecteer apparaat"
-            },
-            "filter": "driver_id=Whatsapp&capabilities=receive_message"
-          }
-        ],
-        "platforms": [
-          "local"
-        ],
-        "id": "action_enable_receive_messages"
-      },
       {
         "title": {
           "en": "Send Whatsapp message",
@@ -192,20 +115,21 @@
             "filter": "driver_id=Whatsapp&capabilities=send_data"
           },
           {
-            "type": "autocomplete",
+            "type": "text",
             "name": "recipient",
+            "required": false,
             "title": {
-              "en": "Mobile number / Group",
-              "nl": "Mobiel nummer / Groep",
-              "de": "Mobiltelefonnummer / Gruppe",
-              "fr": "Numéro de téléphone mobile / Groupe",
-              "it": "Numero di cellulare / Gruppo",
-              "sv": "Mobilnummer / Grupp",
-              "no": "Mobilnummer / Gruppe",
-              "es": "Número de teléfono móvil / Grupo",
-              "da": "Mobilnummer / Gruppe",
-              "ru": "Мобильный номер / группу",
-              "pl": "Numer telefonu komórkowego / Grupy"
+              "en": "Mobile number",
+              "nl": "Mobiel nummer",
+              "de": "Mobiltelefonnummer",
+              "fr": "Numéro de téléphone mobile",
+              "it": "Numero di cellulare",
+              "sv": "Mobilnummer",
+              "no": "Mobilnummer",
+              "es": "Número de teléfono móvil",
+              "da": "Mobilnummer",
+              "ru": "Мобильный номер",
+              "pl": "Numer telefonu komórkowego"
             }
           },
           {
@@ -270,20 +194,21 @@
             "filter": "driver_id=Whatsapp&capabilities=send_data"
           },
           {
-            "type": "autocomplete",
+            "type": "text",
             "name": "recipient",
+            "required": false,
             "title": {
-              "en": "Mobile number / Group",
-              "nl": "Mobiel nummer / Groep",
-              "de": "Mobiltelefonnummer / Gruppe",
-              "fr": "Numéro de téléphone mobile / Groupe",
-              "it": "Numero di cellulare / Gruppo",
-              "sv": "Mobilnummer / Grupp",
-              "no": "Mobilnummer / Gruppe",
-              "es": "Número de teléfono móvil / Grupo",
-              "da": "Mobilnummer / Gruppe",
-              "ru": "Мобильный номер / группу",
-              "pl": "Numer telefonu komórkowego / Grupy"
+              "en": "Mobile number",
+              "nl": "Mobiel nummer",
+              "de": "Mobiltelefonnummer",
+              "fr": "Numéro de téléphone mobile",
+              "it": "Numero di cellulare",
+              "sv": "Mobilnummer",
+              "no": "Mobilnummer",
+              "es": "Número de teléfono móvil",
+              "da": "Mobilnummer",
+              "ru": "Мобильный номер",
+              "pl": "Numer telefonu komórkowego"
             }
           },
           {
@@ -359,20 +284,21 @@
             "filter": "driver_id=Whatsapp&capabilities=send_data"
           },
           {
-            "type": "autocomplete",
+            "type": "text",
             "name": "recipient",
+            "required": false,
             "title": {
-              "en": "Mobile number / Group",
-              "nl": "Mobiel nummer / Groep",
-              "de": "Mobiltelefonnummer / Gruppe",
-              "fr": "Numéro de téléphone mobile / Groupe",
-              "it": "Numero di cellulare / Gruppo",
-              "sv": "Mobilnummer / Grupp",
-              "no": "Mobilnummer / Gruppe",
-              "es": "Número de teléfono móvil / Grupo",
-              "da": "Mobilnummer / Gruppe",
-              "ru": "Мобильный номер / группу",
-              "pl": "Numer telefonu komórkowego / Grupy"
+              "en": "Mobile number",
+              "nl": "Mobiel nummer",
+              "de": "Mobiltelefonnummer",
+              "fr": "Numéro de téléphone mobile",
+              "it": "Numero di cellulare",
+              "sv": "Mobilnummer",
+              "no": "Mobilnummer",
+              "es": "Número de teléfono móvil",
+              "da": "Mobilnummer",
+              "ru": "Мобильный номер",
+              "pl": "Numer telefonu komórkowego"
             }
           },
           {
@@ -430,20 +356,21 @@
             "filter": "driver_id=Whatsapp&capabilities=send_data"
           },
           {
-            "type": "autocomplete",
+            "type": "text",
             "name": "recipient",
+            "required": false,
             "title": {
-              "en": "Mobile number / Group",
-              "nl": "Mobiel nummer / Groep",
-              "de": "Mobiltelefonnummer / Gruppe",
-              "fr": "Numéro de téléphone mobile / Groupe",
-              "it": "Numero di cellulare / Gruppo",
-              "sv": "Mobilnummer / Grupp",
-              "no": "Mobilnummer / Gruppe",
-              "es": "Número de teléfono móvil / Grupo",
-              "da": "Mobilnummer / Gruppe",
-              "ru": "Мобильный номер / группу",
-              "pl": "Numer telefonu komórkowego / Grupy"
+              "en": "Mobile number",
+              "nl": "Mobiel nummer",
+              "de": "Mobiltelefonnummer",
+              "fr": "Numéro de téléphone mobile",
+              "it": "Numero di cellulare",
+              "sv": "Mobilnummer",
+              "no": "Mobilnummer",
+              "es": "Número de teléfono móvil",
+              "da": "Mobilnummer",
+              "ru": "Мобильный номер",
+              "pl": "Numer telefonu komórkowego"
             }
           },
           {
@@ -522,20 +449,21 @@
             "filter": "driver_id=Whatsapp&capabilities=send_data"
           },
           {
-            "type": "autocomplete",
+            "type": "text",
             "name": "recipient",
+            "required": false,
             "title": {
-              "en": "Mobile number / Group",
-              "nl": "Mobiel nummer / Groep",
-              "de": "Mobiltelefonnummer / Gruppe",
-              "fr": "Numéro de téléphone mobile / Groupe",
-              "it": "Numero di cellulare / Gruppo",
-              "sv": "Mobilnummer / Grupp",
-              "no": "Mobilnummer / Gruppe",
-              "es": "Número de teléfono móvil / Grupo",
-              "da": "Mobilnummer / Gruppe",
-              "ru": "Мобильный номер / группу",
-              "pl": "Numer telefonu komórkowego / Grupy"
+              "en": "Mobile number",
+              "nl": "Mobiel nummer",
+              "de": "Mobiltelefonnummer",
+              "fr": "Numéro de téléphone mobile",
+              "it": "Numero di cellulare",
+              "sv": "Mobilnummer",
+              "no": "Mobilnummer",
+              "es": "Número de teléfono móvil",
+              "da": "Mobilnummer",
+              "ru": "Мобильный номер",
+              "pl": "Numer telefonu komórkowego"
             }
           },
           {
@@ -600,20 +528,21 @@
             "filter": "driver_id=Whatsapp&capabilities=send_data"
           },
           {
-            "type": "autocomplete",
+            "type": "text",
             "name": "recipient",
+            "required": false,
             "title": {
-              "en": "Mobile number / Group",
-              "nl": "Mobiel nummer / Groep",
-              "de": "Mobiltelefonnummer / Gruppe",
-              "fr": "Numéro de téléphone mobile / Groupe",
-              "it": "Numero di cellulare / Gruppo",
-              "sv": "Mobilnummer / Grupp",
-              "no": "Mobilnummer / Gruppe",
-              "es": "Número de teléfono móvil / Grupo",
-              "da": "Mobilnummer / Gruppe",
-              "ru": "Мобильный номер / группу",
-              "pl": "Numer telefonu komórkowego / Grupy"
+              "en": "Mobile number",
+              "nl": "Mobiel nummer",
+              "de": "Mobiltelefonnummer",
+              "fr": "Numéro de téléphone mobile",
+              "it": "Numero di cellulare",
+              "sv": "Mobilnummer",
+              "no": "Mobilnummer",
+              "es": "Número de teléfono móvil",
+              "da": "Mobilnummer",
+              "ru": "Мобильный номер",
+              "pl": "Numer telefonu komórkowego"
             }
           },
           {
