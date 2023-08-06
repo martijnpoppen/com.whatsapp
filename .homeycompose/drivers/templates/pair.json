@@ -14,6 +14,20 @@
             "next": "loading"
           }
       },
+      {
+        "id": "whatsapp_max",
+        "options": {
+            "title": {
+                "en": "Max devices reached"
+              },
+              "text": {
+                "en": "<ol><li>Due to securty reasons (multiple numbers on the same IP) it is not possible to connect more than 2 Whatsapp clients to this app.<br><br></li></ol>"
+              }
+        },
+          "navigation": {
+            "next": "done"
+          }
+      },
     {
         "id": "loading",
         "template": "loading"
