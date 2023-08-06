@@ -1,7 +1,7 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "com.whatsapp",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "platforms": [
@@ -104,6 +104,19 @@
           "ru": "Отправить Whatsapp-сообщение [[message]] на [[recipient]]",
           "pl": "Wyślij wiadomość Whatsapp [[message]] do [[recipient]]"
         },
+        "hint": {
+          "en": "Phone number: Use with country code! e.g. (+31 -> +31601020304) || Groups: Copy the invite link of your WhatsApp group and paste it here. Based on the link, the app will know which group to send a message to.",
+          "nl": "Telefoonnummer: Gebruik met landcode! bijv. (+31 -> +31601020304) || Groepen: Kopieer de uitnodigingslink van je WhatsApp-groep en plak deze hier. Op basis van de link weet de app naar welke groep het bericht moet worden verzonden.",
+          "de": "Telefonnummer: Mit Ländervorwahl verwenden! z.B. (+49 -> +491234567890) || Gruppen: Kopiere den Einladungslink deiner WhatsApp-Gruppe und füge ihn hier ein. Basierend auf dem Link weiß die App, in welche Gruppe sie eine Nachricht senden soll.",
+          "fr": "Numéro de téléphone : Utilisez-le avec le code pays ! Ex. (+33 -> +33601020304) || Groupes : Copiez le lien d'invitation de votre groupe WhatsApp et collez-le ici. En fonction du lien, l'application saura dans quel groupe envoyer un message.",
+          "it": "Numero di telefono: Utilizzare con il codice del paese! Es. (+39 -> +393123456789) || Gruppi: Copia il link di invito del tuo gruppo WhatsApp e incollalo qui. In base al link, l'applicazione saprà a quale gruppo inviare un messaggio.",
+          "sv": "Telefonnummer: Använd med landskod! t.ex. (+46 -> +46701234567) || Grupper: Kopiera inbjudningslänken till din WhatsApp-grupp och klistra in den här. Baserat på länken kommer appen att veta vilken grupp den ska skicka ett meddelande till.",
+          "no": "Telefonnummer: Bruk med landskode! f.eks. (+47 -> +4798765432) || Grupper: Kopier invitasjonslenken til WhatsApp-gruppen din og lim den inn her. Basert på lenken vil appen vite hvilken gruppe den skal sende en melding til.",
+          "es": "Número de teléfono: ¡Usar con código de país! ej. (+34 -> +34601020304) || Grupos: Copia el enlace de invitación de tu grupo de WhatsApp y pégalo aquí. Basado en el enlace, la aplicación sabrá a qué grupo enviar un mensaje.",
+          "da": "Telefonnummer: Brug med landekode! f.eks. (+45 -> +4512345678) || Grupper: Kopier linket til din WhatsApp-gruppeinvitation og indsæt det her. Baseret på linket vil appen vide, hvilken gruppe der skal sendes en besked til.",
+          "ru": "Телефонный номер: Используйте с указанием кода страны! например (+7 -> +79123456789) || Группы: Скопируйте пригласительную ссылку на вашу группу WhatsApp и вставьте ее здесь. По ссылке приложение определит, в какую группу отправить сообщение.",
+          "pl": "Numer telefonu: Użyj z kodem kraju! np. (+31 -> +31601020304) || Grupy: Skopiuj link do zaproszenia do swojej grupy WhatsApp i wklej go tutaj. Na podstawie linku aplikacja będzie wiedzieć, do której grupy wysłać wiadomość."
+        },
         "args": [
           {
             "type": "device",
@@ -118,19 +131,6 @@
             "type": "text",
             "name": "recipient",
             "required": true,
-            "hint": {
-              "en": "Phone number: Use with country code! e.g. (+31 -> +31601020304) || Groups: Copy the invite link of your WhatsApp group and paste it here. Based on the link, the app will know which group to send a message to.",
-              "nl": "Telefoonnummer: Gebruik met landcode! bijv. (+31 -> +31601020304) || Groepen: Kopieer de uitnodigingslink van je WhatsApp-groep en plak deze hier. Op basis van de link weet de app naar welke groep het bericht moet worden verzonden.",
-              "de": "Telefonnummer: Mit Ländervorwahl verwenden! z.B. (+49 -> +491234567890) || Gruppen: Kopiere den Einladungslink deiner WhatsApp-Gruppe und füge ihn hier ein. Basierend auf dem Link weiß die App, in welche Gruppe sie eine Nachricht senden soll.",
-              "fr": "Numéro de téléphone : Utilisez-le avec le code pays ! Ex. (+33 -> +33601020304) || Groupes : Copiez le lien d'invitation de votre groupe WhatsApp et collez-le ici. En fonction du lien, l'application saura dans quel groupe envoyer un message.",
-              "it": "Numero di telefono: Utilizzare con il codice del paese! Es. (+39 -> +393123456789) || Gruppi: Copia il link di invito del tuo gruppo WhatsApp e incollalo qui. In base al link, l'applicazione saprà a quale gruppo inviare un messaggio.",
-              "sv": "Telefonnummer: Använd med landskod! t.ex. (+46 -> +46701234567) || Grupper: Kopiera inbjudningslänken till din WhatsApp-grupp och klistra in den här. Baserat på länken kommer appen att veta vilken grupp den ska skicka ett meddelande till.",
-              "no": "Telefonnummer: Bruk med landskode! f.eks. (+47 -> +4798765432) || Grupper: Kopier invitasjonslenken til WhatsApp-gruppen din og lim den inn her. Basert på lenken vil appen vite hvilken gruppe den skal sende en melding til.",
-              "es": "Número de teléfono: ¡Usar con código de país! ej. (+34 -> +34601020304) || Grupos: Copia el enlace de invitación de tu grupo de WhatsApp y pégalo aquí. Basado en el enlace, la aplicación sabrá a qué grupo enviar un mensaje.",
-              "da": "Telefonnummer: Brug med landekode! f.eks. (+45 -> +4512345678) || Grupper: Kopier linket til din WhatsApp-gruppeinvitation og indsæt det her. Baseret på linket vil appen vide, hvilken gruppe der skal sendes en besked til.",
-              "ru": "Телефонный номер: Используйте с указанием кода страны! например (+7 -> +79123456789) || Группы: Скопируйте пригласительную ссылку на вашу группу WhatsApp и вставьте ее здесь. По ссылке приложение определит, в какую группу отправить сообщение.",
-              "pl": "Numer telefonu: Użyj z kodem kraju! np. (+31 -> +31601020304) || Grupy: Skopiuj link do zaproszenia do swojej grupy WhatsApp i wklej go tutaj. Na podstawie linku aplikacja będzie wiedzieć, do której grupy wysłać wiadomość."
-            },
             "title": {
               "en": "Mobile number / Group invite link",
               "nl": "Mobiel nummer / Groepsuitnodigingslink",
@@ -196,6 +196,19 @@
           "ru": "Отправить Whatsapp-сообщение [[message]] с [[file]] на [[recipient]]",
           "pl": "Wyślij wiadomość Whatsapp [[message]] z [[file]] do [[recipient]]"
         },
+        "hint": {
+          "en": "Phone number: Use with country code! e.g. (+31 -> +31601020304) || Groups: Copy the invite link of your WhatsApp group and paste it here. Based on the link, the app will know which group to send a message to.",
+          "nl": "Telefoonnummer: Gebruik met landcode! bijv. (+31 -> +31601020304) || Groepen: Kopieer de uitnodigingslink van je WhatsApp-groep en plak deze hier. Op basis van de link weet de app naar welke groep het bericht moet worden verzonden.",
+          "de": "Telefonnummer: Mit Ländervorwahl verwenden! z.B. (+49 -> +491234567890) || Gruppen: Kopiere den Einladungslink deiner WhatsApp-Gruppe und füge ihn hier ein. Basierend auf dem Link weiß die App, in welche Gruppe sie eine Nachricht senden soll.",
+          "fr": "Numéro de téléphone : Utilisez-le avec le code pays ! Ex. (+33 -> +33601020304) || Groupes : Copiez le lien d'invitation de votre groupe WhatsApp et collez-le ici. En fonction du lien, l'application saura dans quel groupe envoyer un message.",
+          "it": "Numero di telefono: Utilizzare con il codice del paese! Es. (+39 -> +393123456789) || Gruppi: Copia il link di invito del tuo gruppo WhatsApp e incollalo qui. In base al link, l'applicazione saprà a quale gruppo inviare un messaggio.",
+          "sv": "Telefonnummer: Använd med landskod! t.ex. (+46 -> +46701234567) || Grupper: Kopiera inbjudningslänken till din WhatsApp-grupp och klistra in den här. Baserat på länken kommer appen att veta vilken grupp den ska skicka ett meddelande till.",
+          "no": "Telefonnummer: Bruk med landskode! f.eks. (+47 -> +4798765432) || Grupper: Kopier invitasjonslenken til WhatsApp-gruppen din og lim den inn her. Basert på lenken vil appen vite hvilken gruppe den skal sende en melding til.",
+          "es": "Número de teléfono: ¡Usar con código de país! ej. (+34 -> +34601020304) || Grupos: Copia el enlace de invitación de tu grupo de WhatsApp y pégalo aquí. Basado en el enlace, la aplicación sabrá a qué grupo enviar un mensaje.",
+          "da": "Telefonnummer: Brug med landekode! f.eks. (+45 -> +4512345678) || Grupper: Kopier linket til din WhatsApp-gruppeinvitation og indsæt det her. Baseret på linket vil appen vide, hvilken gruppe der skal sendes en besked til.",
+          "ru": "Телефонный номер: Используйте с указанием кода страны! например (+7 -> +79123456789) || Группы: Скопируйте пригласительную ссылку на вашу группу WhatsApp и вставьте ее здесь. По ссылке приложение определит, в какую группу отправить сообщение.",
+          "pl": "Numer telefonu: Użyj z kodem kraju! np. (+31 -> +31601020304) || Grupy: Skopiuj link do zaproszenia do swojej grupy WhatsApp i wklej go tutaj. Na podstawie linku aplikacja będzie wiedzieć, do której grupy wysłać wiadomość."
+        },
         "args": [
           {
             "type": "device",
@@ -210,19 +223,6 @@
             "type": "text",
             "name": "recipient",
             "required": true,
-            "hint": {
-              "en": "Phone number: Use with country code! e.g. (+31 -> +31601020304) || Groups: Copy the invite link of your WhatsApp group and paste it here. Based on the link, the app will know which group to send a message to.",
-              "nl": "Telefoonnummer: Gebruik met landcode! bijv. (+31 -> +31601020304) || Groepen: Kopieer de uitnodigingslink van je WhatsApp-groep en plak deze hier. Op basis van de link weet de app naar welke groep het bericht moet worden verzonden.",
-              "de": "Telefonnummer: Mit Ländervorwahl verwenden! z.B. (+49 -> +491234567890) || Gruppen: Kopiere den Einladungslink deiner WhatsApp-Gruppe und füge ihn hier ein. Basierend auf dem Link weiß die App, in welche Gruppe sie eine Nachricht senden soll.",
-              "fr": "Numéro de téléphone : Utilisez-le avec le code pays ! Ex. (+33 -> +33601020304) || Groupes : Copiez le lien d'invitation de votre groupe WhatsApp et collez-le ici. En fonction du lien, l'application saura dans quel groupe envoyer un message.",
-              "it": "Numero di telefono: Utilizzare con il codice del paese! Es. (+39 -> +393123456789) || Gruppi: Copia il link di invito del tuo gruppo WhatsApp e incollalo qui. In base al link, l'applicazione saprà a quale gruppo inviare un messaggio.",
-              "sv": "Telefonnummer: Använd med landskod! t.ex. (+46 -> +46701234567) || Grupper: Kopiera inbjudningslänken till din WhatsApp-grupp och klistra in den här. Baserat på länken kommer appen att veta vilken grupp den ska skicka ett meddelande till.",
-              "no": "Telefonnummer: Bruk med landskode! f.eks. (+47 -> +4798765432) || Grupper: Kopier invitasjonslenken til WhatsApp-gruppen din og lim den inn her. Basert på lenken vil appen vite hvilken gruppe den skal sende en melding til.",
-              "es": "Número de teléfono: ¡Usar con código de país! ej. (+34 -> +34601020304) || Grupos: Copia el enlace de invitación de tu grupo de WhatsApp y pégalo aquí. Basado en el enlace, la aplicación sabrá a qué grupo enviar un mensaje.",
-              "da": "Telefonnummer: Brug med landekode! f.eks. (+45 -> +4512345678) || Grupper: Kopier linket til din WhatsApp-gruppeinvitation og indsæt det her. Baseret på linket vil appen vide, hvilken gruppe der skal sendes en besked til.",
-              "ru": "Телефонный номер: Используйте с указанием кода страны! например (+7 -> +79123456789) || Группы: Скопируйте пригласительную ссылку на вашу группу WhatsApp и вставьте ее здесь. По ссылке приложение определит, в какую группу отправить сообщение.",
-              "pl": "Numer telefonu: Użyj z kodem kraju! np. (+31 -> +31601020304) || Grupy: Skopiuj link do zaproszenia do swojej grupy WhatsApp i wklej go tutaj. Na podstawie linku aplikacja będzie wiedzieć, do której grupy wysłać wiadomość."
-            },
             "title": {
               "en": "Mobile number / Group invite link",
               "nl": "Mobiel nummer / Groepsuitnodigingslink",
@@ -299,6 +299,19 @@
           "ru": "Отправить Whatsapp-сообщение с [[file]] на [[recipient]]",
           "pl": "Wyślij wiadomość Whatsapp z [[file]] do [[recipient]]"
         },
+        "hint": {
+          "en": "Phone number: Use with country code! e.g. (+31 -> +31601020304) || Groups: Copy the invite link of your WhatsApp group and paste it here. Based on the link, the app will know which group to send a message to.",
+          "nl": "Telefoonnummer: Gebruik met landcode! bijv. (+31 -> +31601020304) || Groepen: Kopieer de uitnodigingslink van je WhatsApp-groep en plak deze hier. Op basis van de link weet de app naar welke groep het bericht moet worden verzonden.",
+          "de": "Telefonnummer: Mit Ländervorwahl verwenden! z.B. (+49 -> +491234567890) || Gruppen: Kopiere den Einladungslink deiner WhatsApp-Gruppe und füge ihn hier ein. Basierend auf dem Link weiß die App, in welche Gruppe sie eine Nachricht senden soll.",
+          "fr": "Numéro de téléphone : Utilisez-le avec le code pays ! Ex. (+33 -> +33601020304) || Groupes : Copiez le lien d'invitation de votre groupe WhatsApp et collez-le ici. En fonction du lien, l'application saura dans quel groupe envoyer un message.",
+          "it": "Numero di telefono: Utilizzare con il codice del paese! Es. (+39 -> +393123456789) || Gruppi: Copia il link di invito del tuo gruppo WhatsApp e incollalo qui. In base al link, l'applicazione saprà a quale gruppo inviare un messaggio.",
+          "sv": "Telefonnummer: Använd med landskod! t.ex. (+46 -> +46701234567) || Grupper: Kopiera inbjudningslänken till din WhatsApp-grupp och klistra in den här. Baserat på länken kommer appen att veta vilken grupp den ska skicka ett meddelande till.",
+          "no": "Telefonnummer: Bruk med landskode! f.eks. (+47 -> +4798765432) || Grupper: Kopier invitasjonslenken til WhatsApp-gruppen din og lim den inn her. Basert på lenken vil appen vite hvilken gruppe den skal sende en melding til.",
+          "es": "Número de teléfono: ¡Usar con código de país! ej. (+34 -> +34601020304) || Grupos: Copia el enlace de invitación de tu grupo de WhatsApp y pégalo aquí. Basado en el enlace, la aplicación sabrá a qué grupo enviar un mensaje.",
+          "da": "Telefonnummer: Brug med landekode! f.eks. (+45 -> +4512345678) || Grupper: Kopier linket til din WhatsApp-gruppeinvitation og indsæt det her. Baseret på linket vil appen vide, hvilken gruppe der skal sendes en besked til.",
+          "ru": "Телефонный номер: Используйте с указанием кода страны! например (+7 -> +79123456789) || Группы: Скопируйте пригласительную ссылку на вашу группу WhatsApp и вставьте ее здесь. По ссылке приложение определит, в какую группу отправить сообщение.",
+          "pl": "Numer telefonu: Użyj z kodem kraju! np. (+31 -> +31601020304) || Grupy: Skopiuj link do zaproszenia do swojej grupy WhatsApp i wklej go tutaj. Na podstawie linku aplikacja będzie wiedzieć, do której grupy wysłać wiadomość."
+        },
         "args": [
           {
             "type": "device",
@@ -313,19 +326,6 @@
             "type": "text",
             "name": "recipient",
             "required": true,
-            "hint": {
-              "en": "Phone number: Use with country code! e.g. (+31 -> +31601020304) || Groups: Copy the invite link of your WhatsApp group and paste it here. Based on the link, the app will know which group to send a message to.",
-              "nl": "Telefoonnummer: Gebruik met landcode! bijv. (+31 -> +31601020304) || Groepen: Kopieer de uitnodigingslink van je WhatsApp-groep en plak deze hier. Op basis van de link weet de app naar welke groep het bericht moet worden verzonden.",
-              "de": "Telefonnummer: Mit Ländervorwahl verwenden! z.B. (+49 -> +491234567890) || Gruppen: Kopiere den Einladungslink deiner WhatsApp-Gruppe und füge ihn hier ein. Basierend auf dem Link weiß die App, in welche Gruppe sie eine Nachricht senden soll.",
-              "fr": "Numéro de téléphone : Utilisez-le avec le code pays ! Ex. (+33 -> +33601020304) || Groupes : Copiez le lien d'invitation de votre groupe WhatsApp et collez-le ici. En fonction du lien, l'application saura dans quel groupe envoyer un message.",
-              "it": "Numero di telefono: Utilizzare con il codice del paese! Es. (+39 -> +393123456789) || Gruppi: Copia il link di invito del tuo gruppo WhatsApp e incollalo qui. In base al link, l'applicazione saprà a quale gruppo inviare un messaggio.",
-              "sv": "Telefonnummer: Använd med landskod! t.ex. (+46 -> +46701234567) || Grupper: Kopiera inbjudningslänken till din WhatsApp-grupp och klistra in den här. Baserat på länken kommer appen att veta vilken grupp den ska skicka ett meddelande till.",
-              "no": "Telefonnummer: Bruk med landskode! f.eks. (+47 -> +4798765432) || Grupper: Kopier invitasjonslenken til WhatsApp-gruppen din og lim den inn her. Basert på lenken vil appen vite hvilken gruppe den skal sende en melding til.",
-              "es": "Número de teléfono: ¡Usar con código de país! ej. (+34 -> +34601020304) || Grupos: Copia el enlace de invitación de tu grupo de WhatsApp y pégalo aquí. Basado en el enlace, la aplicación sabrá a qué grupo enviar un mensaje.",
-              "da": "Telefonnummer: Brug med landekode! f.eks. (+45 -> +4512345678) || Grupper: Kopier linket til din WhatsApp-gruppeinvitation og indsæt det her. Baseret på linket vil appen vide, hvilken gruppe der skal sendes en besked til.",
-              "ru": "Телефонный номер: Используйте с указанием кода страны! например (+7 -> +79123456789) || Группы: Скопируйте пригласительную ссылку на вашу группу WhatsApp и вставьте ее здесь. По ссылке приложение определит, в какую группу отправить сообщение.",
-              "pl": "Numer telefonu: Użyj z kodem kraju! np. (+31 -> +31601020304) || Grupy: Skopiuj link do zaproszenia do swojej grupy WhatsApp i wklej go tutaj. Na podstawie linku aplikacja będzie wiedzieć, do której grupy wysłać wiadomość."
-            },
             "title": {
               "en": "Mobile number / Group invite link",
               "nl": "Mobiel nummer / Groepsuitnodigingslink",
@@ -384,6 +384,19 @@
           "ru": "Отправить Whatsapp-сообщение [[message]] с [[file]] на [[recipient]]",
           "pl": "Wyślij wiadomość Whatsapp [[message]] z [[file]] do [[recipient]]"
         },
+        "hint": {
+          "en": "Phone number: Use with country code! e.g. (+31 -> +31601020304) || Groups: Copy the invite link of your WhatsApp group and paste it here. Based on the link, the app will know which group to send a message to.",
+          "nl": "Telefoonnummer: Gebruik met landcode! bijv. (+31 -> +31601020304) || Groepen: Kopieer de uitnodigingslink van je WhatsApp-groep en plak deze hier. Op basis van de link weet de app naar welke groep het bericht moet worden verzonden.",
+          "de": "Telefonnummer: Mit Ländervorwahl verwenden! z.B. (+49 -> +491234567890) || Gruppen: Kopiere den Einladungslink deiner WhatsApp-Gruppe und füge ihn hier ein. Basierend auf dem Link weiß die App, in welche Gruppe sie eine Nachricht senden soll.",
+          "fr": "Numéro de téléphone : Utilisez-le avec le code pays ! Ex. (+33 -> +33601020304) || Groupes : Copiez le lien d'invitation de votre groupe WhatsApp et collez-le ici. En fonction du lien, l'application saura dans quel groupe envoyer un message.",
+          "it": "Numero di telefono: Utilizzare con il codice del paese! Es. (+39 -> +393123456789) || Gruppi: Copia il link di invito del tuo gruppo WhatsApp e incollalo qui. In base al link, l'applicazione saprà a quale gruppo inviare un messaggio.",
+          "sv": "Telefonnummer: Använd med landskod! t.ex. (+46 -> +46701234567) || Grupper: Kopiera inbjudningslänken till din WhatsApp-grupp och klistra in den här. Baserat på länken kommer appen att veta vilken grupp den ska skicka ett meddelande till.",
+          "no": "Telefonnummer: Bruk med landskode! f.eks. (+47 -> +4798765432) || Grupper: Kopier invitasjonslenken til WhatsApp-gruppen din og lim den inn her. Basert på lenken vil appen vite hvilken gruppe den skal sende en melding til.",
+          "es": "Número de teléfono: ¡Usar con código de país! ej. (+34 -> +34601020304) || Grupos: Copia el enlace de invitación de tu grupo de WhatsApp y pégalo aquí. Basado en el enlace, la aplicación sabrá a qué grupo enviar un mensaje.",
+          "da": "Telefonnummer: Brug med landekode! f.eks. (+45 -> +4512345678) || Grupper: Kopier linket til din WhatsApp-gruppeinvitation og indsæt det her. Baseret på linket vil appen vide, hvilken gruppe der skal sendes en besked til.",
+          "ru": "Телефонный номер: Используйте с указанием кода страны! например (+7 -> +79123456789) || Группы: Скопируйте пригласительную ссылку на вашу группу WhatsApp и вставьте ее здесь. По ссылке приложение определит, в какую группу отправить сообщение.",
+          "pl": "Numer telefonu: Użyj z kodem kraju! np. (+31 -> +31601020304) || Grupy: Skopiuj link do zaproszenia do swojej grupy WhatsApp i wklej go tutaj. Na podstawie linku aplikacja będzie wiedzieć, do której grupy wysłać wiadomość."
+        },
         "args": [
           {
             "type": "device",
@@ -398,19 +411,6 @@
             "type": "text",
             "name": "recipient",
             "required": true,
-            "hint": {
-              "en": "Phone number: Use with country code! e.g. (+31 -> +31601020304) || Groups: Copy the invite link of your WhatsApp group and paste it here. Based on the link, the app will know which group to send a message to.",
-              "nl": "Telefoonnummer: Gebruik met landcode! bijv. (+31 -> +31601020304) || Groepen: Kopieer de uitnodigingslink van je WhatsApp-groep en plak deze hier. Op basis van de link weet de app naar welke groep het bericht moet worden verzonden.",
-              "de": "Telefonnummer: Mit Ländervorwahl verwenden! z.B. (+49 -> +491234567890) || Gruppen: Kopiere den Einladungslink deiner WhatsApp-Gruppe und füge ihn hier ein. Basierend auf dem Link weiß die App, in welche Gruppe sie eine Nachricht senden soll.",
-              "fr": "Numéro de téléphone : Utilisez-le avec le code pays ! Ex. (+33 -> +33601020304) || Groupes : Copiez le lien d'invitation de votre groupe WhatsApp et collez-le ici. En fonction du lien, l'application saura dans quel groupe envoyer un message.",
-              "it": "Numero di telefono: Utilizzare con il codice del paese! Es. (+39 -> +393123456789) || Gruppi: Copia il link di invito del tuo gruppo WhatsApp e incollalo qui. In base al link, l'applicazione saprà a quale gruppo inviare un messaggio.",
-              "sv": "Telefonnummer: Använd med landskod! t.ex. (+46 -> +46701234567) || Grupper: Kopiera inbjudningslänken till din WhatsApp-grupp och klistra in den här. Baserat på länken kommer appen att veta vilken grupp den ska skicka ett meddelande till.",
-              "no": "Telefonnummer: Bruk med landskode! f.eks. (+47 -> +4798765432) || Grupper: Kopier invitasjonslenken til WhatsApp-gruppen din og lim den inn her. Basert på lenken vil appen vite hvilken gruppe den skal sende en melding til.",
-              "es": "Número de teléfono: ¡Usar con código de país! ej. (+34 -> +34601020304) || Grupos: Copia el enlace de invitación de tu grupo de WhatsApp y pégalo aquí. Basado en el enlace, la aplicación sabrá a qué grupo enviar un mensaje.",
-              "da": "Telefonnummer: Brug med landekode! f.eks. (+45 -> +4512345678) || Grupper: Kopier linket til din WhatsApp-gruppeinvitation og indsæt det her. Baseret på linket vil appen vide, hvilken gruppe der skal sendes en besked til.",
-              "ru": "Телефонный номер: Используйте с указанием кода страны! например (+7 -> +79123456789) || Группы: Скопируйте пригласительную ссылку на вашу группу WhatsApp и вставьте ее здесь. По ссылке приложение определит, в какую группу отправить сообщение.",
-              "pl": "Numer telefonu: Użyj z kodem kraju! np. (+31 -> +31601020304) || Grupy: Skopiuj link do zaproszenia do swojej grupy WhatsApp i wklej go tutaj. Na podstawie linku aplikacja będzie wiedzieć, do której grupy wysłać wiadomość."
-            },
             "title": {
               "en": "Mobile number / Group invite link",
               "nl": "Mobiel nummer / Groepsuitnodigingslink",
@@ -487,6 +487,19 @@
           "ru": "Отправить Whatsapp-сообщение [[message]] с [[droptoken]] на [[recipient]]",
           "pl": "Wyślij wiadomość Whatsapp [[message]] z [[droptoken]] do [[recipient]]"
         },
+        "hint": {
+          "en": "Phone number: Use with country code! e.g. (+31 -> +31601020304) || Groups: Copy the invite link of your WhatsApp group and paste it here. Based on the link, the app will know which group to send a message to.",
+          "nl": "Telefoonnummer: Gebruik met landcode! bijv. (+31 -> +31601020304) || Groepen: Kopieer de uitnodigingslink van je WhatsApp-groep en plak deze hier. Op basis van de link weet de app naar welke groep het bericht moet worden verzonden.",
+          "de": "Telefonnummer: Mit Ländervorwahl verwenden! z.B. (+49 -> +491234567890) || Gruppen: Kopiere den Einladungslink deiner WhatsApp-Gruppe und füge ihn hier ein. Basierend auf dem Link weiß die App, in welche Gruppe sie eine Nachricht senden soll.",
+          "fr": "Numéro de téléphone : Utilisez-le avec le code pays ! Ex. (+33 -> +33601020304) || Groupes : Copiez le lien d'invitation de votre groupe WhatsApp et collez-le ici. En fonction du lien, l'application saura dans quel groupe envoyer un message.",
+          "it": "Numero di telefono: Utilizzare con il codice del paese! Es. (+39 -> +393123456789) || Gruppi: Copia il link di invito del tuo gruppo WhatsApp e incollalo qui. In base al link, l'applicazione saprà a quale gruppo inviare un messaggio.",
+          "sv": "Telefonnummer: Använd med landskod! t.ex. (+46 -> +46701234567) || Grupper: Kopiera inbjudningslänken till din WhatsApp-grupp och klistra in den här. Baserat på länken kommer appen att veta vilken grupp den ska skicka ett meddelande till.",
+          "no": "Telefonnummer: Bruk med landskode! f.eks. (+47 -> +4798765432) || Grupper: Kopier invitasjonslenken til WhatsApp-gruppen din og lim den inn her. Basert på lenken vil appen vite hvilken gruppe den skal sende en melding til.",
+          "es": "Número de teléfono: ¡Usar con código de país! ej. (+34 -> +34601020304) || Grupos: Copia el enlace de invitación de tu grupo de WhatsApp y pégalo aquí. Basado en el enlace, la aplicación sabrá a qué grupo enviar un mensaje.",
+          "da": "Telefonnummer: Brug med landekode! f.eks. (+45 -> +4512345678) || Grupper: Kopier linket til din WhatsApp-gruppeinvitation og indsæt det her. Baseret på linket vil appen vide, hvilken gruppe der skal sendes en besked til.",
+          "ru": "Телефонный номер: Используйте с указанием кода страны! например (+7 -> +79123456789) || Группы: Скопируйте пригласительную ссылку на вашу группу WhatsApp и вставьте ее здесь. По ссылке приложение определит, в какую группу отправить сообщение.",
+          "pl": "Numer telefonu: Użyj z kodem kraju! np. (+31 -> +31601020304) || Grupy: Skopiuj link do zaproszenia do swojej grupy WhatsApp i wklej go tutaj. Na podstawie linku aplikacja będzie wiedzieć, do której grupy wysłać wiadomość."
+        },
         "droptoken": [
           "image"
         ],
@@ -504,19 +517,6 @@
             "type": "text",
             "name": "recipient",
             "required": true,
-            "hint": {
-              "en": "Phone number: Use with country code! e.g. (+31 -> +31601020304) || Groups: Copy the invite link of your WhatsApp group and paste it here. Based on the link, the app will know which group to send a message to.",
-              "nl": "Telefoonnummer: Gebruik met landcode! bijv. (+31 -> +31601020304) || Groepen: Kopieer de uitnodigingslink van je WhatsApp-groep en plak deze hier. Op basis van de link weet de app naar welke groep het bericht moet worden verzonden.",
-              "de": "Telefonnummer: Mit Ländervorwahl verwenden! z.B. (+49 -> +491234567890) || Gruppen: Kopiere den Einladungslink deiner WhatsApp-Gruppe und füge ihn hier ein. Basierend auf dem Link weiß die App, in welche Gruppe sie eine Nachricht senden soll.",
-              "fr": "Numéro de téléphone : Utilisez-le avec le code pays ! Ex. (+33 -> +33601020304) || Groupes : Copiez le lien d'invitation de votre groupe WhatsApp et collez-le ici. En fonction du lien, l'application saura dans quel groupe envoyer un message.",
-              "it": "Numero di telefono: Utilizzare con il codice del paese! Es. (+39 -> +393123456789) || Gruppi: Copia il link di invito del tuo gruppo WhatsApp e incollalo qui. In base al link, l'applicazione saprà a quale gruppo inviare un messaggio.",
-              "sv": "Telefonnummer: Använd med landskod! t.ex. (+46 -> +46701234567) || Grupper: Kopiera inbjudningslänken till din WhatsApp-grupp och klistra in den här. Baserat på länken kommer appen att veta vilken grupp den ska skicka ett meddelande till.",
-              "no": "Telefonnummer: Bruk med landskode! f.eks. (+47 -> +4798765432) || Grupper: Kopier invitasjonslenken til WhatsApp-gruppen din og lim den inn her. Basert på lenken vil appen vite hvilken gruppe den skal sende en melding til.",
-              "es": "Número de teléfono: ¡Usar con código de país! ej. (+34 -> +34601020304) || Grupos: Copia el enlace de invitación de tu grupo de WhatsApp y pégalo aquí. Basado en el enlace, la aplicación sabrá a qué grupo enviar un mensaje.",
-              "da": "Telefonnummer: Brug med landekode! f.eks. (+45 -> +4512345678) || Grupper: Kopier linket til din WhatsApp-gruppeinvitation og indsæt det her. Baseret på linket vil appen vide, hvilken gruppe der skal sendes en besked til.",
-              "ru": "Телефонный номер: Используйте с указанием кода страны! например (+7 -> +79123456789) || Группы: Скопируйте пригласительную ссылку на вашу группу WhatsApp и вставьте ее здесь. По ссылке приложение определит, в какую группу отправить сообщение.",
-              "pl": "Numer telefonu: Użyj z kodem kraju! np. (+31 -> +31601020304) || Grupy: Skopiuj link do zaproszenia do swojej grupy WhatsApp i wklej go tutaj. Na podstawie linku aplikacja będzie wiedzieć, do której grupy wysłać wiadomość."
-            },
             "title": {
               "en": "Mobile number / Group invite link",
               "nl": "Mobiel nummer / Groepsuitnodigingslink",
@@ -582,6 +582,19 @@
           "ru": "Отправить Whatsapp-сообщение [[message]] с [[file]] на [[recipient]]",
           "pl": "Wyślij wiadomość Whatsapp [[message]] z [[file]] do [[recipient]]"
         },
+        "hint": {
+          "en": "Phone number: Use with country code! e.g. (+31 -> +31601020304) || Groups: Copy the invite link of your WhatsApp group and paste it here. Based on the link, the app will know which group to send a message to.",
+          "nl": "Telefoonnummer: Gebruik met landcode! bijv. (+31 -> +31601020304) || Groepen: Kopieer de uitnodigingslink van je WhatsApp-groep en plak deze hier. Op basis van de link weet de app naar welke groep het bericht moet worden verzonden.",
+          "de": "Telefonnummer: Mit Ländervorwahl verwenden! z.B. (+49 -> +491234567890) || Gruppen: Kopiere den Einladungslink deiner WhatsApp-Gruppe und füge ihn hier ein. Basierend auf dem Link weiß die App, in welche Gruppe sie eine Nachricht senden soll.",
+          "fr": "Numéro de téléphone : Utilisez-le avec le code pays ! Ex. (+33 -> +33601020304) || Groupes : Copiez le lien d'invitation de votre groupe WhatsApp et collez-le ici. En fonction du lien, l'application saura dans quel groupe envoyer un message.",
+          "it": "Numero di telefono: Utilizzare con il codice del paese! Es. (+39 -> +393123456789) || Gruppi: Copia il link di invito del tuo gruppo WhatsApp e incollalo qui. In base al link, l'applicazione saprà a quale gruppo inviare un messaggio.",
+          "sv": "Telefonnummer: Använd med landskod! t.ex. (+46 -> +46701234567) || Grupper: Kopiera inbjudningslänken till din WhatsApp-grupp och klistra in den här. Baserat på länken kommer appen att veta vilken grupp den ska skicka ett meddelande till.",
+          "no": "Telefonnummer: Bruk med landskode! f.eks. (+47 -> +4798765432) || Grupper: Kopier invitasjonslenken til WhatsApp-gruppen din og lim den inn her. Basert på lenken vil appen vite hvilken gruppe den skal sende en melding til.",
+          "es": "Número de teléfono: ¡Usar con código de país! ej. (+34 -> +34601020304) || Grupos: Copia el enlace de invitación de tu grupo de WhatsApp y pégalo aquí. Basado en el enlace, la aplicación sabrá a qué grupo enviar un mensaje.",
+          "da": "Telefonnummer: Brug med landekode! f.eks. (+45 -> +4512345678) || Grupper: Kopier linket til din WhatsApp-gruppeinvitation og indsæt det her. Baseret på linket vil appen vide, hvilken gruppe der skal sendes en besked til.",
+          "ru": "Телефонный номер: Используйте с указанием кода страны! например (+7 -> +79123456789) || Группы: Скопируйте пригласительную ссылку на вашу группу WhatsApp и вставьте ее здесь. По ссылке приложение определит, в какую группу отправить сообщение.",
+          "pl": "Numer telefonu: Użyj z kodem kraju! np. (+31 -> +31601020304) || Grupy: Skopiuj link do zaproszenia do swojej grupy WhatsApp i wklej go tutaj. Na podstawie linku aplikacja będzie wiedzieć, do której grupy wysłać wiadomość."
+        },
         "args": [
           {
             "type": "device",
@@ -596,19 +609,6 @@
             "type": "text",
             "name": "recipient",
             "required": true,
-            "hint": {
-              "en": "Phone number: Use with country code! e.g. (+31 -> +31601020304) || Groups: Copy the invite link of your WhatsApp group and paste it here. Based on the link, the app will know which group to send a message to.",
-              "nl": "Telefoonnummer: Gebruik met landcode! bijv. (+31 -> +31601020304) || Groepen: Kopieer de uitnodigingslink van je WhatsApp-groep en plak deze hier. Op basis van de link weet de app naar welke groep het bericht moet worden verzonden.",
-              "de": "Telefonnummer: Mit Ländervorwahl verwenden! z.B. (+49 -> +491234567890) || Gruppen: Kopiere den Einladungslink deiner WhatsApp-Gruppe und füge ihn hier ein. Basierend auf dem Link weiß die App, in welche Gruppe sie eine Nachricht senden soll.",
-              "fr": "Numéro de téléphone : Utilisez-le avec le code pays ! Ex. (+33 -> +33601020304) || Groupes : Copiez le lien d'invitation de votre groupe WhatsApp et collez-le ici. En fonction du lien, l'application saura dans quel groupe envoyer un message.",
-              "it": "Numero di telefono: Utilizzare con il codice del paese! Es. (+39 -> +393123456789) || Gruppi: Copia il link di invito del tuo gruppo WhatsApp e incollalo qui. In base al link, l'applicazione saprà a quale gruppo inviare un messaggio.",
-              "sv": "Telefonnummer: Använd med landskod! t.ex. (+46 -> +46701234567) || Grupper: Kopiera inbjudningslänken till din WhatsApp-grupp och klistra in den här. Baserat på länken kommer appen att veta vilken grupp den ska skicka ett meddelande till.",
-              "no": "Telefonnummer: Bruk med landskode! f.eks. (+47 -> +4798765432) || Grupper: Kopier invitasjonslenken til WhatsApp-gruppen din og lim den inn her. Basert på lenken vil appen vite hvilken gruppe den skal sende en melding til.",
-              "es": "Número de teléfono: ¡Usar con código de país! ej. (+34 -> +34601020304) || Grupos: Copia el enlace de invitación de tu grupo de WhatsApp y pégalo aquí. Basado en el enlace, la aplicación sabrá a qué grupo enviar un mensaje.",
-              "da": "Telefonnummer: Brug med landekode! f.eks. (+45 -> +4512345678) || Grupper: Kopier linket til din WhatsApp-gruppeinvitation og indsæt det her. Baseret på linket vil appen vide, hvilken gruppe der skal sendes en besked til.",
-              "ru": "Телефонный номер: Используйте с указанием кода страны! например (+7 -> +79123456789) || Группы: Скопируйте пригласительную ссылку на вашу группу WhatsApp и вставьте ее здесь. По ссылке приложение определит, в какую группу отправить сообщение.",
-              "pl": "Numer telefonu: Użyj z kodem kraju! np. (+31 -> +31601020304) || Grupy: Skopiuj link do zaproszenia do swojej grupy WhatsApp i wklej go tutaj. Na podstawie linku aplikacja będzie wiedzieć, do której grupy wysłać wiadomość."
-            },
             "title": {
               "en": "Mobile number / Group invite link",
               "nl": "Mobiel nummer / Groepsuitnodigingslink",
