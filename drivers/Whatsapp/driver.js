@@ -14,13 +14,14 @@ module.exports = class mainDriver extends Homey.Driver {
 
         const devices = this.getDevices();
 
-        devices.forEach((device) => {
+        devices.forEach(async (device) => {
             const deviceObject = device.getData();
-            this.setWhatsappClient(deviceObject.id);
+            await this.setWhatsappClient(deviceObject.id);
+            await this.setWhatsappClientListeners(device, deviceObject.id);
         });
     }
 
-    setWhatsappClient(deviceId) {
+    setWhatsappClient(deviceId,) {
         this.WhatsappClients[deviceId] = new BaileysClass({
             name: deviceId,
             dir: `${path.resolve(__dirname, '/userdata/')}/`,
@@ -28,6 +29,45 @@ module.exports = class mainDriver extends Homey.Driver {
         });
 
         return this.WhatsappClients[deviceId];
+    }
+
+    setWhatsappClientListeners(device = null, deviceId) {
+        this.WhatsappClients[deviceId].once('qr', (qr) => {
+            
+
+            this.qr = qr;
+
+            if(device) {
+                this.homey.app.log(`[Device] ${device.getName()} - listenToWhatsappEvents - QR`);
+                device.setUnavailable(`Repair device and Scan QR code to connect`);
+            } else {
+                this.homey.app.log(`[Driver] - listenToWhatsappEvents - QR`);
+            }
+        });
+
+        this.WhatsappClients[deviceId].once('ready', () => {
+            
+
+            this.ready = true;
+
+            if(device) {
+                this.homey.app.log(`[Device] ${device.getName()} - listenToWhatsappEvents - Ready`);
+                device.setAvailable();
+            } else {
+                this.homey.app.log(`[Driver] - listenToWhatsappEvents - Ready`);
+            }
+        });
+
+        this.WhatsappClients[deviceId].once('auth_failure', (error) => {
+            
+
+            if(device) {
+                this.homey.app.log(`[Device] ${device.getName()} - listenToWhatsappEvents - auth_failure`);
+                device.setUnavailable(error);
+            } else {
+                this.homey.app.log(`[Driver]- listenToWhatsappEvents - auth_failure`);
+            }
+        });
     }
 
     async onPair(session) {
@@ -59,23 +99,20 @@ module.exports = class mainDriver extends Homey.Driver {
             await sleep(2000);
         }
 
-        this.WhatsappClient = setWhatsappClient(this.guid);
+        await this.setWhatsappClient(this.guid);
+        await this.listenToWhatsappEvents(null, this.guid);
 
-        this.WhatsappClient.on("qr", (qr) => {
-            this.homey.app.log(`[Driver] ${this.id} - got QR`, qr);
-
-            this.qr = qr;
-
-            if(this.consent) {
+        this.onPollInterval = setInterval(() => {
+            if(this.qr) {
+                this.qr = null;
                 session.showView('whatsapp_qr');
             }
-        });
 
-        this.WhatsappClient.once("ready", () => {
-            this.homey.app.log(`[Driver] ${this.id} - ready`);
-
-            session.showView('loading2');
-        });
+            if(this.ready) {
+                this.ready = null;
+                session.showView('loading2');
+            }
+        }, 200);
 
         session.setHandler('showView', async (view) => {
             this.homey.app.log(`[Driver] ${this.id} - currentView:`, { view, type: this.type });
@@ -86,17 +123,10 @@ module.exports = class mainDriver extends Homey.Driver {
 
             if (view === 'loading') {
                 this.consent = true;
-
-                await sleep(3000);
-
-                if(this.qr) {
-                    session.showView('whatsapp_qr');
-                }
             }
 
             if (view === 'loading2') {
-                this.WhatsappClient.removeAllListeners();
-                this.WhatsappClient = null;
+                clearInterval(this.onPollInterval);
 
                 this.results = [{
                     name: `Whatsapp`,

@@ -45,40 +45,17 @@ module.exports = class mainDevice extends Homey.Device {
             this.homey.app.log(`[Device] - ${this.getName()} => setWhatsappClient`);
 
             this.WhatsappClient = this.driver.WhatsappClients[deviceObject.id]
-
-            this.listenToWhatsappEvents();
         } catch (error) {
             this.homey.app.log(`[Device] ${this.getName()} - setWhatsappClient - error =>`, error);
         }
     }
 
     async removeWhatsappClient() {
-        if (this.WhatsappClient) {
-            this.WhatsappClient.removeAllListeners();
+        if (this.driver.WhatsappClients[deviceObject.id]) {
+            this.driver.WhatsappClients[deviceObject.id].removeAllListeners();
+            this.driver.WhatsappClients[deviceObject.id] = null;
             this.WhatsappClient = null;
         }
-    }
-
-    listenToWhatsappEvents() {
-        this.WhatsappClient.once('qr', (qr) => {
-            this.homey.app.log(`[Device] ${this.getName()} - listenToWhatsappEvents - QR`);
-
-            this.setUnavailable(`Repair device and Scan QR code to connect`);
-
-            this.removeWhatsappClient();
-        });
-
-        this.WhatsappClient.once('ready', () => {
-            this.homey.app.log(`[Device] ${this.getName()} - listenToWhatsappEvents - Ready`);
-
-            this.setAvailable();
-        });
-
-        this.WhatsappClient.once('auth_failure', (error) => {
-            this.homey.app.log(`[Device] ${this.getName()} - listenToWhatsappEvents - auth_failure`);
-
-            this.setUnavailable(error);
-        });
     }
 
     async onCapability_SendMessage(params, type) {
