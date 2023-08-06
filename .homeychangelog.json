@@ -25,5 +25,8 @@
   },
   "1.2.0": {
     "en": "NEW: memory improvements | NEW: updated flowcards"
+  },
+  "1.3.0": {
+    "en": "NEW: max devices"
   }
 }
