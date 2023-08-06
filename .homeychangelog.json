@@ -22,5 +22,8 @@
   },
   "1.1.5": {
     "en": "FIX: memory"
+  },
+  "1.2.0": {
+    "en": "NEW: memory improvements | NEW: updated flowcards"
   }
 }
