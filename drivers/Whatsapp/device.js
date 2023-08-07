@@ -61,15 +61,13 @@ module.exports = class mainDevice extends Homey.Device {
     async onCapability_SendMessage(params, type) {
         this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage`, { ...params, device: 'LOG' });
 
-        let fileUrl = params.droptoken || params.file || null;
-        const fileType = type;
-        const message = params.message.length ? params.message : '‎';
+        const message = params.message && params.message.length ? params.message : '‎';
         const isGroup = validateUrl(params.recipient);
         const recipient = await this.getRecipient(params.recipient, isGroup);
 
-        if(recipient) {
+        if(recipient && recipient !== params.recipient) {
             await this.isTyping(recipient);
-            const data = await this.sendMessage(recipient, message, fileUrl, fileType);
+            const data = await this.sendMessage(recipient, message, type, params);
 
             this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage data`, Object.keys(data).length);
 
@@ -88,20 +86,20 @@ module.exports = class mainDevice extends Homey.Device {
             recipient = `${recipient}@s.whatsapp.net`;
         } else if (isGroup) {
             const groupJid = recipient.replace(' ', '').split('/').pop();
-            this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage - fetching group JID`, groupJid);
+            this.homey.app.log(`[Device] ${this.getName()} - getRecipient - fetching group JID`, groupJid);
 
             recipient = await this.getStoreValue(groupJid) || null;
-            this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage - fetching group JID from store: `, recipient);
+            this.homey.app.log(`[Device] ${this.getName()} - getRecipient - fetching group JID from store: `, recipient);
 
             if (!recipient) {
                 recipient = await this.WhatsappClient.getGroupWithInvite(groupJid) || null;
-                this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage - fetching group JID from WhatsappClient`, recipient);
+                this.homey.app.log(`[Device] ${this.getName()} - getRecipient - fetching group JID from WhatsappClient`, recipient);
 
                 if (recipient) {
                     recipient = recipient.id;
 
                     await this.setStoreValue(groupJid, recipient);
-                    this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage - saved group JID to Store`, recipient);
+                    this.homey.app.log(`[Device] ${this.getName()} - getRecipient - saved group JID to Store`, recipient);
                 } else {
                     throw new Error('Could not get group ID. Is the group link correct?');
                 }
@@ -118,26 +116,37 @@ module.exports = class mainDevice extends Homey.Device {
         await this.WhatsappClient.sendPresenceUpdate(recipient, 'paused');
     }
 
-    async sendMessage(recipient, message, fileUrl, fileType) {
-        let data = null;
+    async sendMessage(recipient, message, msgType, params = null) {
+        let data = {};
 
-        if (recipient && message && !fileType) {
-            this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage sendText`, { recipient, message, fileUrl, fileType });
+        if (recipient && message && !msgType) {
+            this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage sendText`, { recipient, message, msgType });
 
             data = await this.WhatsappClient.sendText(recipient, message);
-        } else if (recipient && fileType) {
+
+            //   data = await this.WhatsappClient.sendText(recipient, message);
+
+            //   data = await this.WhatsappClient.sendPoll(recipient, message, {
+            //     options: ['Option 1', 'Option 2', 'Option 3', 'Option 4'],
+            //     multiselect: false
+            // });
+        } else if (recipient && msgType) {
+            let fileUrl = params.droptoken || params.file || null;
             if (!!fileUrl && !!fileUrl.cloudUrl) {
                 fileUrl = fileUrl.cloudUrl;
             }
 
-            this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage send${fileType}`, { recipient, message, fileUrl, fileType });
+            this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage send${msgType}`, { ...params, recipient, message, fileUrl, msgType, device: 'LOG' });
 
-            if (fileType === 'video' || fileType === 'image') {
+            if (msgType === 'video' || msgType === 'image') {
                 data = await this.WhatsappClient.sendMedia(recipient, fileUrl, message);
-            } else if (fileType === 'audio') {
+            } else if (msgType === 'audio') {
                 throw new Error('Audio is not supported yet');
-            } else if (fileType === 'document') {
+            } else if (msgType === 'document') {
                 data = await this.WhatsappClient.sendFile(recipient, fileUrl);
+            } else if (msgType === 'location') {
+                const {lat, lon} = params;
+                data = await this.WhatsappClient.sendLocation(recipient, lat, lon, message);
             }
         }
 

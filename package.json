@@ -7,9 +7,10 @@
     "url": "https://github.com/martijnpoppen/com.whatsapp"
   },
   "dependencies": {
-    "@bot-wa/bot-wa-baileys": "https://github.com/martijnpoppen/bot-wa-baileys/tarball/homey-integration"
+    "@bot-wa/bot-wa-baileys": "https://github.com/martijnpoppen/bot-wa-baileys#homey-integration"
   },
   "engines": {
-    "yarn": "please-use-npm"
+    "npm": "please-use yarn",
+    "pnpm": "please-use yarn"
   }
 }

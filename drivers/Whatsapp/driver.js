@@ -33,11 +33,11 @@ module.exports = class mainDriver extends Homey.Driver {
         this.WhatsappClients[deviceId].once('qr', (qr) => {
             if (deviceId === this.guid) {
                 this.qr = qr;
-                this.homey.app.log(`[Driver] - listenToWhatsappEvents - QR`);
+                this.homey.app.log(`[Driver] - setWhatsappClientListeners - QR`);
             }
 
             if (device) {
-                this.homey.app.log(`[Device] ${device.getName()} - listenToWhatsappEvents - QR`);
+                this.homey.app.log(`[Device] ${device.getName()} - setWhatsappClientListeners - QR`);
                 device.setUnavailable(`Repair device and Scan QR code to connect`);
             }
         });
@@ -45,21 +45,21 @@ module.exports = class mainDriver extends Homey.Driver {
         this.WhatsappClients[deviceId].once('ready', () => {
             if (deviceId === this.guid) {
                 this.whatsappReady = true;
-                this.homey.app.log(`[Driver] - listenToWhatsappEvents - Ready`);
+                this.homey.app.log(`[Driver] - setWhatsappClientListeners - Ready`);
             }
 
             if (device) {
-                this.homey.app.log(`[Device] ${device.getName()} - listenToWhatsappEvents - Ready`);
+                this.homey.app.log(`[Device] ${device.getName()} - setWhatsappClientListeners - Ready`);
                 device.setAvailable();
             }
         });
 
         this.WhatsappClients[deviceId].once('auth_failure', (error) => {
             if (device) {
-                this.homey.app.log(`[Device] ${device.getName()} - listenToWhatsappEvents - auth_failure`);
+                this.homey.app.log(`[Device] ${device.getName()} - setWhatsappClientListeners - auth_failure`);
                 device.setUnavailable(error);
             } else {
-                this.homey.app.log(`[Driver]- listenToWhatsappEvents - auth_failure`);
+                this.homey.app.log(`[Driver]- setWhatsappClientListeners - auth_failure`);
             }
         });
     }
