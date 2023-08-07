@@ -34,5 +34,8 @@
   },
   "1.5.0": {
     "en": "NEW: location card"
+  },
+  "1.5.1": {
+    "en": "FIX: memory"
   }
 }
