@@ -7,10 +7,6 @@
     "url": "https://github.com/martijnpoppen/com.whatsapp"
   },
   "dependencies": {
-    "@bot-wa/bot-wa-baileys": "https://github.com/martijnpoppen/bot-wa-baileys#homey-integration"
-  },
-  "engines": {
-    "npm": "please-use yarn",
-    "pnpm": "please-use yarn"
+    "@bot-wa/bot-wa-baileys": "martijnpoppen/bot-wa-baileys#homey-integration"
   }
 }
