@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://homey.app/nl-nl/apps/author/5e2daad2e3e0da0ca754b6a8/page/0/">
-    <img src="https://raw.githubusercontent.com/martijnpoppen/com.whatsapp/main/assets/images/large.jpg" />
+    <img src="https://www.callbell.eu/wp-content/uploads/2021/03/capability-n-features-banner1-1080x400.jpg" />
   </a>
 </p>
 
