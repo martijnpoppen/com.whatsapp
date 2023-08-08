@@ -37,5 +37,8 @@
   },
   "1.5.1": {
     "en": "FIX: memory"
+  },
+  "1.5.2": {
+    "en": "FIX: build for armv8"
   }
 }
