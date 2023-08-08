@@ -2,7 +2,7 @@ const Homey = require('homey');
 const path = require('path');
 const { BaileysClass } = require('@bot-wa/bot-wa-baileys');
 
-const { GetGUID, sleep } = require('../../lib/helpers');
+const { GetGUID } = require('../../lib/helpers');
 
 module.exports = class mainDriver extends Homey.Driver {
     onInit() {

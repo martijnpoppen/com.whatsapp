@@ -1,6 +1,4 @@
 const Homey = require('homey');
-const { BaileysClass } = require('@bot-wa/bot-wa-baileys');
-const path = require('path');
 
 const { sleep, validateUrl } = require('../../lib/helpers');
 
