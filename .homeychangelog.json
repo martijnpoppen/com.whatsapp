@@ -43,5 +43,8 @@
   },
   "1.5.3": {
     "en": "FIX: memory"
+  },
+  "1.5.4": {
+    "en": "FIX: try reduce memory"
   }
 }
