@@ -1,7 +1,6 @@
 {
   "name": "com.whatsapp",
   "version": "1.0.0",
-  "main": "app.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/martijnpoppen/com.whatsapp"

@@ -17,6 +17,8 @@ module.exports = class mainDriver extends Homey.Driver {
             await this.setWhatsappClient(deviceObject.id);
             await this.setWhatsappClientListeners(device, deviceObject.id);
         });
+
+        global.gc();
     }
 
     setWhatsappClient(deviceId) {

@@ -2,6 +2,7 @@
 
 const Homey = require('homey');
 const flowActions = require('./lib/flows/actions');
+const garbageCollection = require('./lib/helpers/garbageCollection');
 
 class App extends Homey.App {
     log() {
