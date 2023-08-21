@@ -6,6 +6,7 @@
     "url": "https://github.com/martijnpoppen/com.whatsapp"
   },
   "dependencies": {
+    "axios": "^1.4.0",
     "@bot-wa/bot-wa-baileys": "github:martijnpoppen/bot-wa-baileys#homey-integration"
   }
 }
