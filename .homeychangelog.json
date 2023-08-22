@@ -52,5 +52,8 @@
   },
   "1.6.0": {
     "en": "NEW: HP23 support"
+  },
+  "1.6.1": {
+    "en": "FIX: platform"
   }
 }
