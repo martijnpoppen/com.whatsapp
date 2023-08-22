@@ -21,7 +21,11 @@
             });
             const qrCodeElement = document.getElementById('qrcode');
             
-            qrCodeElement.innerHTML = '';
+
+            if (qrCodeElement.hasChildNodes()) {
+                qrCodeElement.removeChild(qrCodeElement.children[0]);
+            }
+
             qrCodeElement.appendChild(canvas);
 
             return true
