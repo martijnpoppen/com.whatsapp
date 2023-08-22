@@ -6,7 +6,8 @@ module.exports = class mainDriver extends Homey.Driver {
         this.homey.app.log('[Driver] - init', this.id);
         this.homey.app.log(`[Driver] - version`, Homey.manifest.version);
         this.WhatsappClients = [];
-        this.Homey2023 = this.homey.platform === 'local' && this.homey.platformVersion === 1;
+        // this.Homey2023 = this.homey.platform === 'local' && this.homey.platformVersion === 2;
+        this.Homey2023 = this.homey.platform === 'local';
 
         if (this.Homey2023) {
             const devices = this.getDevices();
