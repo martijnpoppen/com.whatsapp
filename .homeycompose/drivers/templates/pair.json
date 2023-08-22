@@ -28,6 +28,20 @@
             "next": "done"
           }
       },
+      {
+        "id": "whatsapp_incompatible",
+        "options": {
+            "title": {
+                "en": "Incompatible Homey"
+              },
+              "text": {
+                "en": "<ol><li>This driver is not compatible with your Homey. Please try the other option<br><br></li></ol>"
+              }
+        },
+          "navigation": {
+            "next": "done"
+          }
+      },
     {
         "id": "loading",
         "template": "loading"

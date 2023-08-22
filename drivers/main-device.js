@@ -108,6 +108,7 @@ module.exports = class mainDevice extends Homey.Device {
         return recipient;
     }
 
+    // Placeholder
     async isTyping(recipient) {
         this.homey.app.log(`[Device] ${this.getName()} - isTyping`, recipient);
         await this.WhatsappClient.sendPresenceUpdate(recipient, 'composing');
@@ -143,7 +144,7 @@ module.exports = class mainDevice extends Homey.Device {
             }
         }
 
-        return data;
+        return data || true;
     }
 
     async coolDown() {

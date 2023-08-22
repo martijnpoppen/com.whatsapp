@@ -1,5 +1,4 @@
 const Homey = require('homey');
-const whatsappClient = require('../../lib/api/whatsapp');
 const { GetGUID } = require('../../lib/helpers');
 
 module.exports = class mainDriver extends Homey.Driver {
@@ -7,21 +6,45 @@ module.exports = class mainDriver extends Homey.Driver {
         this.homey.app.log('[Driver] - init', this.id);
         this.homey.app.log(`[Driver] - version`, Homey.manifest.version);
         this.WhatsappClients = [];
+        this.Homey2023 = this.homey.platform === 'local' && this.homey.platformVersion === 1;
 
-        const devices = this.getDevices();
+        if (this.Homey2023) {
+            const devices = this.getDevices();
 
-        devices.forEach(async (device) => {
-            const deviceObject = device.getData();
-            await this.setWhatsappClient(deviceObject.id);
-        });
+            devices.forEach(async (device) => {
+                const deviceObject = device.getData();
+                await this.setWhatsappClient(deviceObject.id);
+            });
+        }
+
+        global.gc();
     }
 
     setWhatsappClient(deviceId) {
-        this.WhatsappClients[deviceId] = new whatsappClient({
-            deviceId
-        });
+        if (this.Homey2023) {
+            const whatsappClient = require('../../lib/api/whatsapp');
+            this.WhatsappClients[deviceId] = new whatsappClient({
+                deviceId
+            });
 
-        return this.WhatsappClients[deviceId];
+            return this.WhatsappClients[deviceId];
+        }
+
+        return false;
+    }
+
+    async setCheckInterval(session) {
+        this.onReadyInterval = this.homey.setInterval(async () => {
+            const data = await this.WhatsappClients[this.guid].addDevice();
+
+            if (data.type === 'READY' && data.clientID === this.guid) {
+                session.showView('loading2');
+            }
+
+            if (data.type === 'QR' && data.clientID === this.guid) {
+                await session.emit('qr', data.msg);
+            }
+        }, 2000);
     }
 
     async onPair(session) {
@@ -44,18 +67,6 @@ module.exports = class mainDriver extends Homey.Driver {
 
         this.guid = this.device ? deviceObject.id : `${homeyCloudId}_${GetGUID()}`;
 
-        this.onReadyInterval = this.homey.setInterval(async () => {
-            const data = await this.WhatsappClients[this.guid].addDevice();
-            console.log(data);
-            if (data.type === 'READY' && data.clientID === this.guid) {
-                session.showView('loading2');
-            }
-
-            if (data.type === 'QR' && data.clientID === this.guid) {
-                await session.emit('qr', data.msg);
-            }
-        }, 2000);
-
         session.setHandler('showView', async (view) => {
             this.homey.app.log(`[Driver] ${this.id} - currentView:`, { view, type: this.type });
 
@@ -64,11 +75,18 @@ module.exports = class mainDriver extends Homey.Driver {
 
                 const devices = this.getDevices();
                 if (devices.length >= 2 && this.type === 'pair') {
-                    this.cancelPairing = true;
+
                     session.showView('whatsapp_max');
+
+                    return false;
+                } else if (!this.Homey2023) {
+                    session.showView('whatsapp_incompatible');
+
                     return false;
                 } else {
                     await this.setWhatsappClient(this.guid);
+
+                    this.setCheckInterval(session);
                 }
             }
 

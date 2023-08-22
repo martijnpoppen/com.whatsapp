@@ -46,7 +46,7 @@
         "en": "Select device",
         "nl": "Selecteer apparaat"
       },
-      "filter": "driver_id=Whatsapp&capabilities=send_data"
+      "filter": "driver_id=Whatsapp|Whatsapp_cloud&capabilities=send_data"
     },
     {
         "type": "text",

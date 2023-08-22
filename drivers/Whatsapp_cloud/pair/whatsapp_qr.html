@@ -19,7 +19,10 @@
             const canvas = qrcanvas.qrcanvas({
                 data
             });
-            document.getElementById('qrcode').appendChild(canvas);
+            const qrCodeElement = document.getElementById('qrcode');
+            
+            qrCodeElement.innerHTML = '';
+            qrCodeElement.appendChild(canvas);
 
             return true
         });
