@@ -24,7 +24,8 @@ module.exports = class mainDriver extends Homey.Driver {
         if (this.Homey2023) {
             const whatsappClient = require('../../lib/api/whatsapp');
             this.WhatsappClients[deviceId] = new whatsappClient({
-                deviceId
+                deviceId,
+                url: Homey.env.API
             });
 
             return this.WhatsappClients[deviceId];
