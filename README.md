@@ -21,9 +21,9 @@ Currently has support for:
 Of course, you can put all available Homey tags in the text field and send snapshots/artworks via the dedicated image tag card.
 
 
-## Flow cards (only actions)
-![IMG_4296|230x500](upload://3IoxXP86cYfV4YkUbx8V1OiwyGR.png)
+[Download in the Homey App Store!](https://homey.app/en-us/app/com.whatsapp/WhatsApp/)
 
+<1 action kaart foto>
 
 ## Developers
 
