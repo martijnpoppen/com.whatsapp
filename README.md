@@ -17,6 +17,7 @@ Currently has support for:
 * :rice_scene: Send Images (by tag or url)
 * :page_facing_up:  Send Documents
 * :video_camera: Send Video
+  
 Of course, you can put all available Homey tags in the text field and send snapshots/artworks via the dedicated image tag card.
 
 
