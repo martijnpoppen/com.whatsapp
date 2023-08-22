@@ -12,12 +12,12 @@ WhatsApp for Homey is a complete intergration without the intervention of a bot.
 
 
 Currently has support for:
-:heavy_plus_sign: Send from your personal number to Groups or just one receiver
-:speech_balloon: Send Text Messages
-:rice_scene: Send Images (by tag or url)
-:page_facing_up:  Send Documents
-:video_camera: Send Video
-:tada: Of course, you can put all available Homey tags in the text field and send snapshots/artworks via the dedicated image tag card.
+* :heavy_plus_sign: Send from your personal number to Groups or just one receiver
+* :speech_balloon: Send Text Messages
+* :rice_scene: Send Images (by tag or url)
+* :page_facing_up:  Send Documents
+* :video_camera: Send Video
+* :tada: Of course, you can put all available Homey tags in the text field and send snapshots/artworks via the dedicated image tag card.
 
 
 ## Flow cards (only actions)
