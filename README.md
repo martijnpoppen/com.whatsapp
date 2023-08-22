@@ -5,8 +5,8 @@
 </p>
 
   
+**WhatsApp for Homey**
 
-## General
 WhatsApp for Homey is a complete intergration without the intervention of a bot. With this Homey app, you send messages, videos, photos, documents and audio messages to a mobile number or WhatsApp group from your own name.
 
 
