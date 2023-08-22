@@ -25,10 +25,20 @@ Of course, you can put all available Homey tags in the text field and send snaps
 
 <APP ACTION CARD>
 
-** Developers
+:gear:  Install this app on your Homey and add a new WhatsApp device. Follow the instructions in the setup.
 
-- [Martijn Poppen see more apps](https://homey.app/nl-nl/apps/author/5e2daad2e3e0da0ca754b6a8/page/0/)
-- [Léon van der Linden see more apps](https://homey.app/nl-nl/apps/author/5d4da77a2c836a50f6936070/page/0/)
+<APP FLOW CARDS>
+
+:speech_balloon: Supported languages:
+
+:uk: English :netherlands: Dutch :de: German :fr: french :it: Italian :sweden: Swedish :norway: Norwegian :es: Spanish :denmark: Danish :ru: Russian :poland: Polish
+  
+---
+
+💻 **Developers**
+
+- @martijnpoppen [see more apps](https://homey.app/nl-nl/apps/author/5e2daad2e3e0da0ca754b6a8/page/0/)
+- @LRvdLinden [see more apps](https://homey.app/nl-nl/apps/author/5d4da77a2c836a50f6936070/page/0/)
 
 ---
 
@@ -37,23 +47,6 @@ Of course, you can put all available Homey tags in the text field and send snaps
 2) This app is not responsible for any <strong>ban or block</strong> performed by WhatsApp on your number. And the developer cant do anything to unblock it
 3) Never send a Whatsapp message to a new conversation. Make sure the conversation had interaction with your number before you send a message from this app
 4) This project is not affiliated, associated, authorized, endorsed by, or in any way officially connected with WhatsApp or any of its subsidiaries or its affiliates. The official WhatsApp website can be found at https://whatsapp.com. 'WhatsApp' as well as related names, marks, emblems and images are registered trademarks of their respective owners
-
----
-
-** 💻 Apps made by @martijnpoppen 
----
-<p> See for more apps link below 👇🏻 or just open the pull down. </p>
-
-[quote=“martijnpoppen, post:1, topic:85812”]Click to expand[/quote]
-
-
----
-
-## 💻 Apps made by @LRvdLinden
----
-<p> See for more apps link below 👇🏻 or just open the pull down. </p>
-
-[quote=“LRvdLinden, post:1, topic:85452”]Click to expand[/quote]
 
 ---
 
