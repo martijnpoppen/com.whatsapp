@@ -46,7 +46,7 @@ module.exports = class mainDriver extends Homey.Driver {
             if (data.type === 'QR' && data.clientID === this.guid) {
                 await session.emit('qr', data.msg);
             }
-        }, 2000);
+        }, 4000);
     }
 
     async onPair(session) {
@@ -89,6 +89,10 @@ module.exports = class mainDriver extends Homey.Driver {
                     await this.setWhatsappClient(this.guid);
 
                     this.setCheckInterval(session);
+
+                    setTimeout(() => {
+                        this.homey.clearInterval(this.onReadyInterval);
+                    }, 60000);
                 }
             }
 
