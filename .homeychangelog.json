@@ -55,5 +55,11 @@
   },
   "1.6.1": {
     "en": "FIX: platform"
+  },
+  "1.6.2": {
+    "en": "FIX: pairing loop"
+  },
+  "1.6.3": {
+    "en": "FIX: pairing loop"
   }
 }
