@@ -23,7 +23,7 @@ Of course, you can put all available Homey tags in the text field and send snaps
 
 [Download in the Homey App Store!](https://homey.app/en-us/app/com.whatsapp/WhatsApp/)
 
-<1 action kaart foto>
+<APP ACTION CARD>
 
 ** Developers
 
