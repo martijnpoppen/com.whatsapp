@@ -1,0 +1,12 @@
+{
+    "name": {
+        "en": "WhatsApp"
+    },
+    "capabilities": ["send_data"],
+    "$extends": [
+        "device",
+        "pair",
+        "repair",
+        "settings"
+    ]
+}

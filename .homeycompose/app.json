@@ -1,0 +1,84 @@
+{
+  "id": "com.whatsapp",
+  "version": "1.11.2",
+  "compatibility": ">=5.0.0",
+  "sdk": 3,
+  "platforms": [
+    "local"
+  ],
+  "brandColor": "#65d072",
+  "name": {
+    "en": "WhatsApp"
+  },
+  "description": {
+    "en": "Connect your own WhatsApp Account to this APP and start sending messages from your number."
+  },
+  "tags": {
+    "en": [
+      "Whatsapp",
+      "Texts",
+      "Messaging",
+      "Messages",
+      "App",
+      "TextMeBot",
+      "Bot",
+      "Text",
+      "Telegram",
+      "CallMeBot"
+    ]
+  },
+  "category": [
+    "internet"
+  ],
+  "images": {
+    "large": "/assets/images/large.png",
+    "small": "/assets/images/small.png"
+  },
+  "author": {
+    "name": "Martijn Poppen",
+    "email": "textmebot@martijnpoppen.nl"
+  },
+  "contributors": {
+    "developers": [
+      {
+        "name": "Martijn Poppen",
+        "email": "textmebot@martijnpoppen.nl"
+      },
+      {
+        "name": "Léon van der Linden",
+        "email": "homey@vdlinden.xyz"
+      }
+    ],
+    "translators": [
+      {
+        "name": "🇬🇧 Martijn Poppen"
+      },
+      {
+        "name": "ChatGPT (translations)"
+      }
+    ]
+  },
+  "contributing": {
+    "donate": {
+      "paypal": {
+        "username": "martijnpoppen"
+      },
+      "bunq": {
+        "username": "martijnpoppen"
+      }
+    }
+  },
+  "bugs": {
+    "url": "https://community.homey.app/t/app-pro-controlmyspa/57870"
+  },
+  "api": {
+    "store": {
+      "method": "post",
+      "public": true,
+      "path": "/store"
+    }
+  },
+  "source": "https://github.com/martijnpoppen/com.whatsapp",
+  "homeyCommunityTopicId": 57870,
+  "support": "https://community.homey.app/t/app-pro-controlmyspa/57870"
+}

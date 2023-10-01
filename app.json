@@ -1,0 +1,1093 @@
+{
+  "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
+  "id": "com.whatsapp",
+  "version": "1.11.2",
+  "compatibility": ">=5.0.0",
+  "sdk": 3,
+  "platforms": [
+    "local"
+  ],
+  "brandColor": "#65d072",
+  "name": {
+    "en": "WhatsApp"
+  },
+  "description": {
+    "en": "Connect your own WhatsApp Account to this APP and start sending messages from your number."
+  },
+  "tags": {
+    "en": [
+      "Whatsapp",
+      "Texts",
+      "Messaging",
+      "Messages",
+      "App",
+      "TextMeBot",
+      "Bot",
+      "Text",
+      "Telegram",
+      "CallMeBot"
+    ]
+  },
+  "category": [
+    "internet"
+  ],
+  "images": {
+    "large": "/assets/images/large.png",
+    "small": "/assets/images/small.png"
+  },
+  "author": {
+    "name": "Martijn Poppen",
+    "email": "textmebot@martijnpoppen.nl"
+  },
+  "contributors": {
+    "developers": [
+      {
+        "name": "Martijn Poppen",
+        "email": "textmebot@martijnpoppen.nl"
+      },
+      {
+        "name": "Léon van der Linden",
+        "email": "homey@vdlinden.xyz"
+      }
+    ],
+    "translators": [
+      {
+        "name": "🇬🇧 Martijn Poppen"
+      },
+      {
+        "name": "ChatGPT (translations)"
+      }
+    ]
+  },
+  "contributing": {
+    "donate": {
+      "paypal": {
+        "username": "martijnpoppen"
+      },
+      "bunq": {
+        "username": "martijnpoppen"
+      }
+    }
+  },
+  "bugs": {
+    "url": "https://community.homey.app/t/app-pro-controlmyspa/57870"
+  },
+  "api": {
+    "store": {
+      "method": "post",
+      "public": true,
+      "path": "/store"
+    }
+  },
+  "source": "https://github.com/martijnpoppen/com.whatsapp",
+  "homeyCommunityTopicId": 57870,
+  "support": "https://community.homey.app/t/app-pro-controlmyspa/57870",
+  "flow": {
+    "actions": [
+      {
+        "title": {
+          "en": "Send Whatsapp message",
+          "nl": "Verstuur een Whatsapp-bericht",
+          "de": "Sende eine Whatsapp-Nachricht",
+          "fr": "Envoyer un message Whatsapp",
+          "it": "Invia un messaggio Whatsapp",
+          "sv": "Skicka ett Whatsapp-meddelande",
+          "no": "Send Whatsapp-melding",
+          "es": "Enviar mensaje de Whatsapp",
+          "da": "Send Whatsapp-besked",
+          "ru": "Отправить Whatsapp-сообщение",
+          "pl": "Wyślij wiadomość Whatsapp"
+        },
+        "titleFormatted": {
+          "en": "Send Whatsapp [[message]] to [[recipient]]",
+          "nl": "Verstuur een Whatsapp-bericht [[message]] naar [[recipient]]",
+          "de": "Sende eine Whatsapp-Nachricht [[message]] an [[recipient]]",
+          "fr": "Envoyer un message Whatsapp [[message]] à [[recipient]]",
+          "it": "Invia un messaggio Whatsapp [[message]] a [[recipient]]",
+          "sv": "Skicka ett Whatsapp-meddelande [[message]] till [[recipient]]",
+          "no": "Send Whatsapp-melding [[message]] til [[recipient]]",
+          "es": "Enviar mensaje de Whatsapp [[message]] a [[recipient]]",
+          "da": "Send Whatsapp-besked [[message]] til [[recipient]]",
+          "ru": "Отправить Whatsapp-сообщение [[message]] на [[recipient]]",
+          "pl": "Wyślij wiadomość Whatsapp [[message]] do [[recipient]]"
+        },
+        "hint": {
+          "en": "Phone number: Use with country code! e.g. (+31 -> +31601020304) || Groups: Copy the invite link of your WhatsApp group and paste it here. Based on the link, the app will know which group to send a message to.",
+          "nl": "Telefoonnummer: Gebruik met landcode! bijv. (+31 -> +31601020304) || Groepen: Kopieer de uitnodigingslink van je WhatsApp-groep en plak deze hier. Op basis van de link weet de app naar welke groep het bericht moet worden verzonden.",
+          "de": "Telefonnummer: Mit Ländervorwahl verwenden! z.B. (+49 -> +491234567890) || Gruppen: Kopiere den Einladungslink deiner WhatsApp-Gruppe und füge ihn hier ein. Basierend auf dem Link weiß die App, in welche Gruppe sie eine Nachricht senden soll.",
+          "fr": "Numéro de téléphone : Utilisez-le avec le code pays ! Ex. (+33 -> +33601020304) || Groupes : Copiez le lien d'invitation de votre groupe WhatsApp et collez-le ici. En fonction du lien, l'application saura dans quel groupe envoyer un message.",
+          "it": "Numero di telefono: Utilizzare con il codice del paese! Es. (+39 -> +393123456789) || Gruppi: Copia il link di invito del tuo gruppo WhatsApp e incollalo qui. In base al link, l'applicazione saprà a quale gruppo inviare un messaggio.",
+          "sv": "Telefonnummer: Använd med landskod! t.ex. (+46 -> +46701234567) || Grupper: Kopiera inbjudningslänken till din WhatsApp-grupp och klistra in den här. Baserat på länken kommer appen att veta vilken grupp den ska skicka ett meddelande till.",
+          "no": "Telefonnummer: Bruk med landskode! f.eks. (+47 -> +4798765432) || Grupper: Kopier invitasjonslenken til WhatsApp-gruppen din og lim den inn her. Basert på lenken vil appen vite hvilken gruppe den skal sende en melding til.",
+          "es": "Número de teléfono: ¡Usar con código de país! ej. (+34 -> +34601020304) || Grupos: Copia el enlace de invitación de tu grupo de WhatsApp y pégalo aquí. Basado en el enlace, la aplicación sabrá a qué grupo enviar un mensaje.",
+          "da": "Telefonnummer: Brug med landekode! f.eks. (+45 -> +4512345678) || Grupper: Kopier linket til din WhatsApp-gruppeinvitation og indsæt det her. Baseret på linket vil appen vide, hvilken gruppe der skal sendes en besked til.",
+          "ru": "Телефонный номер: Используйте с указанием кода страны! например (+7 -> +79123456789) || Группы: Скопируйте пригласительную ссылку на вашу группу WhatsApp и вставьте ее здесь. По ссылке приложение определит, в какую группу отправить сообщение.",
+          "pl": "Numer telefonu: Użyj z kodem kraju! np. (+31 -> +31601020304) || Grupy: Skopiuj link do zaproszenia do swojej grupy WhatsApp i wklej go tutaj. Na podstawie linku aplikacja będzie wiedzieć, do której grupy wysłać wiadomość."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "placeholder": {
+              "en": "Select device",
+              "nl": "Selecteer apparaat"
+            },
+            "filter": "driver_id=Whatsapp|Whatsapp_cloud&capabilities=send_data"
+          },
+          {
+            "type": "text",
+            "name": "recipient",
+            "required": true,
+            "title": {
+              "en": "Mobile number / Group invite link",
+              "nl": "Mobiel nummer / Groepsuitnodigingslink",
+              "de": "Mobiltelefonnummer / Gruppeneinladungslink",
+              "fr": "Numéro de téléphone mobile / Lien d'invitation de groupe",
+              "it": "Numero di cellulare / Link invito al gruppo",
+              "sv": "Mobilnummer / Inbjudningslänk till grupp",
+              "no": "Mobilnummer / Gruppeinvitasjonslenke",
+              "es": "Número de teléfono móvil / Enlace de invitación de grupo",
+              "da": "Mobilnummer / Gruppeinvitation link",
+              "ru": "Мобильный номер / Ссылка для приглашения в группу",
+              "pl": "Numer telefonu komórkowego / Link do zaproszenia do grupy"
+            }
+          },
+          {
+            "type": "text",
+            "name": "message",
+            "required": true,
+            "title": {
+              "en": "Message",
+              "nl": "Bericht",
+              "de": "Nachricht",
+              "fr": "Message",
+              "it": "Messaggio",
+              "sv": "Meddelande",
+              "no": "Melding",
+              "es": "Mensaje",
+              "da": "Besked",
+              "ru": "Сообщение",
+              "pl": "Wiadomość"
+            }
+          }
+        ],
+        "platforms": [
+          "local"
+        ],
+        "id": "action_send_message"
+      },
+      {
+        "title": {
+          "en": "Send Whatsapp message with audio",
+          "nl": "Verstuur een WhatsApp-bericht met audio",
+          "de": "Sende eine WhatsApp-Nachricht mit Audio",
+          "fr": "Envoyer un message WhatsApp avec un fichier audio",
+          "it": "Invia un messaggio WhatsApp con audio",
+          "sv": "Skicka ett WhatsApp-meddelande med ljud",
+          "no": "Send WhatsApp-melding med lyd",
+          "es": "Enviar mensaje de WhatsApp con audio",
+          "da": "Send WhatsApp-besked med lyd",
+          "ru": "Отправить сообщение в WhatsApp с аудио",
+          "pl": "Wyślij wiadomość WhatsApp z dźwiękiem"
+        },
+        "titleFormatted": {
+          "en": "Send Whatsapp [[message]] with [[file]] to [[recipient]]",
+          "nl": "Verstuur een Whatsapp-bericht [[message]] met [[file]] naar [[recipient]]",
+          "de": "Sende eine Whatsapp-Nachricht [[message]] mit [[file]] an [[recipient]]",
+          "fr": "Envoyer un message Whatsapp [[message]] avec [[file]] à [[recipient]]",
+          "it": "Invia un messaggio Whatsapp [[message]] con [[file]] a [[recipient]]",
+          "sv": "Skicka ett Whatsapp-meddelande [[message]] med [[file]] till [[recipient]]",
+          "no": "Send Whatsapp-melding [[message]] med [[file]] til [[recipient]]",
+          "es": "Enviar mensaje de Whatsapp [[message]] con [[file]] a [[recipient]]",
+          "da": "Send Whatsapp-besked [[message]] med [[file]] til [[recipient]]",
+          "ru": "Отправить Whatsapp-сообщение [[message]] с [[file]] на [[recipient]]",
+          "pl": "Wyślij wiadomość Whatsapp [[message]] z [[file]] do [[recipient]]"
+        },
+        "hint": {
+          "en": "Phone number: Use with country code! e.g. (+31 -> +31601020304) || Groups: Copy the invite link of your WhatsApp group and paste it here. Based on the link, the app will know which group to send a message to.",
+          "nl": "Telefoonnummer: Gebruik met landcode! bijv. (+31 -> +31601020304) || Groepen: Kopieer de uitnodigingslink van je WhatsApp-groep en plak deze hier. Op basis van de link weet de app naar welke groep het bericht moet worden verzonden.",
+          "de": "Telefonnummer: Mit Ländervorwahl verwenden! z.B. (+49 -> +491234567890) || Gruppen: Kopiere den Einladungslink deiner WhatsApp-Gruppe und füge ihn hier ein. Basierend auf dem Link weiß die App, in welche Gruppe sie eine Nachricht senden soll.",
+          "fr": "Numéro de téléphone : Utilisez-le avec le code pays ! Ex. (+33 -> +33601020304) || Groupes : Copiez le lien d'invitation de votre groupe WhatsApp et collez-le ici. En fonction du lien, l'application saura dans quel groupe envoyer un message.",
+          "it": "Numero di telefono: Utilizzare con il codice del paese! Es. (+39 -> +393123456789) || Gruppi: Copia il link di invito del tuo gruppo WhatsApp e incollalo qui. In base al link, l'applicazione saprà a quale gruppo inviare un messaggio.",
+          "sv": "Telefonnummer: Använd med landskod! t.ex. (+46 -> +46701234567) || Grupper: Kopiera inbjudningslänken till din WhatsApp-grupp och klistra in den här. Baserat på länken kommer appen att veta vilken grupp den ska skicka ett meddelande till.",
+          "no": "Telefonnummer: Bruk med landskode! f.eks. (+47 -> +4798765432) || Grupper: Kopier invitasjonslenken til WhatsApp-gruppen din og lim den inn her. Basert på lenken vil appen vite hvilken gruppe den skal sende en melding til.",
+          "es": "Número de teléfono: ¡Usar con código de país! ej. (+34 -> +34601020304) || Grupos: Copia el enlace de invitación de tu grupo de WhatsApp y pégalo aquí. Basado en el enlace, la aplicación sabrá a qué grupo enviar un mensaje.",
+          "da": "Telefonnummer: Brug med landekode! f.eks. (+45 -> +4512345678) || Grupper: Kopier linket til din WhatsApp-gruppeinvitation og indsæt det her. Baseret på linket vil appen vide, hvilken gruppe der skal sendes en besked til.",
+          "ru": "Телефонный номер: Используйте с указанием кода страны! например (+7 -> +79123456789) || Группы: Скопируйте пригласительную ссылку на вашу группу WhatsApp и вставьте ее здесь. По ссылке приложение определит, в какую группу отправить сообщение.",
+          "pl": "Numer telefonu: Użyj z kodem kraju! np. (+31 -> +31601020304) || Grupy: Skopiuj link do zaproszenia do swojej grupy WhatsApp i wklej go tutaj. Na podstawie linku aplikacja będzie wiedzieć, do której grupy wysłać wiadomość."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "placeholder": {
+              "en": "Select device",
+              "nl": "Selecteer apparaat"
+            },
+            "filter": "driver_id=Whatsapp|Whatsapp_cloud&capabilities=send_data"
+          },
+          {
+            "type": "text",
+            "name": "recipient",
+            "required": true,
+            "title": {
+              "en": "Mobile number / Group invite link",
+              "nl": "Mobiel nummer / Groepsuitnodigingslink",
+              "de": "Mobiltelefonnummer / Gruppeneinladungslink",
+              "fr": "Numéro de téléphone mobile / Lien d'invitation de groupe",
+              "it": "Numero di cellulare / Link invito al gruppo",
+              "sv": "Mobilnummer / Inbjudningslänk till grupp",
+              "no": "Mobilnummer / Gruppeinvitasjonslenke",
+              "es": "Número de teléfono móvil / Enlace de invitación de grupo",
+              "da": "Mobilnummer / Gruppeinvitation link",
+              "ru": "Мобильный номер / Ссылка для приглашения в группу",
+              "pl": "Numer telefonu komórkowego / Link do zaproszenia do grupy"
+            }
+          },
+          {
+            "type": "text",
+            "name": "message",
+            "required": false,
+            "title": {
+              "en": "Message",
+              "nl": "Bericht",
+              "de": "Nachricht",
+              "fr": "Message",
+              "it": "Messaggio",
+              "sv": "Meddelande",
+              "no": "Melding",
+              "es": "Mensaje",
+              "da": "Besked",
+              "ru": "Сообщение",
+              "pl": "Wiadomość"
+            }
+          },
+          {
+            "type": "text",
+            "name": "file",
+            "required": true,
+            "hint": {
+              "en": "for example a url to a mp3 file"
+            },
+            "title": {
+              "en": "Audio link"
+            }
+          }
+        ],
+        "platforms": [
+          "local"
+        ],
+        "id": "action_send_message_audio"
+      },
+      {
+        "title": {
+          "en": "Send Whatsapp message with document",
+          "nl": "Verstuur een Whatsapp-bericht met document",
+          "de": "Sende eine Whatsapp-Nachricht mit Dokument",
+          "fr": "Envoyer un message Whatsapp avec un document",
+          "it": "Invia un messaggio Whatsapp con documento",
+          "sv": "Skicka ett Whatsapp-meddelande med dokument",
+          "no": "Send Whatsapp-melding med dokument",
+          "es": "Enviar mensaje de Whatsapp con documento",
+          "da": "Send Whatsapp-besked med dokument",
+          "ru": "Отправить сообщение в Whatsapp с документом",
+          "pl": "Wyślij wiadomość Whatsapp z dokumentem"
+        },
+        "titleFormatted": {
+          "en": "Send Whatsapp with [[file]] to [[recipient]]",
+          "nl": "Verstuur een Whatsapp-bericht met [[file]] naar [[recipient]]",
+          "de": "Sende eine Whatsapp-Nachricht mit [[file]] an [[recipient]]",
+          "fr": "Envoyer un message Whatsapp avec [[file]] à [[recipient]]",
+          "it": "Invia un messaggio Whatsapp con [[file]] a [[recipient]]",
+          "sv": "Skicka ett Whatsapp-meddelande med [[file]] till [[recipient]]",
+          "no": "Send Whatsapp-melding med [[file]] til [[recipient]]",
+          "es": "Enviar mensaje de Whatsapp con [[file]] a [[recipient]]",
+          "da": "Send Whatsapp-besked med [[file]] til [[recipient]]",
+          "ru": "Отправить Whatsapp-сообщение с [[file]] на [[recipient]]",
+          "pl": "Wyślij wiadomość Whatsapp z [[file]] do [[recipient]]"
+        },
+        "hint": {
+          "en": "Phone number: Use with country code! e.g. (+31 -> +31601020304) || Groups: Copy the invite link of your WhatsApp group and paste it here. Based on the link, the app will know which group to send a message to.",
+          "nl": "Telefoonnummer: Gebruik met landcode! bijv. (+31 -> +31601020304) || Groepen: Kopieer de uitnodigingslink van je WhatsApp-groep en plak deze hier. Op basis van de link weet de app naar welke groep het bericht moet worden verzonden.",
+          "de": "Telefonnummer: Mit Ländervorwahl verwenden! z.B. (+49 -> +491234567890) || Gruppen: Kopiere den Einladungslink deiner WhatsApp-Gruppe und füge ihn hier ein. Basierend auf dem Link weiß die App, in welche Gruppe sie eine Nachricht senden soll.",
+          "fr": "Numéro de téléphone : Utilisez-le avec le code pays ! Ex. (+33 -> +33601020304) || Groupes : Copiez le lien d'invitation de votre groupe WhatsApp et collez-le ici. En fonction du lien, l'application saura dans quel groupe envoyer un message.",
+          "it": "Numero di telefono: Utilizzare con il codice del paese! Es. (+39 -> +393123456789) || Gruppi: Copia il link di invito del tuo gruppo WhatsApp e incollalo qui. In base al link, l'applicazione saprà a quale gruppo inviare un messaggio.",
+          "sv": "Telefonnummer: Använd med landskod! t.ex. (+46 -> +46701234567) || Grupper: Kopiera inbjudningslänken till din WhatsApp-grupp och klistra in den här. Baserat på länken kommer appen att veta vilken grupp den ska skicka ett meddelande till.",
+          "no": "Telefonnummer: Bruk med landskode! f.eks. (+47 -> +4798765432) || Grupper: Kopier invitasjonslenken til WhatsApp-gruppen din og lim den inn her. Basert på lenken vil appen vite hvilken gruppe den skal sende en melding til.",
+          "es": "Número de teléfono: ¡Usar con código de país! ej. (+34 -> +34601020304) || Grupos: Copia el enlace de invitación de tu grupo de WhatsApp y pégalo aquí. Basado en el enlace, la aplicación sabrá a qué grupo enviar un mensaje.",
+          "da": "Telefonnummer: Brug med landekode! f.eks. (+45 -> +4512345678) || Grupper: Kopier linket til din WhatsApp-gruppeinvitation og indsæt det her. Baseret på linket vil appen vide, hvilken gruppe der skal sendes en besked til.",
+          "ru": "Телефонный номер: Используйте с указанием кода страны! например (+7 -> +79123456789) || Группы: Скопируйте пригласительную ссылку на вашу группу WhatsApp и вставьте ее здесь. По ссылке приложение определит, в какую группу отправить сообщение.",
+          "pl": "Numer telefonu: Użyj z kodem kraju! np. (+31 -> +31601020304) || Grupy: Skopiuj link do zaproszenia do swojej grupy WhatsApp i wklej go tutaj. Na podstawie linku aplikacja będzie wiedzieć, do której grupy wysłać wiadomość."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "placeholder": {
+              "en": "Select device",
+              "nl": "Selecteer apparaat"
+            },
+            "filter": "driver_id=Whatsapp&capabilities=send_data"
+          },
+          {
+            "type": "text",
+            "name": "recipient",
+            "required": true,
+            "title": {
+              "en": "Mobile number / Group invite link",
+              "nl": "Mobiel nummer / Groepsuitnodigingslink",
+              "de": "Mobiltelefonnummer / Gruppeneinladungslink",
+              "fr": "Numéro de téléphone mobile / Lien d'invitation de groupe",
+              "it": "Numero di cellulare / Link invito al gruppo",
+              "sv": "Mobilnummer / Inbjudningslänk till grupp",
+              "no": "Mobilnummer / Gruppeinvitasjonslenke",
+              "es": "Número de teléfono móvil / Enlace de invitación de grupo",
+              "da": "Mobilnummer / Gruppeinvitation link",
+              "ru": "Мобильный номер / Ссылка для приглашения в группу",
+              "pl": "Numer telefonu komórkowego / Link do zaproszenia do grupy"
+            }
+          },
+          {
+            "type": "text",
+            "name": "file",
+            "required": true,
+            "hint": {
+              "en": "for example a url to a pdf file"
+            },
+            "title": {
+              "en": "Document link"
+            }
+          }
+        ],
+        "platforms": [
+          "local"
+        ],
+        "id": "action_send_message_document"
+      },
+      {
+        "title": {
+          "en": "Send Whatsapp message with image",
+          "nl": "Verstuur een Whatsapp-bericht met afbeelding",
+          "de": "Sende eine Whatsapp-Nachricht mit Bild",
+          "fr": "Envoyer un message Whatsapp avec une image",
+          "it": "Invia un messaggio Whatsapp con immagine",
+          "sv": "Skicka ett Whatsapp-meddelande med bild",
+          "no": "Send Whatsapp-melding med bilde",
+          "es": "Enviar mensaje de Whatsapp con imagen",
+          "da": "Send Whatsapp-besked med billede",
+          "ru": "Отправить сообщение в Whatsapp с изображением",
+          "pl": "Wyślij wiadomość Whatsapp z obrazem"
+        },
+        "titleFormatted": {
+          "en": "Send Whatsapp [[message]] with [[file]] to [[recipient]]",
+          "nl": "Verstuur een Whatsapp-bericht [[message]] met [[file]] naar [[recipient]]",
+          "de": "Sende eine Whatsapp-Nachricht [[message]] mit [[file]] an [[recipient]]",
+          "fr": "Envoyer un message Whatsapp [[message]] avec [[file]] à [[recipient]]",
+          "it": "Invia un messaggio Whatsapp [[message]] con [[file]] a [[recipient]]",
+          "sv": "Skicka ett Whatsapp-meddelande [[message]] med [[file]] till [[recipient]]",
+          "no": "Send Whatsapp-melding [[message]] med [[file]] til [[recipient]]",
+          "es": "Enviar mensaje de Whatsapp [[message]] con [[file]] a [[recipient]]",
+          "da": "Send Whatsapp-besked [[message]] med [[file]] til [[recipient]]",
+          "ru": "Отправить Whatsapp-сообщение [[message]] с [[file]] на [[recipient]]",
+          "pl": "Wyślij wiadomość Whatsapp [[message]] z [[file]] do [[recipient]]"
+        },
+        "hint": {
+          "en": "Phone number: Use with country code! e.g. (+31 -> +31601020304) || Groups: Copy the invite link of your WhatsApp group and paste it here. Based on the link, the app will know which group to send a message to.",
+          "nl": "Telefoonnummer: Gebruik met landcode! bijv. (+31 -> +31601020304) || Groepen: Kopieer de uitnodigingslink van je WhatsApp-groep en plak deze hier. Op basis van de link weet de app naar welke groep het bericht moet worden verzonden.",
+          "de": "Telefonnummer: Mit Ländervorwahl verwenden! z.B. (+49 -> +491234567890) || Gruppen: Kopiere den Einladungslink deiner WhatsApp-Gruppe und füge ihn hier ein. Basierend auf dem Link weiß die App, in welche Gruppe sie eine Nachricht senden soll.",
+          "fr": "Numéro de téléphone : Utilisez-le avec le code pays ! Ex. (+33 -> +33601020304) || Groupes : Copiez le lien d'invitation de votre groupe WhatsApp et collez-le ici. En fonction du lien, l'application saura dans quel groupe envoyer un message.",
+          "it": "Numero di telefono: Utilizzare con il codice del paese! Es. (+39 -> +393123456789) || Gruppi: Copia il link di invito del tuo gruppo WhatsApp e incollalo qui. In base al link, l'applicazione saprà a quale gruppo inviare un messaggio.",
+          "sv": "Telefonnummer: Använd med landskod! t.ex. (+46 -> +46701234567) || Grupper: Kopiera inbjudningslänken till din WhatsApp-grupp och klistra in den här. Baserat på länken kommer appen att veta vilken grupp den ska skicka ett meddelande till.",
+          "no": "Telefonnummer: Bruk med landskode! f.eks. (+47 -> +4798765432) || Grupper: Kopier invitasjonslenken til WhatsApp-gruppen din og lim den inn her. Basert på lenken vil appen vite hvilken gruppe den skal sende en melding til.",
+          "es": "Número de teléfono: ¡Usar con código de país! ej. (+34 -> +34601020304) || Grupos: Copia el enlace de invitación de tu grupo de WhatsApp y pégalo aquí. Basado en el enlace, la aplicación sabrá a qué grupo enviar un mensaje.",
+          "da": "Telefonnummer: Brug med landekode! f.eks. (+45 -> +4512345678) || Grupper: Kopier linket til din WhatsApp-gruppeinvitation og indsæt det her. Baseret på linket vil appen vide, hvilken gruppe der skal sendes en besked til.",
+          "ru": "Телефонный номер: Используйте с указанием кода страны! например (+7 -> +79123456789) || Группы: Скопируйте пригласительную ссылку на вашу группу WhatsApp и вставьте ее здесь. По ссылке приложение определит, в какую группу отправить сообщение.",
+          "pl": "Numer telefonu: Użyj z kodem kraju! np. (+31 -> +31601020304) || Grupy: Skopiuj link do zaproszenia do swojej grupy WhatsApp i wklej go tutaj. Na podstawie linku aplikacja będzie wiedzieć, do której grupy wysłać wiadomość."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "placeholder": {
+              "en": "Select device",
+              "nl": "Selecteer apparaat"
+            },
+            "filter": "driver_id=Whatsapp|Whatsapp_cloud&capabilities=send_data"
+          },
+          {
+            "type": "text",
+            "name": "recipient",
+            "required": true,
+            "title": {
+              "en": "Mobile number / Group invite link",
+              "nl": "Mobiel nummer / Groepsuitnodigingslink",
+              "de": "Mobiltelefonnummer / Gruppeneinladungslink",
+              "fr": "Numéro de téléphone mobile / Lien d'invitation de groupe",
+              "it": "Numero di cellulare / Link invito al gruppo",
+              "sv": "Mobilnummer / Inbjudningslänk till grupp",
+              "no": "Mobilnummer / Gruppeinvitasjonslenke",
+              "es": "Número de teléfono móvil / Enlace de invitación de grupo",
+              "da": "Mobilnummer / Gruppeinvitation link",
+              "ru": "Мобильный номер / Ссылка для приглашения в группу",
+              "pl": "Numer telefonu komórkowego / Link do zaproszenia do grupy"
+            }
+          },
+          {
+            "type": "text",
+            "name": "message",
+            "required": false,
+            "title": {
+              "en": "Message",
+              "nl": "Bericht",
+              "de": "Nachricht",
+              "fr": "Message",
+              "it": "Messaggio",
+              "sv": "Meddelande",
+              "no": "Melding",
+              "es": "Mensaje",
+              "da": "Besked",
+              "ru": "Сообщение",
+              "pl": "Wiadomość"
+            }
+          },
+          {
+            "type": "text",
+            "name": "file",
+            "required": true,
+            "hint": {
+              "en": "for example a url to a jpg or gif file"
+            },
+            "title": {
+              "en": "Image link"
+            }
+          }
+        ],
+        "platforms": [
+          "local"
+        ],
+        "id": "action_send_message_image"
+      },
+      {
+        "title": {
+          "en": "Send Whatsapp message with image token",
+          "nl": "Verstuur een Whatsapp-bericht met afbeeldingstoken",
+          "de": "Sende eine Whatsapp-Nachricht mit Bild-Token",
+          "fr": "Envoyer un message Whatsapp avec un jeton d'image",
+          "it": "Invia un messaggio Whatsapp con token immagine",
+          "sv": "Skicka ett Whatsapp-meddelande med bildtoken",
+          "no": "Send Whatsapp-melding med bildetoken",
+          "es": "Enviar mensaje de Whatsapp con token de imagen",
+          "da": "Send Whatsapp-besked med billedtoken",
+          "ru": "Отправить сообщение в Whatsapp с токеном изображения",
+          "pl": "Wyślij wiadomość Whatsapp z tokenem obrazu"
+        },
+        "titleFormatted": {
+          "en": "Send Whatsapp [[message]] with [[droptoken]] to [[recipient]]",
+          "nl": "Verstuur een Whatsapp-bericht [[message]] met [[droptoken]] naar [[recipient]]",
+          "de": "Sende eine Whatsapp-Nachricht [[message]] mit [[droptoken]] an [[recipient]]",
+          "fr": "Envoyer un message Whatsapp [[message]] avec [[droptoken]] à [[recipient]]",
+          "it": "Invia un messaggio Whatsapp [[message]] con [[droptoken]] a [[recipient]]",
+          "sv": "Skicka ett Whatsapp-meddelande [[message]] med [[droptoken]] till [[recipient]]",
+          "no": "Send Whatsapp-melding [[message]] med [[droptoken]] til [[recipient]]",
+          "es": "Enviar mensaje de Whatsapp [[message]] con [[droptoken]] a [[recipient]]",
+          "da": "Send Whatsapp-besked [[message]] med [[droptoken]] til [[recipient]]",
+          "ru": "Отправить Whatsapp-сообщение [[message]] с [[droptoken]] на [[recipient]]",
+          "pl": "Wyślij wiadomość Whatsapp [[message]] z [[droptoken]] do [[recipient]]"
+        },
+        "hint": {
+          "en": "Phone number: Use with country code! e.g. (+31 -> +31601020304) || Groups: Copy the invite link of your WhatsApp group and paste it here. Based on the link, the app will know which group to send a message to.",
+          "nl": "Telefoonnummer: Gebruik met landcode! bijv. (+31 -> +31601020304) || Groepen: Kopieer de uitnodigingslink van je WhatsApp-groep en plak deze hier. Op basis van de link weet de app naar welke groep het bericht moet worden verzonden.",
+          "de": "Telefonnummer: Mit Ländervorwahl verwenden! z.B. (+49 -> +491234567890) || Gruppen: Kopiere den Einladungslink deiner WhatsApp-Gruppe und füge ihn hier ein. Basierend auf dem Link weiß die App, in welche Gruppe sie eine Nachricht senden soll.",
+          "fr": "Numéro de téléphone : Utilisez-le avec le code pays ! Ex. (+33 -> +33601020304) || Groupes : Copiez le lien d'invitation de votre groupe WhatsApp et collez-le ici. En fonction du lien, l'application saura dans quel groupe envoyer un message.",
+          "it": "Numero di telefono: Utilizzare con il codice del paese! Es. (+39 -> +393123456789) || Gruppi: Copia il link di invito del tuo gruppo WhatsApp e incollalo qui. In base al link, l'applicazione saprà a quale gruppo inviare un messaggio.",
+          "sv": "Telefonnummer: Använd med landskod! t.ex. (+46 -> +46701234567) || Grupper: Kopiera inbjudningslänken till din WhatsApp-grupp och klistra in den här. Baserat på länken kommer appen att veta vilken grupp den ska skicka ett meddelande till.",
+          "no": "Telefonnummer: Bruk med landskode! f.eks. (+47 -> +4798765432) || Grupper: Kopier invitasjonslenken til WhatsApp-gruppen din og lim den inn her. Basert på lenken vil appen vite hvilken gruppe den skal sende en melding til.",
+          "es": "Número de teléfono: ¡Usar con código de país! ej. (+34 -> +34601020304) || Grupos: Copia el enlace de invitación de tu grupo de WhatsApp y pégalo aquí. Basado en el enlace, la aplicación sabrá a qué grupo enviar un mensaje.",
+          "da": "Telefonnummer: Brug med landekode! f.eks. (+45 -> +4512345678) || Grupper: Kopier linket til din WhatsApp-gruppeinvitation og indsæt det her. Baseret på linket vil appen vide, hvilken gruppe der skal sendes en besked til.",
+          "ru": "Телефонный номер: Используйте с указанием кода страны! например (+7 -> +79123456789) || Группы: Скопируйте пригласительную ссылку на вашу группу WhatsApp и вставьте ее здесь. По ссылке приложение определит, в какую группу отправить сообщение.",
+          "pl": "Numer telefonu: Użyj z kodem kraju! np. (+31 -> +31601020304) || Grupy: Skopiuj link do zaproszenia do swojej grupy WhatsApp i wklej go tutaj. Na podstawie linku aplikacja będzie wiedzieć, do której grupy wysłać wiadomość."
+        },
+        "droptoken": [
+          "image"
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "placeholder": {
+              "en": "Select device",
+              "nl": "Selecteer apparaat"
+            },
+            "filter": "driver_id=Whatsapp|Whatsapp_cloud&capabilities=send_data"
+          },
+          {
+            "type": "text",
+            "name": "recipient",
+            "required": true,
+            "title": {
+              "en": "Mobile number / Group invite link",
+              "nl": "Mobiel nummer / Groepsuitnodigingslink",
+              "de": "Mobiltelefonnummer / Gruppeneinladungslink",
+              "fr": "Numéro de téléphone mobile / Lien d'invitation de groupe",
+              "it": "Numero di cellulare / Link invito al gruppo",
+              "sv": "Mobilnummer / Inbjudningslänk till grupp",
+              "no": "Mobilnummer / Gruppeinvitasjonslenke",
+              "es": "Número de teléfono móvil / Enlace de invitación de grupo",
+              "da": "Mobilnummer / Gruppeinvitation link",
+              "ru": "Мобильный номер / Ссылка для приглашения в группу",
+              "pl": "Numer telefonu komórkowego / Link do zaproszenia do grupy"
+            }
+          },
+          {
+            "type": "text",
+            "name": "message",
+            "required": false,
+            "title": {
+              "en": "Message",
+              "nl": "Bericht",
+              "de": "Nachricht",
+              "fr": "Message",
+              "it": "Messaggio",
+              "sv": "Meddelande",
+              "no": "Melding",
+              "es": "Mensaje",
+              "da": "Besked",
+              "ru": "Сообщение",
+              "pl": "Wiadomość"
+            }
+          }
+        ],
+        "platforms": [
+          "local"
+        ],
+        "id": "action_send_message_image_token"
+      },
+      {
+        "title": {
+          "en": "Send Whatsapp message with location",
+          "nl": "Stuur Whatsapp-bericht met locatie",
+          "de": "Sende Whatsapp-Nachricht mit Standort",
+          "fr": "Envoyer un message Whatsapp avec la localisation",
+          "it": "Invia messaggio Whatsapp con posizione",
+          "sv": "Skicka Whatsapp-meddelande med plats",
+          "no": "Send Whatsapp-melding med sted",
+          "es": "Enviar mensaje de Whatsapp con ubicación",
+          "da": "Send Whatsapp-besked med placering",
+          "ru": "Отправить сообщение Whatsapp с местоположением",
+          "pl": "Wyślij wiadomość Whatsapp z lokalizacją"
+        },
+        "titleFormatted": {
+          "en": "Send Whatsapp with [[lat]] to [[recipient]]",
+          "nl": "Verstuur een Whatsapp-bericht met [[lat]] naar [[recipient]]",
+          "de": "Sende eine Whatsapp-Nachricht mit [[lat]] an [[recipient]]",
+          "fr": "Envoyer un message Whatsapp avec [[lat]] à [[recipient]]",
+          "it": "Invia un messaggio Whatsapp con [[lat]] a [[recipient]]",
+          "sv": "Skicka ett Whatsapp-meddelande med [[lat]] till [[recipient]]",
+          "no": "Send Whatsapp-melding med [[lat]] til [[recipient]]",
+          "es": "Enviar mensaje de Whatsapp con [[lat]] a [[recipient]]",
+          "da": "Send Whatsapp-besked med [[lat]] til [[recipient]]",
+          "ru": "Отправить Whatsapp-сообщение с [[lat]] на [[recipient]]",
+          "pl": "Wyślij wiadomość Whatsapp z [[lat]] do [[recipient]]"
+        },
+        "hint": {
+          "en": "Phone number: Use with country code! e.g. (+31 -> +31601020304) || Groups: Copy the invite link of your WhatsApp group and paste it here. Based on the link, the app will know which group to send a message to.",
+          "nl": "Telefoonnummer: Gebruik met landcode! bijv. (+31 -> +31601020304) || Groepen: Kopieer de uitnodigingslink van je WhatsApp-groep en plak deze hier. Op basis van de link weet de app naar welke groep het bericht moet worden verzonden.",
+          "de": "Telefonnummer: Mit Ländervorwahl verwenden! z.B. (+49 -> +491234567890) || Gruppen: Kopiere den Einladungslink deiner WhatsApp-Gruppe und füge ihn hier ein. Basierend auf dem Link weiß die App, in welche Gruppe sie eine Nachricht senden soll.",
+          "fr": "Numéro de téléphone : Utilisez-le avec le code pays ! Ex. (+33 -> +33601020304) || Groupes : Copiez le lien d'invitation de votre groupe WhatsApp et collez-le ici. En fonction du lien, l'application saura dans quel groupe envoyer un message.",
+          "it": "Numero di telefono: Utilizzare con il codice del paese! Es. (+39 -> +393123456789) || Gruppi: Copia il link di invito del tuo gruppo WhatsApp e incollalo qui. In base al link, l'applicazione saprà a quale gruppo inviare un messaggio.",
+          "sv": "Telefonnummer: Använd med landskod! t.ex. (+46 -> +46701234567) || Grupper: Kopiera inbjudningslänken till din WhatsApp-grupp och klistra in den här. Baserat på länken kommer appen att veta vilken grupp den ska skicka ett meddelande till.",
+          "no": "Telefonnummer: Bruk med landskode! f.eks. (+47 -> +4798765432) || Grupper: Kopier invitasjonslenken til WhatsApp-gruppen din og lim den inn her. Basert på lenken vil appen vite hvilken gruppe den skal sende en melding til.",
+          "es": "Número de teléfono: ¡Usar con código de país! ej. (+34 -> +34601020304) || Grupos: Copia el enlace de invitación de tu grupo de WhatsApp y pégalo aquí. Basado en el enlace, la aplicación sabrá a qué grupo enviar un mensaje.",
+          "da": "Telefonnummer: Brug med landekode! f.eks. (+45 -> +4512345678) || Grupper: Kopier linket til din WhatsApp-gruppeinvitation og indsæt det her. Baseret på linket vil appen vide, hvilken gruppe der skal sendes en besked til.",
+          "ru": "Телефонный номер: Используйте с указанием кода страны! например (+7 -> +79123456789) || Группы: Скопируйте пригласительную ссылку на вашу группу WhatsApp и вставьте ее здесь. По ссылке приложение определит, в какую группу отправить сообщение.",
+          "pl": "Numer telefonu: Użyj z kodem kraju! np. (+31 -> +31601020304) || Grupy: Skopiuj link do zaproszenia do swojej grupy WhatsApp i wklej go tutaj. Na podstawie linku aplikacja będzie wiedzieć, do której grupy wysłać wiadomość."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "placeholder": {
+              "en": "Select device",
+              "nl": "Selecteer apparaat"
+            },
+            "filter": "driver_id=Whatsapp|Whatsapp_cloud&capabilities=send_data"
+          },
+          {
+            "type": "text",
+            "name": "recipient",
+            "required": true,
+            "title": {
+              "en": "Mobile number / Group invite link",
+              "nl": "Mobiel nummer / Groepsuitnodigingslink",
+              "de": "Mobiltelefonnummer / Gruppeneinladungslink",
+              "fr": "Numéro de téléphone mobile / Lien d'invitation de groupe",
+              "it": "Numero di cellulare / Link invito al gruppo",
+              "sv": "Mobilnummer / Inbjudningslänk till grupp",
+              "no": "Mobilnummer / Gruppeinvitasjonslenke",
+              "es": "Número de teléfono móvil / Enlace de invitación de grupo",
+              "da": "Mobilnummer / Gruppeinvitation link",
+              "ru": "Мобильный номер / Ссылка для приглашения в группу",
+              "pl": "Numer telefonu komórkowego / Link do zaproszenia do grupy"
+            }
+          },
+          {
+            "type": "text",
+            "name": "lat",
+            "required": true,
+            "title": {
+              "en": "Latitude, Longitude"
+            }
+          }
+        ],
+        "platforms": [
+          "local"
+        ],
+        "id": "action_send_message_location"
+      },
+      {
+        "title": {
+          "en": "Send Whatsapp message with video",
+          "nl": "Verstuur een Whatsapp-bericht met video",
+          "de": "Sende eine Whatsapp-Nachricht mit Video",
+          "fr": "Envoyer un message Whatsapp avec une vidéo",
+          "it": "Invia un messaggio Whatsapp con video",
+          "sv": "Skicka ett Whatsapp-meddelande med video",
+          "no": "Send Whatsapp-melding med video",
+          "es": "Enviar mensaje de Whatsapp con video",
+          "da": "Send Whatsapp-besked med video",
+          "ru": "Отправить сообщение в Whatsapp с видео",
+          "pl": "Wyślij wiadomość Whatsapp z wideo"
+        },
+        "titleFormatted": {
+          "en": "Send Whatsapp [[message]] with [[file]] to [[recipient]]",
+          "nl": "Verstuur een Whatsapp-bericht [[message]] met [[file]] naar [[recipient]]",
+          "de": "Sende eine Whatsapp-Nachricht [[message]] mit [[file]] an [[recipient]]",
+          "fr": "Envoyer un message Whatsapp [[message]] avec [[file]] à [[recipient]]",
+          "it": "Invia un messaggio Whatsapp [[message]] con [[file]] a [[recipient]]",
+          "sv": "Skicka ett Whatsapp-meddelande [[message]] med [[file]] till [[recipient]]",
+          "no": "Send Whatsapp-melding [[message]] med [[file]] til [[recipient]]",
+          "es": "Enviar mensaje de Whatsapp [[message]] con [[file]] a [[recipient]]",
+          "da": "Send Whatsapp-besked [[message]] med [[file]] til [[recipient]]",
+          "ru": "Отправить Whatsapp-сообщение [[message]] с [[file]] на [[recipient]]",
+          "pl": "Wyślij wiadomość Whatsapp [[message]] z [[file]] do [[recipient]]"
+        },
+        "hint": {
+          "en": "Phone number: Use with country code! e.g. (+31 -> +31601020304) || Groups: Copy the invite link of your WhatsApp group and paste it here. Based on the link, the app will know which group to send a message to.",
+          "nl": "Telefoonnummer: Gebruik met landcode! bijv. (+31 -> +31601020304) || Groepen: Kopieer de uitnodigingslink van je WhatsApp-groep en plak deze hier. Op basis van de link weet de app naar welke groep het bericht moet worden verzonden.",
+          "de": "Telefonnummer: Mit Ländervorwahl verwenden! z.B. (+49 -> +491234567890) || Gruppen: Kopiere den Einladungslink deiner WhatsApp-Gruppe und füge ihn hier ein. Basierend auf dem Link weiß die App, in welche Gruppe sie eine Nachricht senden soll.",
+          "fr": "Numéro de téléphone : Utilisez-le avec le code pays ! Ex. (+33 -> +33601020304) || Groupes : Copiez le lien d'invitation de votre groupe WhatsApp et collez-le ici. En fonction du lien, l'application saura dans quel groupe envoyer un message.",
+          "it": "Numero di telefono: Utilizzare con il codice del paese! Es. (+39 -> +393123456789) || Gruppi: Copia il link di invito del tuo gruppo WhatsApp e incollalo qui. In base al link, l'applicazione saprà a quale gruppo inviare un messaggio.",
+          "sv": "Telefonnummer: Använd med landskod! t.ex. (+46 -> +46701234567) || Grupper: Kopiera inbjudningslänken till din WhatsApp-grupp och klistra in den här. Baserat på länken kommer appen att veta vilken grupp den ska skicka ett meddelande till.",
+          "no": "Telefonnummer: Bruk med landskode! f.eks. (+47 -> +4798765432) || Grupper: Kopier invitasjonslenken til WhatsApp-gruppen din og lim den inn her. Basert på lenken vil appen vite hvilken gruppe den skal sende en melding til.",
+          "es": "Número de teléfono: ¡Usar con código de país! ej. (+34 -> +34601020304) || Grupos: Copia el enlace de invitación de tu grupo de WhatsApp y pégalo aquí. Basado en el enlace, la aplicación sabrá a qué grupo enviar un mensaje.",
+          "da": "Telefonnummer: Brug med landekode! f.eks. (+45 -> +4512345678) || Grupper: Kopier linket til din WhatsApp-gruppeinvitation og indsæt det her. Baseret på linket vil appen vide, hvilken gruppe der skal sendes en besked til.",
+          "ru": "Телефонный номер: Используйте с указанием кода страны! например (+7 -> +79123456789) || Группы: Скопируйте пригласительную ссылку на вашу группу WhatsApp и вставьте ее здесь. По ссылке приложение определит, в какую группу отправить сообщение.",
+          "pl": "Numer telefonu: Użyj z kodem kraju! np. (+31 -> +31601020304) || Grupy: Skopiuj link do zaproszenia do swojej grupy WhatsApp i wklej go tutaj. Na podstawie linku aplikacja będzie wiedzieć, do której grupy wysłać wiadomość."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "placeholder": {
+              "en": "Select device",
+              "nl": "Selecteer apparaat"
+            },
+            "filter": "driver_id=Whatsapp|Whatsapp_cloud&capabilities=send_data"
+          },
+          {
+            "type": "text",
+            "name": "recipient",
+            "required": true,
+            "title": {
+              "en": "Mobile number / Group invite link",
+              "nl": "Mobiel nummer / Groepsuitnodigingslink",
+              "de": "Mobiltelefonnummer / Gruppeneinladungslink",
+              "fr": "Numéro de téléphone mobile / Lien d'invitation de groupe",
+              "it": "Numero di cellulare / Link invito al gruppo",
+              "sv": "Mobilnummer / Inbjudningslänk till grupp",
+              "no": "Mobilnummer / Gruppeinvitasjonslenke",
+              "es": "Número de teléfono móvil / Enlace de invitación de grupo",
+              "da": "Mobilnummer / Gruppeinvitation link",
+              "ru": "Мобильный номер / Ссылка для приглашения в группу",
+              "pl": "Numer telefonu komórkowego / Link do zaproszenia do grupy"
+            }
+          },
+          {
+            "type": "text",
+            "name": "message",
+            "required": false,
+            "title": {
+              "en": "Message",
+              "nl": "Bericht",
+              "de": "Nachricht",
+              "fr": "Message",
+              "it": "Messaggio",
+              "sv": "Meddelande",
+              "no": "Melding",
+              "es": "Mensaje",
+              "da": "Besked",
+              "ru": "Сообщение",
+              "pl": "Wiadomość"
+            }
+          },
+          {
+            "type": "text",
+            "name": "file",
+            "required": true,
+            "hint": {
+              "en": "for example a url to a mp4 file"
+            },
+            "title": {
+              "en": "Video link"
+            }
+          }
+        ],
+        "platforms": [
+          "local"
+        ],
+        "id": "action_send_message_video"
+      }
+    ]
+  },
+  "drivers": [
+    {
+      "icon": "/drivers/Whatsapp/assets/icon.svg",
+      "images": {
+        "large": "/drivers/Whatsapp/assets/images/large.png",
+        "small": "/drivers/Whatsapp/assets/images/small.png"
+      },
+      "class": "other",
+      "connectivity": [
+        "cloud"
+      ],
+      "platforms": [
+        "local"
+      ],
+      "pair": [
+        {
+          "id": "whatsapp_consent",
+          "options": {
+            "title": {
+              "en": "🚨Disclaimer🚨"
+            },
+            "text": {
+              "en": "<ol><li>You are the only one responsible for the messages and the content that you sent. Remember that messages will be sent from your phone number.<br><br></li><li>This app is not responsible for any <strong>ban or block</strong> performed by WhatsApp on your number. And the developer cant do anything to unblock it<br><br></li><li>Never send a Whatsapp message to a new conversation. Make sure the conversation had interaction with your number before you send a message from this app<br><br></li><li>This project is not affiliated, associated, authorized, endorsed by, or in any way officially connected with WhatsApp or any of its subsidiaries or its affiliates. The official WhatsApp website can be found at https://whatsapp.com. 'WhatsApp' as well as related names, marks, emblems and images are registered trademarks of their respective owners<br><br></li></ol>"
+            }
+          },
+          "navigation": {
+            "next": "loading"
+          }
+        },
+        {
+          "id": "whatsapp_max",
+          "options": {
+            "title": {
+              "en": "Max devices reached"
+            },
+            "text": {
+              "en": "<ol><li>It is not possible to connect more than 2 Whatsapp clients to this app.<br><br></li></ol>"
+            }
+          },
+          "navigation": {
+            "next": "done"
+          }
+        },
+        {
+          "id": "loading",
+          "template": "loading"
+        },
+        {
+          "id": "whatsapp_qr",
+          "options": {
+            "title": {
+              "en": "Scan QR with WhatsApp",
+              "nl": "Scan QR met WhatsApp",
+              "de": "QR mit WhatsApp scannen",
+              "fr": "Scannez le QR avec WhatsApp",
+              "it": "Scansiona il QR con WhatsApp",
+              "sv": "Skanna QR med WhatsApp",
+              "no": "Skann QR med WhatsApp",
+              "es": "Escanear QR con WhatsApp",
+              "da": "Scan QR med WhatsApp",
+              "ru": "Отсканируйте QR-код с помощью WhatsApp",
+              "pl": "Zeskanuj kod QR za pomocą WhatsApp"
+            },
+            "navigation": {
+              "next": "loading2"
+            }
+          }
+        },
+        {
+          "id": "loading2",
+          "template": "loading"
+        },
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        },
+        {
+          "id": "done",
+          "template": "done"
+        }
+      ],
+      "repair": [
+        {
+          "id": "whatsapp_consent",
+          "options": {
+            "title": {
+              "en": "🚨Disclaimer🚨"
+            },
+            "text": {
+              "en": "<ol><li>You are the only one responsible for the messages and the content that you sent. Remember that messages will be sent from your phone number.<br><br></li><li>This app is not responsible for any <strong>ban or block</strong> performed by WhatsApp on your number. And the developer cant do anything to unblock it<br><br></li><li>Never send a Whatsapp message to a new conversation. Make sure the conversation had interaction with your number before you send a message from this app<br><br></li><li>This project is not affiliated, associated, authorized, endorsed by, or in any way officially connected with WhatsApp or any of its subsidiaries or its affiliates. The official WhatsApp website can be found at https://whatsapp.com. 'WhatsApp' as well as related names, marks, emblems and images are registered trademarks of their respective owners<br><br></li></ol>"
+            }
+          },
+          "navigation": {
+            "next": "loading"
+          }
+        },
+        {
+          "id": "loading",
+          "template": "loading"
+        },
+        {
+          "id": "whatsapp_qr",
+          "options": {
+            "title": {
+              "en": "Scan QR with WhatsApp",
+              "nl": "Scan QR met WhatsApp",
+              "de": "QR mit Whatsapp scannen",
+              "fr": "Scannez le QR avec WhatsApp",
+              "it": "Scansiona il QR con WhatsApp",
+              "sv": "Skanna QR med WhatsApp",
+              "no": "Skann QR med WhatsApp",
+              "es": "Escanear QR con WhatsApp",
+              "da": "Scan QR med WhatsApp",
+              "ru": "Отсканируйте QR-код с помощью WhatsApp",
+              "pl": "Zeskanuj kod QR za pomocą WhatsApp"
+            },
+            "navigation": {
+              "next": "loading2"
+            }
+          }
+        },
+        {
+          "id": "loading2",
+          "template": "loading"
+        },
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        },
+        {
+          "id": "done",
+          "template": "done"
+        }
+      ],
+      "settings": [],
+      "name": {
+        "en": "WhatsApp"
+      },
+      "capabilities": [
+        "send_data"
+      ],
+      "id": "Whatsapp"
+    },
+    {
+      "icon": "/drivers/Whatsapp_old/assets/icon.svg",
+      "images": {
+        "large": "/drivers/Whatsapp_old/assets/images/large.png",
+        "small": "/drivers/Whatsapp_old/assets/images/small.png"
+      },
+      "class": "other",
+      "connectivity": [
+        "cloud"
+      ],
+      "platforms": [
+        "local"
+      ],
+      "pair": [
+        {
+          "id": "whatsapp_consent",
+          "options": {
+            "title": {
+              "en": "🚨Disclaimer🚨"
+            },
+            "text": {
+              "en": "<ol><li>You are the only one responsible for the messages and the content that you sent. Remember that messages will be sent from your phone number.<br><br></li><li>This app is not responsible for any <strong>ban or block</strong> performed by WhatsApp on your number. And the developer cant do anything to unblock it<br><br></li><li>Never send a Whatsapp message to a new conversation. Make sure the conversation had interaction with your number before you send a message from this app<br><br></li><li>This project is not affiliated, associated, authorized, endorsed by, or in any way officially connected with WhatsApp or any of its subsidiaries or its affiliates. The official WhatsApp website can be found at https://whatsapp.com. 'WhatsApp' as well as related names, marks, emblems and images are registered trademarks of their respective owners<br><br></li></ol>"
+            }
+          },
+          "navigation": {
+            "next": "loading"
+          }
+        },
+        {
+          "id": "whatsapp_max",
+          "options": {
+            "title": {
+              "en": "Max devices reached"
+            },
+            "text": {
+              "en": "<ol><li>It is not possible to connect more than 2 Whatsapp clients to this app.<br><br></li></ol>"
+            }
+          },
+          "navigation": {
+            "next": "done"
+          }
+        },
+        {
+          "id": "loading",
+          "template": "loading"
+        },
+        {
+          "id": "whatsapp_qr",
+          "options": {
+            "title": {
+              "en": "Scan QR with WhatsApp",
+              "nl": "Scan QR met WhatsApp",
+              "de": "QR mit WhatsApp scannen",
+              "fr": "Scannez le QR avec WhatsApp",
+              "it": "Scansiona il QR con WhatsApp",
+              "sv": "Skanna QR med WhatsApp",
+              "no": "Skann QR med WhatsApp",
+              "es": "Escanear QR con WhatsApp",
+              "da": "Scan QR med WhatsApp",
+              "ru": "Отсканируйте QR-код с помощью WhatsApp",
+              "pl": "Zeskanuj kod QR za pomocą WhatsApp"
+            },
+            "navigation": {
+              "next": "loading2"
+            }
+          }
+        },
+        {
+          "id": "loading2",
+          "template": "loading"
+        },
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        },
+        {
+          "id": "done",
+          "template": "done"
+        }
+      ],
+      "repair": [
+        {
+          "id": "whatsapp_consent",
+          "options": {
+            "title": {
+              "en": "🚨Disclaimer🚨"
+            },
+            "text": {
+              "en": "<ol><li>You are the only one responsible for the messages and the content that you sent. Remember that messages will be sent from your phone number.<br><br></li><li>This app is not responsible for any <strong>ban or block</strong> performed by WhatsApp on your number. And the developer cant do anything to unblock it<br><br></li><li>Never send a Whatsapp message to a new conversation. Make sure the conversation had interaction with your number before you send a message from this app<br><br></li><li>This project is not affiliated, associated, authorized, endorsed by, or in any way officially connected with WhatsApp or any of its subsidiaries or its affiliates. The official WhatsApp website can be found at https://whatsapp.com. 'WhatsApp' as well as related names, marks, emblems and images are registered trademarks of their respective owners<br><br></li></ol>"
+            }
+          },
+          "navigation": {
+            "next": "loading"
+          }
+        },
+        {
+          "id": "loading",
+          "template": "loading"
+        },
+        {
+          "id": "whatsapp_qr",
+          "options": {
+            "title": {
+              "en": "Scan QR with WhatsApp",
+              "nl": "Scan QR met WhatsApp",
+              "de": "QR mit Whatsapp scannen",
+              "fr": "Scannez le QR avec WhatsApp",
+              "it": "Scansiona il QR con WhatsApp",
+              "sv": "Skanna QR med WhatsApp",
+              "no": "Skann QR med WhatsApp",
+              "es": "Escanear QR con WhatsApp",
+              "da": "Scan QR med WhatsApp",
+              "ru": "Отсканируйте QR-код с помощью WhatsApp",
+              "pl": "Zeskanuj kod QR za pomocą WhatsApp"
+            },
+            "navigation": {
+              "next": "loading2"
+            }
+          }
+        },
+        {
+          "id": "loading2",
+          "template": "loading"
+        },
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        },
+        {
+          "id": "done",
+          "template": "done"
+        }
+      ],
+      "settings": [],
+      "deprecated": true,
+      "name": {
+        "en": "WhatsApp (HP19)"
+      },
+      "capabilities": [
+        "send_data"
+      ],
+      "id": "Whatsapp_old"
+    }
+  ],
+  "capabilities": {
+    "receive_message": {
+      "platforms": [
+        "local"
+      ],
+      "type": "boolean",
+      "title": {
+        "en": "Receive message"
+      },
+      "getable": true,
+      "setable": true,
+      "uiComponent": null
+    },
+    "send_data": {
+      "platforms": [
+        "local"
+      ],
+      "type": "boolean",
+      "title": {
+        "en": "Send data"
+      },
+      "getable": true,
+      "setable": true,
+      "uiComponent": null
+    }
+  }
+}
