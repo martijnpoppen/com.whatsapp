@@ -19,5 +19,8 @@
   },
   "1.12.3": {
     "en": "NEW: updated driver images (branding)"
+  },
+  "1.12.4": {
+    "en": "FIX: DB not existing during pairing"
   }
 }
