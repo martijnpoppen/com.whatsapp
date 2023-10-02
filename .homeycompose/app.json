@@ -1,6 +1,6 @@
 {
   "id": "com.whatsapp",
-  "version": "1.12.1",
+  "version": "1.12.2",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "platforms": [
@@ -11,7 +11,7 @@
     "en": "WhatsApp"
   },
   "description": {
-    "en": "Connect your own WhatsApp Account to this APP and start sending messages from your number."
+    "en": "Simple. Reliable. Private."
   },
   "tags": {
     "en": [
@@ -69,7 +69,7 @@
     }
   },
   "bugs": {
-    "url": "https://community.homey.app/t/app-pro-controlmyspa/57870"
+    "url": "https://community.homey.app/t/app-pro-whatsapp/90749"
   },
   "api": {
     "store": {
@@ -79,6 +79,6 @@
     }
   },
   "source": "https://github.com/martijnpoppen/com.whatsapp",
-  "homeyCommunityTopicId": 57870,
-  "support": "https://community.homey.app/t/app-pro-controlmyspa/57870"
+  "homeyCommunityTopicId": 90749,
+  "support": "https://community.homey.app/t/app-pro-whatsapp/90749"
 }

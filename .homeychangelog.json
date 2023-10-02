@@ -13,5 +13,8 @@
   },
   "1.12.1": {
     "en": "FIX: remove global driver"
+  },
+  "1.12.2": {
+    "en": "OPT: app store"
   }
 }
