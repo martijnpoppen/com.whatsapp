@@ -25,5 +25,8 @@
   },
   "1.12.5": {
     "en": "HOTFIX: issue with local storage"
+  },
+  "1.12.6": {
+    "en": "FIX: issue in pairing"
   }
 }
