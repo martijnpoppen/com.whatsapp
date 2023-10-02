@@ -7,7 +7,7 @@
   
 **WhatsApp for Homey**
 
-WhatsApp for Homey is a complete integration without the intervention of a bot. With this Homey app, you send messages, videos, photos, documents to a mobile number or WhatsApp group from your own name.
+WhatsApp for Homey is a complete integration without the intervention of a bot. With this Homey app, you send messages, videos, photos, documents, locations to a mobile number or WhatsApp group from your own name.
 
 
 Currently has support for:
@@ -16,6 +16,7 @@ Currently has support for:
 * :rice_scene: Send Images (by tag or url)
 * :page_facing_up:  Send Documents
 * :video_camera: Send Video
+* :world_map: Send locations
   
 ---
 
@@ -45,7 +46,7 @@ Currently has support for:
 🚨 Disclaimer 🚨:
 1) You are the only one responsible for the messages and the content that you sent. Remember that messages will be sent from your phone number.
 2) This app is not responsible for any <strong>ban or block</strong> performed by WhatsApp on your number. And the developer cant do anything to unblock it
-3) Never send a Whatsapp message to a new conversation. Make sure the conversation had interaction with your number before you send a message from this app
+3) Never send a WhatsApp message to a new conversation. Make sure the conversation had interaction with your number before you send a message from this app
 4) This project is not affiliated, associated, authorized, endorsed by, or in any way officially connected with WhatsApp or any of its subsidiaries or its affiliates. The official WhatsApp website can be found at https://whatsapp.com. 'WhatsApp' as well as related names, marks, emblems and images are registered trademarks of their respective owners
 
 ---
