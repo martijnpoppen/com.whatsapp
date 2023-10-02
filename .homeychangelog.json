@@ -22,5 +22,8 @@
   },
   "1.12.4": {
     "en": "FIX: DB not existing during pairing"
+  },
+  "1.12.5": {
+    "en": "HOTFIX: issue with local storage"
   }
 }
