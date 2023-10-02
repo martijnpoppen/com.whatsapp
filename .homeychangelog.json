@@ -40,5 +40,8 @@
   },
   "1.12.10": {
     "en": " FIX: phonenumber validate"
+  },
+  "1.12.11": {
+    "en": "FIX: German phonenumbers"
   }
 }
