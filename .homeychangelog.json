@@ -1,0 +1,17 @@
+{
+  "0.0.1": {
+    "en": "Initial Release"
+  },
+  "1.0.0": {
+    "en": "NEW: app release"
+  },
+  "1.11.2": {
+    "en": "FIX: lat,lng card move to 1 variable"
+  },
+  "1.12.0": {
+    "en": "NEW: location card | NEW: JWT key for DB"
+  },
+  "1.12.1": {
+    "en": "FIX: remove global driver"
+  }
+}

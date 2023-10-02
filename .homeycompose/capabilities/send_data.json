@@ -1,0 +1,11 @@
+{
+    "platforms": ["local"],
+    "type": "boolean",
+    "title": {
+      "en": "Send data"
+    },
+    "getable": true,
+    "setable": true,
+    "uiComponent": null
+  }
+  
