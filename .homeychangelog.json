@@ -31,5 +31,8 @@
   },
   "1.12.7": {
     "en": "FIX: erro handling"
+  },
+  "1.12.8": {
+    "en": "FIX: phonenumber validate"
   }
 }
