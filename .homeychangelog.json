@@ -37,5 +37,8 @@
   },
   "1.12.9": {
     "en": " FIX: phonenumber validate"
+  },
+  "1.12.10": {
+    "en": " FIX: phonenumber validate"
   }
 }
