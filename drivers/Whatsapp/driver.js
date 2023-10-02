@@ -11,10 +11,10 @@ module.exports = class mainDriver extends Homey.Driver {
         this.tempDB = {};
 
         const devices = this.getDevices();
-       
+
         devices.forEach(async (device) => {
             const deviceObject = device.getData();
-            await this.setWhatsappClient(deviceObject.id, );
+            await this.setWhatsappClient(deviceObject.id);
         });
     }
 
@@ -56,6 +56,12 @@ module.exports = class mainDriver extends Homey.Driver {
         this.type = 'repair';
         this.device = device;
 
+        this.homey.app.log(`[Driver] ${this.id} - unsetting store for :`, device.id);
+        const storeData = device.getStore();
+        Object.keys(storeData).forEach((storeKey) => {
+            device.unsetStoreValue(storeKey);
+        });
+
         this.setPairingSession(session);
     }
 
@@ -70,7 +76,6 @@ module.exports = class mainDriver extends Homey.Driver {
             if (view === 'whatsapp_consent') {
                 const devices = this.getDevices();
                 if (devices.length >= 2 && this.type === 'pair') {
-
                     session.showView('whatsapp_max');
 
                     return false;
