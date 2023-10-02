@@ -17,6 +17,8 @@ module.exports = class Whatsapp extends Homey.Device {
     }
 
     async onAdded() {
+        await this.syncTempDbToStore();
+
         if(this.driver.onReadyInterval) {
             this.homey.clearInterval(this.driver.onReadyInterval);
         }
@@ -39,6 +41,24 @@ module.exports = class Whatsapp extends Homey.Device {
         await sleep(sleepIndex * 7500);
 
         this.homey.app.log('[Device] - init - after sleep =>', sleepIndex, this.getName());
+    }
+
+    async syncTempDbToStore() {
+        const deviceObject = this.getData();
+        const clientId = deviceObject.id.split('_')[1];
+        if(this.driver.tempDB[clientId]) {
+            this.homey.app.log(`[Device] - ${this.getName()} => syncTempDbToStore - found tempDB - syncing with store`);
+            for(let i = 0; i < Object.keys(this.driver.tempDB[clientId]).length; i++) {
+                const key = Object.keys(this.driver.tempDB[clientId])[i];
+                const value = this.driver.tempDB[clientId][key];
+
+                await this.setStoreValue(key, value);
+            }
+
+            
+            this.driver.tempDB= {};
+            this.homey.app.log(`[Device] - ${this.getName()} => syncTempDbToStore - tempDB cleared`, this.driver.tempDB);
+        }
     }
 
     // ------------- API -------------

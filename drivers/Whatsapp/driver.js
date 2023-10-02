@@ -8,6 +8,7 @@ module.exports = class mainDriver extends Homey.Driver {
         this.homey.app.log(`[Driver] - version`, Homey.manifest.version);
         this.WhatsappClients = [];
         this.homeyCloudId = await this.homey.cloud.getHomeyId();
+        this.tempDB = {};
 
         const devices = this.getDevices();
        
