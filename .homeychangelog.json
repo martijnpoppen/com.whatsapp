@@ -34,5 +34,8 @@
   },
   "1.12.8": {
     "en": "FIX: phonenumber validate"
+  },
+  "1.12.9": {
+    "en": " FIX: phonenumber validate"
   }
 }
