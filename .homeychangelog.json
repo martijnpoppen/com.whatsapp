@@ -46,5 +46,8 @@
   },
   "1.13.0": {
     "en": "NEW: remove QR and use Code to pair with Whatsapp"
+  },
+  "1.13.1": {
+    "en": "FIX: Pairing with pairing code"
   }
 }
