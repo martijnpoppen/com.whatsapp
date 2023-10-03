@@ -43,5 +43,8 @@
   },
   "1.12.11": {
     "en": "FIX: German phonenumbers"
+  },
+  "1.13.0": {
+    "en": "NEW: remove QR and use Code to pair with Whatsapp"
   }
 }
