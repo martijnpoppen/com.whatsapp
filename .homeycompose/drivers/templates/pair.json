@@ -11,7 +11,7 @@
         }
       },
       "navigation": {
-        "next": "loading"
+        "next": "whatsapp_phone"
       }
     },
     {
@@ -29,24 +29,84 @@
       }
     },
     {
+      "id": "whatsapp_phone",
+      "options": {
+        "title": {
+          "en": "Fill in your phone number (the one you use in Whatsapp)",
+          "nl": "Vul uw telefoonnummer in (het nummer dat u gebruikt in WhatsApp)",
+          "de": "Geben Sie Ihre Telefonnummer ein (die, die Sie in WhatsApp verwenden)",
+          "fr": "Remplissez votre numéro de téléphone (celui que vous utilisez sur WhatsApp)",
+          "it": "Inserisci il tuo numero di telefono (quello che usi su WhatsApp)",
+          "sv": "Fyll i ditt telefonnummer (det du använder i Whatsapp)",
+          "no": "Fyll inn telefonnummeret ditt (det du bruker i WhatsApp)",
+          "es": "Complete su número de teléfono (el que utiliza en WhatsApp)",
+          "da": "Indtast dit telefonnummer (det, du bruger på WhatsApp)",
+          "ru": "Укажите свой номер телефона (тот, который вы используете в WhatsApp)",
+          "pl": "Wprowadź swój numer telefonu (ten, którego używasz w WhatsApp)"
+        },
+        "usernameLabel": {
+          "en": "Phone number",
+          "nl": "Telefoonnummer",
+          "de": "Telefonnummer",
+          "fr": "Numéro de téléphone",
+          "it": "Numero di telefono",
+          "sv": "Telefonnummer",
+          "no": "Telefonnummer",
+          "es": "Número de teléfono",
+          "da": "Telefonnummer",
+          "ru": "Номер телефона",
+          "pl": "Numer telefonu"
+        },
+        "usernamePlaceholder": {
+          "en": "+31601234567",
+          "nl": "+31601234567",
+          "de": "+491234567890",
+          "fr": "+33123456789",
+          "it": "+391234567890",
+          "sv": "+46123456789",
+          "no": "+47123456789",
+          "es": "+34123456789",
+          "da": "+45123456789",
+          "ru": "+79123456789",
+          "pl": "+48123456789"
+        },
+        "navigation": {
+          "next": "loading"
+        }
+      }
+    },
+    {
       "id": "loading",
       "template": "loading"
     },
     {
-      "id": "whatsapp_qr",
+      "id": "whatsapp_pairing_code",
       "options": {
         "title": {
-          "en": "Scan QR with WhatsApp",
-          "nl": "Scan QR met WhatsApp",
-          "de": "QR mit WhatsApp scannen",
-          "fr": "Scannez le QR avec WhatsApp",
-          "it": "Scansiona il QR con WhatsApp",
-          "sv": "Skanna QR med WhatsApp",
-          "no": "Skann QR med WhatsApp",
-          "es": "Escanear QR con WhatsApp",
-          "da": "Scan QR med WhatsApp",
-          "ru": "Отсканируйте QR-код с помощью WhatsApp",
-          "pl": "Zeskanuj kod QR za pomocą WhatsApp"
+          "en": "Add this code inside your WhatsApp",
+          "nl": "Voeg deze code toe aan je WhatsApp",
+          "de": "Fügen Sie diesen Code in WhatsApp ein",
+          "fr": "Ajoutez ce code dans votre WhatsApp",
+          "it": "Aggiungi questo codice dentro il tuo WhatsApp",
+          "sv": "Lägg till den här koden i din WhatsApp",
+          "no": "Legg til denne koden i WhatsApp",
+          "es": "Añade este código a tu WhatsApp",
+          "da": "Tilføj denne kode til din WhatsApp",
+          "ru": "Добавьте этот код в WhatsApp",
+          "pl": "Dodaj ten kod do WhatsApp"
+        },
+        "text": {
+          "en": "Go to link device. Click add new device. Click `add with phone number instead` in the bottom of the screen",
+          "nl": "Ga naar apparaatkoppeling. Klik op nieuw apparaat toevoegen. Klik onderaan het scherm op 'voeg in plaats daarvan met telefoonnummer toe'.",
+          "de": "Gehe zu Gerät verknüpfen. Klicke auf Neues Gerät hinzufügen. Klicke unten auf dem Bildschirm auf 'Stattdessen mit Telefonnummer hinzufügen'.",
+          "fr": "Allez sur le lien de l'appareil. Cliquez sur ajouter un nouvel appareil. Cliquez sur 'ajouter avec un numéro de téléphone à la place' en bas de l'écran.",
+          "it": "Vai al collegamento del dispositivo. Clicca su aggiungi nuovo dispositivo. Clicca su 'aggiungi con il numero di telefono invece' in fondo allo schermo.",
+          "sv": "Gå till enhetslänken. Klicka på lägg till ny enhet. Klicka på 'lägg till med telefonnummer istället' längst ner på skärmen.",
+          "no": "Gå til enhetskoblingen. Klikk på legg til ny enhet. Klikk på 'legg til med telefonnummer i stedet' nederst på skjermen.",
+          "es": "Ve al enlace de dispositivo. Haz clic en agregar nuevo dispositivo. Haz clic en 'agregar con número de teléfono en su lugar' en la parte inferior de la pantalla.",
+          "da": "Gå til enhedsforbindelsen. Klik på tilføj ny enhed. Klik på 'tilføj med telefonnummer i stedet' i bunden af skærmen.",
+          "ru": "Перейдите по ссылке на устройство. Нажмите на добавить новое устройство. Нажмите на 'добавить вместо телефонного номера' внизу экрана.",
+          "pl": "Przejdź do linku urządzenia. Kliknij dodaj nowe urządzenie. Kliknij „dodaj zamiast numeru telefonu” na dole ekranu."
         },
         "navigation": {
           "next": "loading2"

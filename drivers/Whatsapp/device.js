@@ -56,7 +56,7 @@ module.exports = class Whatsapp extends Homey.Device {
             }
 
             
-            this.driver.tempDB= {};
+            this.driver.tempDB = {};
             this.homey.app.log(`[Device] - ${this.getName()} => syncTempDbToStore - tempDB cleared`, this.driver.tempDB);
         }
     }

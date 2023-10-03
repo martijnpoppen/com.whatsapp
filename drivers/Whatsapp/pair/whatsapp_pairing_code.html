@@ -1,0 +1,81 @@
+<style>
+    @import "/manager/drivers/assets/css/deprecated-pincode.css";
+
+    .__private__homey-pincode {
+        display: flex;
+        min-height: 100%;
+    }
+
+    .__private__homey-pincode__form {
+        display: grid;
+        grid-template-rows: 2fr 1fr;
+        min-height: 100%;
+    }
+
+    .__private__homey-pincode__code-wrapper {
+        display: grid;
+        align-items: center;
+    }
+
+    .__private__homey-pincode__code {
+        margin-top: auto;
+        margin-bottom: auto;
+    }
+
+    .__private__homey-pincode__button-wrapper {
+        display: flex;
+        align-items: flex-end;
+    }
+
+    .__private__homey-pincode__button {
+        margin-top: auto;
+        width: 100%;
+    }
+</style>
+<div id="text"></div>
+<div class=__private__homey-pincode id="pairing_code">
+    
+    <form id=homey-pincode-form class="__private__homey-pincode__form homey-form">
+        <div class=__private__homey-pincode__code-wrapper>
+            <div class=__private__homey-pincode__code>
+                <div id=homey-pincode-input-group class=homey-form-pincode>
+
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    (function () {
+        var $text = document.querySelector('#text');
+        var $next = document.querySelector('#hy-nav-next');
+
+        Homey.on("code", function (data) {
+            const code = data.split('');
+            document.querySelector('#homey-pincode-input-group').innerHTML = '';
+            for(let i = 0; i < code.length; i++) {
+                if(i === 4) {
+                    document.querySelector('#homey-pincode-input-group').innerHTML += '&nbsp; &nbsp; &nbsp;' 
+                }
+                document.querySelector('#homey-pincode-input-group').innerHTML += '<input disabled class="homey-form-input" type="text" value="' + code[i] + '">';
+            }
+        });
+
+        Homey.getOptions(function (err, options) {
+            if (err) return Homey.error(err);
+
+            setTimeout(function () {
+                if (options.title) Homey.setTitle(Homey.__(options.title));
+                if (options.text) $text.innerHTML = Homey.__(options.text);
+
+                $next.classList += ' hy-button-primary hy-button-fill button';
+            }, 0);
+        });
+    })();
+</script>
+<style>
+    #pairingcode {
+        font-size: 20px;
+        text-align: center;
+    }
+</style>

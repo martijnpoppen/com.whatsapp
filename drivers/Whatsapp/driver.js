@@ -35,8 +35,13 @@ module.exports = class mainDriver extends Homey.Driver {
                 session.showView('loading2');
             }
 
-            if (data.type === 'QR' && data.clientID === guid) {
-                await session.emit('qr', data.msg);
+            if (data.type === 'CODE' && data.clientID === guid) {
+                this.code = data.msg;
+                await session.emit('code', data.msg);
+            }
+
+            if (data.type === 'CLOSED' && data.clientID === guid) {
+                session.showView('done');
             }
         }, 4000);
 
@@ -48,6 +53,8 @@ module.exports = class mainDriver extends Homey.Driver {
     async onPair(session) {
         this.type = 'pair';
         this.device = null;
+        this.tempDB = {};
+        this.code = null;
 
         this.setPairingSession(session);
     }
@@ -55,6 +62,8 @@ module.exports = class mainDriver extends Homey.Driver {
     async onRepair(session, device) {
         this.type = 'repair';
         this.device = device;
+        this.tempDB = {};
+        this.code = null;
 
         this.homey.app.log(`[Driver] ${this.id} - unsetting store for :`, device.id);
         const storeData = device.getStore();
@@ -82,18 +91,23 @@ module.exports = class mainDriver extends Homey.Driver {
                 }
             }
 
-            if (view === 'whatsapp_qr') {
-                await session.emit('qr', this.qr);
+            if (view === 'whatsapp_pairing_code') {
+                await session.emit('code', this.code);
             }
 
             if (view === 'loading') {
                 await this.setWhatsappClient(this.guid);
-                await this.WhatsappClients[this.guid].addDevice();
+                await this.WhatsappClients[this.guid].addDevice(this.phonenumber);
 
                 this.setCheckInterval(session, this.guid);
 
                 await sleep(5000);
-                session.showView('whatsapp_qr');
+                if(this.code.length) {
+                    session.showView('whatsapp_pairing_code');
+                }
+                
+                await sleep(3000);
+                session.showView('whatsapp_pairing_code');
             }
 
             if (view === 'loading2') {
@@ -123,6 +137,16 @@ module.exports = class mainDriver extends Homey.Driver {
 
         session.setHandler('list_devices', async () => {
             return this.results;
+        });
+
+        session.setHandler('set_phone', async ({ phone }) => {
+            if(phone.length < 10) {
+                return false;
+            }
+
+            this.phonenumber = phone.replace('+', '');
+
+            return true;
         });
     }
 };
