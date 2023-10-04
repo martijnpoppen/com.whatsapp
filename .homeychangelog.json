@@ -58,5 +58,8 @@
   },
   "1.14.2": {
     "en": "FIX: pairing"
+  },
+  "1.14.3": {
+    "en": "FIX: group links"
   }
 }
