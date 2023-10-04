@@ -32,6 +32,8 @@ module.exports = class mainDriver extends Homey.Driver {
         this.onReadyInterval = this.homey.setInterval(async () => {
             const data = await this.WhatsappClients[guid].getData();
 
+            this.homey.app.log(`[Driver] ${this.id} - setCheckInterval - ${data.type}`);
+
             if (data.type === 'READY' && data.clientID === guid) {
                 session.showView('loading2');
             }
@@ -47,8 +49,9 @@ module.exports = class mainDriver extends Homey.Driver {
         }, 4000);
 
         setTimeout(() => {
+            this.homey.app.log(`[Driver] ${this.id} - Disabling interval`);
             this.homey.clearInterval(this.onReadyInterval);
-        }, 30000);
+        }, 60000);
     }
 
     async onPair(session) {
