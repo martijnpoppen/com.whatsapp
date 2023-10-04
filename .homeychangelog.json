@@ -52,5 +52,8 @@
   },
   "1.14.0": {
     "en": "NEW: use E.164 standard to validate phone numbers"
+  },
+  "1.14.1": {
+    "en": "FIX: pairing stuck on pairing code screen"
   }
 }
