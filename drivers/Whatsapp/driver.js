@@ -1,6 +1,7 @@
 const Homey = require('homey');
 const { GetGUID, sleep } = require('../../lib/helpers');
 const whatsappClient = require('../../lib/api/whatsapp');
+const { phone } = require('phone');
 
 module.exports = class mainDriver extends Homey.Driver {
     async onInit() {
@@ -102,10 +103,10 @@ module.exports = class mainDriver extends Homey.Driver {
                 this.setCheckInterval(session, this.guid);
 
                 await sleep(5000);
-                if(this.code.length) {
+                if (this.code.length) {
                     session.showView('whatsapp_pairing_code');
                 }
-                
+
                 await sleep(3000);
                 session.showView('whatsapp_pairing_code');
             }
@@ -139,12 +140,14 @@ module.exports = class mainDriver extends Homey.Driver {
             return this.results;
         });
 
-        session.setHandler('set_phone', async ({ phone }) => {
-            if(phone.length < 10) {
+        session.setHandler('set_phone', async ({ number }) => {
+            const { isValid, phoneNumber } = phone(number);
+            console.log(phone(number));
+            if (!isValid) {
                 return false;
             }
 
-            this.phonenumber = phone.replace('+', '');
+            this.phonenumber = phoneNumber.replace('+', '');
 
             return true;
         });

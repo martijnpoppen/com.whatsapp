@@ -1,7 +1,7 @@
 const Homey = require('homey');
+const { phone } = require('phone');
 
 module.exports = class Whatsapp extends Homey.Device {
-    
     async onInit() {
         try {
             this.homey.app.log('[Device] - init =>', this.getName());
@@ -19,7 +19,7 @@ module.exports = class Whatsapp extends Homey.Device {
     async onAdded() {
         await this.syncTempDbToStore();
 
-        if(this.driver.onReadyInterval) {
+        if (this.driver.onReadyInterval) {
             this.homey.clearInterval(this.driver.onReadyInterval);
         }
     }
@@ -46,16 +46,15 @@ module.exports = class Whatsapp extends Homey.Device {
     async syncTempDbToStore() {
         const deviceObject = this.getData();
         const clientId = deviceObject.id.split('_')[1];
-        if(this.driver.tempDB[clientId]) {
+        if (this.driver.tempDB[clientId]) {
             this.homey.app.log(`[Device] - ${this.getName()} => syncTempDbToStore - found tempDB - syncing with store`);
-            for(let i = 0; i < Object.keys(this.driver.tempDB[clientId]).length; i++) {
+            for (let i = 0; i < Object.keys(this.driver.tempDB[clientId]).length; i++) {
                 const key = Object.keys(this.driver.tempDB[clientId])[i];
                 const value = this.driver.tempDB[clientId][key];
 
                 await this.setStoreValue(key, value);
             }
 
-            
             this.driver.tempDB = {};
             this.homey.app.log(`[Device] - ${this.getName()} => syncTempDbToStore - tempDB cleared`, this.driver.tempDB);
         }
@@ -67,7 +66,7 @@ module.exports = class Whatsapp extends Homey.Device {
             const deviceObject = this.getData();
             this.homey.app.log(`[Device] - ${this.getName()} => setWhatsappClient`);
 
-            this.WhatsappClient = this.driver.WhatsappClients[deviceObject.id]
+            this.WhatsappClient = this.driver.WhatsappClients[deviceObject.id];
             this.setStoreValue('API_SECRET', Homey.env.API_SECRET);
 
             this.setAvailable();
@@ -91,7 +90,7 @@ module.exports = class Whatsapp extends Homey.Device {
         const isGroup = validateUrl(params.recipient);
         const recipient = await this.getRecipient(params.recipient, isGroup);
 
-        if(recipient && recipient !== params.recipient) {
+        if (recipient && recipient !== params.recipient) {
             const data = await this.sendMessage(recipient, message, type, params);
 
             this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage data`, Object.keys(data).length);
@@ -103,9 +102,12 @@ module.exports = class Whatsapp extends Homey.Device {
     }
 
     async getRecipient(recipient, isGroup) {
-        if (!validateMobile(recipient) && !validateUrl(recipient)) {
+        const { isValid, phoneNumber } = phone(recipient);
+
+        if (!isValid && !validateUrl(recipient)) {
             throw new Error('Invalid mobile number OR Invalid group invite link');
-        } else if (recipient && validateMobile(recipient)) {
+        } else if (phoneNumber && isValid) {
+            recipient = phoneNumber;
             recipient = recipient.replace('+', '');
             recipient = recipient.replace(' ', '');
             recipient = `${recipient}@s.whatsapp.net`;
@@ -113,11 +115,11 @@ module.exports = class Whatsapp extends Homey.Device {
             const groupJid = recipient.replace(' ', '').split('/').pop();
             this.homey.app.log(`[Device] ${this.getName()} - getRecipient - fetching group JID`, groupJid);
 
-            recipient = await this.getStoreValue(groupJid) || null;
+            recipient = (await this.getStoreValue(groupJid)) || null;
             this.homey.app.log(`[Device] ${this.getName()} - getRecipient - fetching group JID from store: `, recipient);
 
             if (!recipient) {
-                recipient = await this.WhatsappClient.getGroupWithInvite(groupJid) || null;
+                recipient = (await this.WhatsappClient.getGroupWithInvite(groupJid)) || null;
                 this.homey.app.log(`[Device] ${this.getName()} - getRecipient - fetching group JID from WhatsappClient`, recipient);
 
                 if (recipient) {
@@ -133,7 +135,6 @@ module.exports = class Whatsapp extends Homey.Device {
 
         return recipient;
     }
-
 
     async sendMessage(recipient, message, msgType, params = null) {
         let data = {};
@@ -157,17 +158,15 @@ module.exports = class Whatsapp extends Homey.Device {
             } else if (msgType === 'document') {
                 data = await this.WhatsappClient.sendFile(recipient, fileUrl);
             } else if (msgType === 'location') {
-                const {lat} = params;
+                const { lat } = params;
 
                 const splittedParam = lat.split(',');
 
-                if(splittedParam.length > 1) {
+                if (splittedParam.length > 1) {
                     data = await this.WhatsappClient.sendLocation(recipient, splittedParam[0], splittedParam[1], message);
                 } else {
                     throw new Error('Invalid location, use comma separated Latitude,Longitude');
                 }
-
-               
             }
         }
 
@@ -227,5 +226,4 @@ module.exports = class Whatsapp extends Homey.Device {
             this.homey.app.log(error);
         }
     }
-
 };

@@ -89,7 +89,7 @@
                 e = r.value,
                 o = a.value,
                 Homey.emit("set_phone", {
-                    phone: e
+                    number: e
                 }, function(e, o) {
                     e ? Homey.error(e) : o ? Homey.nextView() : Homey.error(Homey.__("$tmpl.login_credentials.invalid_credentials")),
                     s = !1,
