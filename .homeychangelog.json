@@ -64,5 +64,8 @@
   },
   "1.14.4": {
     "en": "NEW: try local Whatsapp Client"
+  },
+  "1.15.0": {
+    "en": "NEW: Local Whatsapp (disable server) | FIX: faster messages"
   }
 }
