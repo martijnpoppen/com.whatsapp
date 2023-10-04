@@ -55,5 +55,8 @@
   },
   "1.14.1": {
     "en": "FIX: pairing stuck on pairing code screen"
+  },
+  "1.14.2": {
+    "en": "FIX: pairing"
   }
 }
