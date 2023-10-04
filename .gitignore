@@ -103,5 +103,6 @@ build/
 .dccache
 
 lib/mock/
-lib/api
+lib/com.whatsapp.api
+lib/com.whatsapp.lib
 api.js

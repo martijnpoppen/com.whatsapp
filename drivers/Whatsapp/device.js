@@ -67,7 +67,6 @@ module.exports = class Whatsapp extends Homey.Device {
             this.homey.app.log(`[Device] - ${this.getName()} => setWhatsappClient`);
 
             this.WhatsappClient = this.driver.WhatsappClients[deviceObject.id];
-            this.setStoreValue('API_SECRET', Homey.env.API_SECRET);
 
             this.setAvailable();
         } catch (error) {

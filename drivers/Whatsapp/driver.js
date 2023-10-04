@@ -1,6 +1,6 @@
 const Homey = require('homey');
 const { GetGUID, sleep } = require('../../lib/helpers');
-const whatsappClient = require('../../lib/api/whatsapp');
+const whatsappClient = require('../../lib/com.whatsapp.api');
 const { phone } = require('phone');
 
 module.exports = class mainDriver extends Homey.Driver {
@@ -21,8 +21,7 @@ module.exports = class mainDriver extends Homey.Driver {
 
     async setWhatsappClient(deviceId) {
         this.WhatsappClients[deviceId] = new whatsappClient({
-            deviceId,
-            url: Homey.env.API
+            deviceId
         });
 
         return this.WhatsappClients[deviceId];
@@ -69,7 +68,7 @@ module.exports = class mainDriver extends Homey.Driver {
         this.tempDB = {};
         this.code = null;
 
-        this.homey.app.log(`[Driver] ${this.id} - unsetting store for :`, device.id);
+        this.homey.app.log(`[Driver] ${this.id} - unsetting store for :`, device.getName());
         const storeData = device.getStore();
         Object.keys(storeData).forEach((storeKey) => {
             device.unsetStoreValue(storeKey);
