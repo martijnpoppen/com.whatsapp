@@ -61,5 +61,8 @@
   },
   "1.14.3": {
     "en": "FIX: group links"
+  },
+  "1.14.4": {
+    "en": "NEW: try local Whatsapp Client"
   }
 }
