@@ -49,5 +49,8 @@
   },
   "1.13.1": {
     "en": "FIX: Pairing with pairing code"
+  },
+  "1.14.0": {
+    "en": "NEW: use E.164 standard to validate phone numbers"
   }
 }
