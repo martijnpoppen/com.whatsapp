@@ -67,5 +67,8 @@
   },
   "1.15.0": {
     "en": "NEW: Local Whatsapp (disable server) | FIX: faster messages"
+  },
+  "1.15.1": {
+    "en": "FIX: 'waiting for this message' in group"
   }
 }
