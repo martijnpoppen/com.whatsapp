@@ -84,7 +84,8 @@ module.exports = class Whatsapp extends Homey.Device {
     }
 
     async onCapability_SendMessage(params, type) {
-        this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage`, { ...params, device: 'LOG' });
+        const deviceObject = this.getData();
+        this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage`, { ...params, deviceObject, device: 'LOG' });
 
         const message = params.message && params.message.length ? params.message : '‎';
         const isGroup = validateUrl(params.recipient);
