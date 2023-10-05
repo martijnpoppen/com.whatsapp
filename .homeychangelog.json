@@ -88,5 +88,8 @@
   },
   "1.16.0": {
     "en": "NEW: multi message | NEW: Mobile Homey app pairing | FIX: multiple improvements"
+  },
+  "1.16.1": {
+    "en": "FIX: remove timeline notification"
   }
 }
