@@ -82,5 +82,8 @@
   },
   "1.15.5": {
     "en": "FIX: message sometimes not sent properly. (timeout)"
+  },
+  "1.15.6": {
+    "en": " FIX: message sometimes not sent properly. (timeout)"
   }
 }
