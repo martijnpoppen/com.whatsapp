@@ -85,5 +85,8 @@
   },
   "1.15.6": {
     "en": " FIX: message sometimes not sent properly. (timeout)"
+  },
+  "1.16.0": {
+    "en": "NEW: multi message | NEW: Mobile Homey app pairing | FIX: multiple improvements"
   }
 }
