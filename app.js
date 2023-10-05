@@ -25,16 +25,16 @@ class App extends Homey.App {
 
     async sendNotifications() {
         try {
-            const ntfy2023100401 = `[Whatsapp] (1/2) - Good news. This app version doesn't require the cloud server anymore`;
-            const ntfy2023100402 = `[Whatsapp] (2/2) - The complete connection is now running natevely on your Homey.`;
+            // const ntfy2023100401 = `[Whatsapp] (1/2) - Good news. This app version doesn't require the cloud server anymore`;
+            // const ntfy2023100402 = `[Whatsapp] (2/2) - The complete connection is now running natevely on your Homey.`;
 
-            await this.homey.notifications.createNotification({
-                excerpt: ntfy2023100402
-            });
+            // await this.homey.notifications.createNotification({
+            //     excerpt: ntfy2023100402
+            // });
 
-            await this.homey.notifications.createNotification({
-                excerpt: ntfy2023100401
-            });
+            // await this.homey.notifications.createNotification({
+            //     excerpt: ntfy2023100401
+            // });
         } catch (error) {
             this.log('sendNotifications - error', console.error());
         }

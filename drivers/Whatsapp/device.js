@@ -83,8 +83,7 @@ module.exports = class Whatsapp extends Homey.Device {
     }
 
     async onCapability_SendMessage(params, type) {
-        const deviceObject = this.getData();
-        this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage`, { ...params, deviceObject, device: 'LOG' });
+        this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage`);
 
         const message = params.message && params.message.length ? params.message : '‎';
         const isGroup = validateUrl(params.recipient);
@@ -104,9 +103,11 @@ module.exports = class Whatsapp extends Homey.Device {
     async getRecipient(recipient, isGroup) {
         const { isValid, phoneNumber } = phone(recipient);
 
-        if (!isValid && !validateUrl(recipient)) {
-            throw new Error('Invalid mobile number OR Invalid group invite link');
-        } else if (phoneNumber && isValid) {
+        if(!isValid && !isGroup) {
+            throw new Error('Invalid mobile number (Make sure to include the country code (e.g. +31))');
+        }
+        
+        if (phoneNumber && isValid) {
             recipient = phoneNumber;
             recipient = recipient.replace('+', '');
             recipient = recipient.replace(' ', '');
@@ -140,7 +141,7 @@ module.exports = class Whatsapp extends Homey.Device {
         let data = {};
 
         if (recipient && message && !msgType) {
-            this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage sendText`, { recipient, message, msgType });
+            this.homey.app.log(`[Device] ${this.getName()} - sendMessage - sendText`, { recipient, message, msgType });
 
             data = await this.WhatsappClient.sendText(recipient, message);
         } else if (recipient && msgType) {
@@ -149,7 +150,7 @@ module.exports = class Whatsapp extends Homey.Device {
                 fileUrl = fileUrl.cloudUrl;
             }
 
-            this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage send${msgType}`, { ...params, recipient, message, fileUrl, msgType, device: 'LOG' });
+            this.homey.app.log(`[Device] ${this.getName()} - sendMessage - send${msgType}`, { ...params, recipient, message, fileUrl, msgType, device: 'LOG' });
 
             if (msgType === 'video' || msgType === 'image') {
                 data = await this.WhatsappClient.sendMedia(recipient, fileUrl, message);
