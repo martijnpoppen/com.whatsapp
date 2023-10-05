@@ -73,5 +73,8 @@
   },
   "1.15.2": {
     "en": "FIX: Homey was keeping the connection alive after sending a message resulting in always Active connection"
+  },
+  "1.15.3": {
+    "en": "FIX: message sometimes not sent properly. (timeout)"
   }
 }
