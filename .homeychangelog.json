@@ -76,5 +76,11 @@
   },
   "1.15.3": {
     "en": "FIX: message sometimes not sent properly. (timeout)"
+  },
+  "1.15.4": {
+    "en": "FIX: message sometimes not sent properly. (timeout)"
+  },
+  "1.15.5": {
+    "en": "FIX: message sometimes not sent properly. (timeout)"
   }
 }
