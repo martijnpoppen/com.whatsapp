@@ -91,5 +91,8 @@
   },
   "1.16.1": {
     "en": "FIX: remove timeline notification"
+  },
+  "1.16.2": {
+    "en": "FIX: pairing error"
   }
 }
