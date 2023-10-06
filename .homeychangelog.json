@@ -94,5 +94,8 @@
   },
   "1.16.2": {
     "en": "FIX: pairing error"
+  },
+  "1.16.3": {
+    "en": "FIX: +3197 number NL"
   }
 }
