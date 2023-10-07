@@ -109,5 +109,8 @@
   },
   "1.17.0": {
     "en": "NEW: add next button in pairing code view for mobile homey app which does not automatically go to next step"
+  },
+  "1.17.1": {
+    "en": "FIX: Image tokens"
   }
 }
