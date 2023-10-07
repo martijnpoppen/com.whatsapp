@@ -1,5 +1,5 @@
 const Homey = require('homey');
-const { phone } = require('phone');
+const { phone } = require('../../lib/phone');
 
 module.exports = class Whatsapp extends Homey.Device {
     async onInit() {

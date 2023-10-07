@@ -1,7 +1,7 @@
 const Homey = require('homey');
 const { GetGUID, sleep } = require('../../lib/helpers');
 const whatsappClient = require('../../lib/com.whatsapp.api');
-const { phone } = require('phone');
+const { phone } = require('../../lib/phone');
 
 module.exports = class mainDriver extends Homey.Driver {
     async onInit() {
@@ -50,7 +50,6 @@ module.exports = class mainDriver extends Homey.Driver {
         setTimeout(() => {
             this.homey.app.log(`[Driver] ${this.id} - Disabling interval`);
             this.homey.clearInterval(this.onReadyInterval);
-            session.showView('loading2');
         }, 60000);
     }
 
