@@ -69,9 +69,6 @@
           "da": "+45123456789",
           "ru": "+79123456789",
           "pl": "+48123456789"
-        },
-        "navigation": {
-          "next": "loading"
         }
       }
     },
@@ -107,10 +104,10 @@
           "da": "Gå til enhedsforbindelsen. Klik på tilføj ny enhed. Klik på 'tilføj med telefonnummer i stedet' i bunden af skærmen.",
           "ru": "Перейдите по ссылке на устройство. Нажмите на добавить новое устройство. Нажмите на 'добавить вместо телефонного номера' внизу экрана.",
           "pl": "Przejdź do linku urządzenia. Kliknij dodaj nowe urządzenie. Kliknij „dodaj zamiast numeru telefonu” na dole ekranu."
-        },
-        "navigation": {
-          "next": "loading2"
         }
+      },
+      "navigation": {
+        "next": "loading2"
       }
     },
     {

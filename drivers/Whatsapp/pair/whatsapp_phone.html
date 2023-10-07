@@ -53,7 +53,7 @@
                 <input class=homey-form-input-large id=password name=password type=text value="" data-i18n-placeholder=$tmpl.login_credentials.password>
             </div>
         </div>
-        <button tabindex=0 class="homey-button-primary-shadow-full __private__homey-login-credentials__button" type=submit data-i18n=$tmpl.login_credentials.login></button>
+        <button tabindex=0 class="homey-button-primary-shadow-full __private__homey-login-credentials__button" type=submit data-i18n=login_credentials.login></button>
     </form>
 </div>
 <script type=text/javascript>
@@ -85,13 +85,13 @@
             if (e.preventDefault(),
             !s)
                 return s = !0,
-                Homey.showLoadingOverlay(Homey.__("$tmpl.login_credentials.loading")),
+                Homey.showLoadingOverlay(Homey.__("login_credentials.loading")),
                 e = r.value,
                 o = a.value,
                 Homey.emit("set_phone", {
                     number: e
                 }, function(e, o) {
-                    e ? Homey.error(e) : o ? Homey.nextView() : Homey.error(Homey.__("$tmpl.login_credentials.invalid_credentials")),
+                    e ? Homey.error(e) : o ? Homey.nextView() : Homey.error(Homey.__("login_credentials.invalid_credentials")),
                     s = !1,
                     Homey.hideLoadingOverlay()
                 }),

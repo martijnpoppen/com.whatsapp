@@ -48,7 +48,7 @@
 <script>
     (function () {
         var $text = document.querySelector('#text');
-        var $next = document.querySelector('#hy-nav-next');
+        var $next = document.querySelector('#hy-nav-continue');
 
         Homey.on("code", function (data) {
             const code = data.split('');
@@ -68,8 +68,14 @@
                 if (options.title) Homey.setTitle(Homey.__(options.title));
                 if (options.text) $text.innerHTML = Homey.__(options.text);
 
-                $next.classList += ' hy-button-primary hy-button-fill button';
+                $next.classList += ' hy-button-primary hy-button-fill button is-loading is-disabled no-click';
             }, 0);
+
+            setTimeout(() => {
+                $next.classList.remove("is-loading");
+                $next.classList.remove("is-disabled");
+                $next.classList.remove("no-click");
+            }, 50000);
         });
     })();
 </script>
@@ -77,5 +83,9 @@
     #pairingcode {
         font-size: 20px;
         text-align: center;
+    }
+
+    .no-click {
+        pointer-events: none
     }
 </style>

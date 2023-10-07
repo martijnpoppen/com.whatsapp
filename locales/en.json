@@ -1,1 +1,7 @@
-{}
+{
+    "login_credentials": {
+        "invalid_login": "Number not valid. Make sure to prefix with a + and include country code",
+        "login": "Continue",
+        "loading": "Loading"
+    }
+}

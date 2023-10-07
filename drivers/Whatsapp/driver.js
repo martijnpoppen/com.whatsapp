@@ -50,7 +50,7 @@ module.exports = class mainDriver extends Homey.Driver {
         setTimeout(() => {
             this.homey.app.log(`[Driver] ${this.id} - Disabling interval`);
             this.homey.clearInterval(this.onReadyInterval);
-        }, 60000);
+        }, 120000);
     }
 
     async onPair(session) {
