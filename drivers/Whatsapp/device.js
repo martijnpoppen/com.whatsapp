@@ -92,9 +92,9 @@ module.exports = class Whatsapp extends Homey.Device {
         if (recipient && recipient !== params.recipient) {
             const data = await this.sendMessage(recipient, message, type, params);
 
-            this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage data`, Object.keys(data).length);
+            this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage`, Object.keys(data).length);
 
-            return Object.keys(data).length;
+            return !!Object.keys(data).length;
         }
 
         return false;
@@ -146,8 +146,8 @@ module.exports = class Whatsapp extends Homey.Device {
             data = await this.WhatsappClient.sendText(recipient, message);
         } else if (recipient && msgType) {
             let fileUrl = params.droptoken || params.file || null;
-            if (!!fileUrl && !!fileUrl.cloudUrl) {
-                fileUrl = fileUrl.cloudUrl;
+            if (!!fileUrl && !!fileUrl.localUrl) {
+                fileUrl = fileUrl.localUrl;
             }
 
             this.homey.app.log(`[Device] ${this.getName()} - sendMessage - send${msgType}`, { ...params, recipient, message, fileUrl, msgType, device: 'LOG' });

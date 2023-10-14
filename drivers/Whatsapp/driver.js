@@ -150,6 +150,9 @@ module.exports = class mainDriver extends Homey.Driver {
             }
 
             this.phonenumber = phoneNumber.replace('+', '');
+            this.phonenumber = this.phonenumber.replace(' ', '');
+            this.phonenumber = this.phonenumber.replace(' ', '');
+            this.phonenumber = this.phonenumber.replace(' ', '');
 
             return true;
         });
