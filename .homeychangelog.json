@@ -115,5 +115,8 @@
   },
   "1.18.0": {
     "en": "NEW: improve multi message handling"
+  },
+  "1.18.1": {
+    "en": "FIX: invite links with spaces"
   }
 }
