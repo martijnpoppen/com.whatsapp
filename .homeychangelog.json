@@ -118,5 +118,8 @@
   },
   "1.18.1": {
     "en": "FIX: invite links with spaces"
+  },
+  "1.18.2": {
+    "en": "FIX: connection closed before sending message"
   }
 }
