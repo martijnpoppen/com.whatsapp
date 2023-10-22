@@ -1,5 +1,5 @@
 const Homey = require('homey');
-const { phone } = require('../../lib/phone');
+const { parsePhoneNumber } = require('libphonenumber-js')
 
 module.exports = class Whatsapp extends Homey.Device {
     async onInit() {
@@ -101,18 +101,22 @@ module.exports = class Whatsapp extends Homey.Device {
     }
 
     async getRecipient(recipient, isGroup) {
-        const { isValid, phoneNumber } = phone(recipient);
+        const phoneNumber = parsePhoneNumber(recipient);
 
-        if(!isValid && !isGroup) {
+        if(!phoneNumber.isValid() && !isGroup) {
             throw new Error('Invalid mobile number (Make sure to include the country code (e.g. +31))');
         }
         
-        if (phoneNumber && isValid) {
-            recipient = phoneNumber;
+        if (phoneNumber.number && phoneNumber.isValid()) {
+            recipient = phoneNumber.number;
             recipient = recipient.replace('+', '');
             recipient = recipient.replace(' ', '');
             recipient = `${recipient}@s.whatsapp.net`;
         } else if (isGroup) {
+            recipient = recipient.replace(' ', '');
+            recipient = recipient.replace(' ', '');
+            recipient = recipient.replace(' ', '');
+
             const groupJid = recipient.replace(' ', '').split('/').pop();
             this.homey.app.log(`[Device] ${this.getName()} - getRecipient - fetching group JID`, groupJid);
 

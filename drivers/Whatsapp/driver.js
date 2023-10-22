@@ -1,7 +1,7 @@
 const Homey = require('homey');
 const { GetGUID, sleep } = require('../../lib/helpers');
 const whatsappClient = require('../../lib/com.whatsapp.api');
-const { phone } = require('../../lib/phone');
+const { parsePhoneNumber } = require('libphonenumber-js');
 
 module.exports = class mainDriver extends Homey.Driver {
     async onInit() {
@@ -143,13 +143,13 @@ module.exports = class mainDriver extends Homey.Driver {
         });
 
         session.setHandler('set_phone', async ({ number }) => {
-            const { isValid, phoneNumber } = phone(number);
-            console.log(phone(number));
-            if (!isValid) {
+            const phoneNumber = parsePhoneNumber(number);
+            console.log(parsePhoneNumber(number));
+            if (!phoneNumber.isValid()) {
                 return false;
             }
 
-            this.phonenumber = phoneNumber.replace('+', '');
+            this.phonenumber = phoneNumber.number.replace('+', '');
             this.phonenumber = this.phonenumber.replace(' ', '');
             this.phonenumber = this.phonenumber.replace(' ', '');
             this.phonenumber = this.phonenumber.replace(' ', '');
