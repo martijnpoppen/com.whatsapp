@@ -121,5 +121,11 @@
   },
   "1.18.2": {
     "en": "FIX: connection closed before sending message"
+  },
+  "1.18.3": {
+    "en": "FIX: keep connection alaiv"
+  },
+  "1.19.0": {
+    "en": "NEW: Allow Landline phonenumbers  "
   }
 }
