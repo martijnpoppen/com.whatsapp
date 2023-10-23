@@ -126,6 +126,9 @@
     "en": "FIX: keep connection alaiv"
   },
   "1.19.0": {
-    "en": "NEW: Allow Landline phonenumbers  "
+    "en": "NEW: Allow Landline phonenumbers"
+  },
+  "1.19.1": {
+    "en": "NEW: Allow Landline phonenumbers"
   }
 }
