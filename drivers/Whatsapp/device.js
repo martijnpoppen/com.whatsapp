@@ -5,7 +5,7 @@ module.exports = class Whatsapp extends Homey.Device {
     async onInit() {
         try {
             this.homey.app.log('[Device] - init =>', this.getName());
-            this.setUnavailable(`Connecting to ${this.getName()}`);
+            this.setUnavailable(`Connecting to WhatsApp`);
 
             await this.synchronousStart();
 
@@ -68,7 +68,13 @@ module.exports = class Whatsapp extends Homey.Device {
 
             this.WhatsappClient = this.driver.WhatsappClients[deviceObject.id];
 
-            this.setAvailable();
+            const result = await this.WhatsappClient.startup();
+
+            if(result) {
+                this.setAvailable();
+            } else {
+                this.setUnavailable('Oops something went wrong. Please try to repair the device.');
+            }
         } catch (error) {
             this.homey.app.log(`[Device] ${this.getName()} - setWhatsappClient - error =>`, error);
         }
@@ -101,13 +107,12 @@ module.exports = class Whatsapp extends Homey.Device {
     }
 
     async getRecipient(recipient, isGroup) {
-        const phoneNumber = parsePhoneNumber(recipient);
+        if (!isGroup) {
+            const phoneNumber = parsePhoneNumber(recipient);
+            if(!phoneNumber.isValid()) {
+                throw new Error('Invalid mobile number (Make sure to include the country code (e.g. +31))');
+            }
 
-        if(!phoneNumber.isValid() && !isGroup) {
-            throw new Error('Invalid mobile number (Make sure to include the country code (e.g. +31))');
-        }
-        
-        if (phoneNumber.number && phoneNumber.isValid()) {
             recipient = phoneNumber.number;
             recipient = recipient.replace('+', '');
             recipient = recipient.replace(' ', '');
