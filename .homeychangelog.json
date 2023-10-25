@@ -130,5 +130,11 @@
   },
   "1.19.1": {
     "en": "NEW: Allow Landline phonenumbers"
+  },
+  "1.19.2": {
+    "en": "## New app update (:green_square: LIVE: [1.19.2](https://homey.app/a/com.whatsapp/)):  "
+  },
+  "1.19.3": {
+    "en": "FIX: repair"
   }
 }
