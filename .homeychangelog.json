@@ -142,5 +142,8 @@
   },
   "1.19.5": {
     "en": "FIX: Go offline after sending message. (WhatsApp stayed online)"
+  },
+  "1.19.6": {
+    "en": "FIX: Go offline after sending message. (WhatsApp stayed online)"
   }
 }
