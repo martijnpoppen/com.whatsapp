@@ -145,5 +145,8 @@
   },
   "1.19.6": {
     "en": "FIX: Go offline after sending message. (WhatsApp stayed online)"
+  },
+  "1.19.7": {
+    "en": "OPT: use cloud url for image tags"
   }
 }
