@@ -148,5 +148,8 @@
   },
   "1.19.7": {
     "en": "OPT: use cloud url for image tags"
+  },
+  "1.19.8": {
+    "en": "OPT: enable debug logs to check issue with image tokens"
   }
 }
