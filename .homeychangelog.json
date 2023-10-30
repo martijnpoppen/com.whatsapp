@@ -151,5 +151,8 @@
   },
   "1.19.8": {
     "en": "OPT: enable debug logs to check issue with image tokens"
+  },
+  "1.19.9": {
+    "en": "FIX: images via Token"
   }
 }
