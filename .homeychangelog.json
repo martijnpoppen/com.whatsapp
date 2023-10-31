@@ -154,5 +154,8 @@
   },
   "1.19.9": {
     "en": "FIX: images via Token"
+  },
+  "1.19.10": {
+    "en": "FIX: images via Token"
   }
 }
