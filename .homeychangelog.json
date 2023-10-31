@@ -157,5 +157,8 @@
   },
   "1.19.10": {
     "en": "FIX: images via Token"
+  },
+  "1.19.11": {
+    "en": "FIX: issue which keeps restarting the whatsapp client due to unexpected error"
   }
 }
