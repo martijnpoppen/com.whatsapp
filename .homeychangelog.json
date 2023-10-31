@@ -163,5 +163,8 @@
   },
   "1.20.0": {
     "en": "NEW: Implement a new way of handling images"
+  },
+  "1.20.1": {
+    "en": "FIX: prevent image cache"
   }
 }
