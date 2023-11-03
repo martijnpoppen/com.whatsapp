@@ -169,5 +169,8 @@
   },
   "1.20.2": {
     "en": "FIX: WhatsApp Client getting stuck and can't send messages"
+  },
+  "1.21.0": {
+    "en": "NEW: Better session handling | FIX: image thumbnails"
   }
 }
