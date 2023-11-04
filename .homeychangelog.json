@@ -172,5 +172,8 @@
   },
   "1.21.0": {
     "en": "NEW: Better session handling | FIX: image thumbnails"
+  },
+  "1.21.2": {
+    "en": "FIX: catch error"
   }
 }
