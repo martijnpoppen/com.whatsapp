@@ -162,7 +162,7 @@ module.exports = class Whatsapp extends Homey.Device {
             this.homey.app.log(`[Device] ${this.getName()} - sendMessage - send${msgType}`, { ...params, recipient, message, fileUrl, msgType, device: 'LOG' });
 
             if (msgType === 'video' || msgType === 'image') {
-                data = await this.WhatsappClient.sendMedia(recipient, fileUrl, message);
+                data = await this.WhatsappClient.sendMedia(recipient, fileUrl, message, msgType);
             } else if (msgType === 'audio') {
                 throw new Error('Audio is not supported yet');
             } else if (msgType === 'document') {
