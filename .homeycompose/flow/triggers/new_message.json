@@ -2,7 +2,16 @@
   "id": "new_message",
   "title": {
     "en": "A new message has been received",
-    "nl": "Een nieuwe melding is ontvangen"
+    "nl": "Een nieuw bericht is ontvangen",
+    "de": "Eine neue Nachricht wurde empfangen",
+    "fr": "Un nouveau message a été reçu",
+    "it": "È stato ricevuto un nuovo messaggio",
+    "sv": "Ett nytt meddelande har mottagits",
+    "no": "En ny melding er mottatt",
+    "es": "Se ha recibido un nuevo mensaje",
+    "da": "En ny besked er modtaget",
+    "ru": "Было получено новое сообщение",
+    "pl": "Otrzymano nową wiadomość"
   },
   "platforms": ["local"],
   "args": [
@@ -111,21 +120,21 @@
       }
     },
     {
-        "name": "replyTo",
-        "type": "string",
-        "title": {
-            "en": "Reply code",
-            "nl": "Antwoordcode",
-            "de": "Antwortcode",
-            "fr": "Code de réponse",
-            "it": "Codice di risposta",
-            "sv": "Svars kod",
-            "no": "Svarskode",
-            "es": "Código de respuesta",
-            "da": "Svarskode",
-            "ru": "Код ответа",
-            "pl": "Kod odpowiedzi"
-        }        
+      "name": "replyTo",
+      "type": "string",
+      "title": {
+        "en": "Reply code",
+        "nl": "Antwoordcode",
+        "de": "Antwortcode",
+        "fr": "Code de réponse",
+        "it": "Codice di risposta",
+        "sv": "Svars kod",
+        "no": "Svarskode",
+        "es": "Código de respuesta",
+        "da": "Svarskode",
+        "ru": "Код ответа",
+        "pl": "Kod odpowiedzi"
+      }
     }
   ]
 }
