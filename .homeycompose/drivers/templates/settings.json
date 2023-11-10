@@ -1,3 +1,53 @@
 {
-  "settings": []
+  "settings": [
+    {
+      "type": "group",
+      "label": {
+        "en": "Listen to messages",
+        "nl": "Luister naar berichten",
+        "de": "Nachrichten anhören",
+        "fr": "Écouter les messages",
+        "it": "Ascolta i messaggi",
+        "sv": "Lyssna på meddelanden",
+        "no": "Lytt til meldinger",
+        "es": "Escuchar mensajes",
+        "da": "Lyt til beskeder",
+        "ru": "Слушать сообщения",
+        "pl": "Słuchaj wiadomości"
+      },
+      "children": [
+        {
+          "id": "trigger_own_message",
+          "type": "checkbox",
+          "hint": {
+            "en": "Trigger flow when receiving a message from yourself",
+            "nl": "Activeer stroom bij het ontvangen van een bericht van jezelf",
+            "de": "Fluss auslösen, wenn Sie eine Nachricht von sich selbst erhalten",
+            "fr": "Déclencher le flux lors de la réception d'un message de votre part",
+            "it": "Attiva il flusso quando ricevi un messaggio da te stesso",
+            "sv": "Utlös flödet när du tar emot ett meddelande från dig själv",
+            "no": "Utløs flyten når du mottar en melding fra deg selv",
+            "es": "Activar flujo al recibir un mensaje tuyo",
+            "da": "Udløs flow, når du modtager en besked fra dig selv",
+            "ru": "Запуск потока при получении сообщения от себя",
+            "pl": "Wyzwalaj przepływ po otrzymaniu wiadomości od siebie"
+          },
+          "label": {
+            "en": "Allow messages from self",
+            "nl": "Berichten van jezelf toestaan",
+            "de": "Nachrichten von sich selbst erlauben",
+            "fr": "Autoriser les messages de soi-même",
+            "it": "Consenti messaggi da te stesso",
+            "sv": "Tillåt meddelanden från dig själv",
+            "no": "Tillat meldinger fra deg selv",
+            "es": "Permitir mensajes de uno mismo",
+            "da": "Tillad beskeder fra dig selv",
+            "ru": "Разрешить сообщения от себя",
+            "pl": "Zezwalaj na wiadomości od siebie"
+          },          
+          "value": true
+        }
+      ]
+    }
+  ]
 }

@@ -1,0 +1,131 @@
+{
+  "id": "new_message",
+  "title": {
+    "en": "A new message has been received",
+    "nl": "Een nieuwe melding is ontvangen"
+  },
+  "platforms": ["local"],
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=Whatsapp"
+    }
+  ],
+  "tokens": [
+    {
+      "name": "text",
+      "type": "string",
+      "title": {
+        "en": "Text",
+        "nl": "Tekst",
+        "de": "Text",
+        "fr": "Texte",
+        "it": "Testo",
+        "sv": "Text",
+        "no": "Tekst",
+        "es": "Texto",
+        "da": "Tekst",
+        "ru": "текст",
+        "pl": "Tekst"
+      },
+      "example": {
+        "en": "Test message"
+      }
+    },
+    {
+      "name": "from",
+      "type": "string",
+      "title": {
+        "en": "Sender",
+        "nl": "Afzender",
+        "de": "Absender",
+        "fr": "Expéditeur",
+        "it": "Mittente",
+        "sv": "Avsändare",
+        "no": "Avsender",
+        "es": "Remitente",
+        "da": "Afsender",
+        "ru": "Отправитель",
+        "pl": "Nadawca"
+      },
+      "example": {
+        "en": "John Doe",
+        "nl": "Jan Jansen",
+        "de": "Max Mustermann",
+        "fr": "Jean Dupont",
+        "it": "Mario Rossi",
+        "sv": "Johan Andersson",
+        "no": "Ola Nordmann",
+        "es": "Juan Pérez",
+        "da": "Niels Nielsen",
+        "ru": "Ivan Ivanov",
+        "pl": "Jan Kowalski"
+      }
+    },
+    {
+      "name": "fromNumber",
+      "type": "string",
+      "title": {
+        "en": "Senders number",
+        "nl": "Afzendersnummer",
+        "de": "Absendernummer",
+        "fr": "Numéro de l'expéditeur",
+        "it": "Numero del mittente",
+        "sv": "Avsändarens nummer",
+        "no": "Avsenders nummer",
+        "es": "Número del remitente",
+        "da": "Afsenders nummer",
+        "ru": "Номер отправителя",
+        "pl": "Numer nadawcy"
+      },
+      "example": {
+        "en": "+31612345678",
+        "nl": "+31123456789",
+        "de": "+491234567890",
+        "fr": "+33123456789",
+        "it": "+391234567890",
+        "sv": "+46123456789",
+        "no": "+4712345678",
+        "es": "+34123456789",
+        "da": "+4512345678",
+        "ru": "+79123456789",
+        "pl": "+48123456789"
+      }
+    },
+    {
+      "name": "time",
+      "type": "string",
+      "title": {
+        "en": "Time",
+        "nl": "Tijd",
+        "de": "Zeit",
+        "fr": "Temps",
+        "it": "Tempo",
+        "sv": "Tid",
+        "no": "Tid",
+        "es": "Tiempo",
+        "da": "Tid",
+        "ru": "Время",
+        "pl": "Czas"
+      }
+    },
+    {
+        "name": "replyTo",
+        "type": "string",
+        "title": {
+            "en": "Reply code",
+            "nl": "Antwoordcode",
+            "de": "Antwortcode",
+            "fr": "Code de réponse",
+            "it": "Codice di risposta",
+            "sv": "Svars kod",
+            "no": "Svarskode",
+            "es": "Código de respuesta",
+            "da": "Svarskode",
+            "ru": "Код ответа",
+            "pl": "Kod odpowiedzi"
+        }        
+    }
+  ]
+}

@@ -15,7 +15,6 @@ class App extends Homey.App {
     // -------------------- INIT ----------------------
 
     async onInit() {
-        process.env.API_SECRET = Homey.env.API_SECRET;
         this.log(`${this.homey.manifest.id} - ${this.homey.manifest.version} started...`);
 
         await flowActions.init(this.homey);

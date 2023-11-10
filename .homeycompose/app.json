@@ -71,13 +71,6 @@
   "bugs": {
     "url": "https://community.homey.app/t/app-pro-whatsapp/90749"
   },
-  "api": {
-    "store": {
-      "method": "post",
-      "public": true,
-      "path": "/store"
-    }
-  },
   "source": "https://github.com/martijnpoppen/com.whatsapp",
   "homeyCommunityTopicId": 90749,
   "support": "https://community.homey.app/t/app-pro-whatsapp/90749"

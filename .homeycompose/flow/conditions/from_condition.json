@@ -1,0 +1,66 @@
+{
+  "id": "from_condition",
+  "title": {
+    "en": "Sender",
+    "nl": "Afzender",
+    "de": "Absender",
+    "fr": "Expéditeur",
+    "it": "Mittente",
+    "sv": "Avsändare",
+    "no": "Avsender",
+    "es": "Remitente",
+    "da": "Afsender",
+    "ru": "Отправитель",
+    "pl": "Nadawca"
+  },
+  "titleFormatted": {
+    "en": "Sender !{{is|isn't}} [[from_input]]",
+    "nl": "Afzender !{{is|is niet}} [[from_input]]",
+    "de": "Absender !{{ist|ist nicht}} [[from_input]]",
+    "fr": "Expéditeur !{{est|n'est pas}} [[from_input]]",
+    "it": "Mittente !{{è|non è}} [[from_input]]",
+    "sv": "Avsändare !{{är|är inte}} [[from_input]]",
+    "no": "Avsender !{{er|er ikke}} [[from_input]]",
+    "es": "Remitente !{{es|no es}} [[from_input]]",
+    "da": "Afsender !{{er|er ikke}} [[from_input]]",
+    "ru": "Отправитель !{{есть|нет}} [[from_input]]",
+    "pl": "Nadawca !{{jest|nie ma}} [[from_input]]"
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=Whatsapp"
+    },
+    {
+      "name": "from_input",
+      "type": "text",
+      "title": {
+        "en": "Sender",
+        "nl": "Afzender",
+        "de": "Absender",
+        "fr": "Expéditeur",
+        "it": "Mittente",
+        "sv": "Avsändare",
+        "no": "Avsender",
+        "es": "Remitente",
+        "da": "Afsender",
+        "ru": "Отправитель",
+        "pl": "Nadawca"
+      },
+      "placeholder": {
+        "en": "John Doe",
+        "nl": "Jan Jansen",
+        "de": "Max Mustermann",
+        "fr": "Jean Dupont",
+        "it": "Mario Rossi",
+        "sv": "Johan Andersson",
+        "no": "Ola Nordmann",
+        "es": "Juan Pérez",
+        "da": "Niels Nielsen",
+        "ru": "Ivan Ivanov",
+        "pl": "Jan Kowalski"
+      }
+    }
+  ]
+}

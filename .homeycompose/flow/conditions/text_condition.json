@@ -1,0 +1,53 @@
+{
+  "id": "text_condition",
+  "title": {
+    "en": "Text",
+    "nl": "Tekst",
+    "de": "Text",
+    "fr": "Texte",
+    "it": "Testo",
+    "sv": "Text",
+    "no": "Tekst",
+    "es": "Texto",
+    "da": "Tekst",
+    "ru": "текст",
+    "pl": "Tekst"
+  },  
+  "titleFormatted": {
+    "en": "Text !{{is|isn't}} [[text_input]]",
+    "nl": "Tekst !{{is|is niet}} [[text_input]]",
+    "de": "Text !{{ist|ist nicht}} [[text_input]]",
+    "fr": "Texte !{{est|n'est pas}} [[text_input]]",
+    "it": "Testo !{{è|non è}} [[text_input]]",
+    "sv": "Text !{{är|är inte}} [[text_input]]",
+    "no": "Tekst !{{er|er ikke}} [[text_input]]",
+    "es": "Texto !{{es|no es}} [[text_input]]",
+    "da": "Tekst !{{er|er ikke}} [[text_input]]",
+    "ru": "Текст !{{есть|нет}} [[text_input]]",
+    "pl": "Tekst !{{jest|nie jest}} [[text_input]]"
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=Whatsapp"
+    },
+    {
+      "name": "text_input",
+      "type": "text",
+      "title": {
+        "en": "Text",
+        "nl": "Tekst",
+        "de": "Text",
+        "fr": "Texte",
+        "it": "Testo",
+        "sv": "Text",
+        "no": "Tekst",
+        "es": "Texto",
+        "da": "Tekst",
+        "ru": "текст",
+        "pl": "Tekst"
+      }
+    }
+  ]
+}

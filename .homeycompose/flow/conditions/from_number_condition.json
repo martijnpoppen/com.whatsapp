@@ -1,0 +1,66 @@
+{
+  "id": "from_number_condition",
+  "title": {
+    "en": "Senders number",
+    "nl": "Afzendersnummer",
+    "de": "Absendernummer",
+    "fr": "Numéro de l'expéditeur",
+    "it": "Numero del mittente",
+    "sv": "Avsändarens nummer",
+    "no": "Avsenders nummer",
+    "es": "Número del remitente",
+    "da": "Afsenders nummer",
+    "ru": "Номер отправителя",
+    "pl": "Numer nadawcy"
+  },
+  "titleFormatted": {
+    "en": "Senders number !{{is|isn't}} [[from_input]]",
+    "nl": "Afzendersnummer !{{is|is niet}} [[from_input]]",
+    "de": "Absendernummer !{{ist|ist nicht}} [[from_input]]",
+    "fr": "Numéro de l'expéditeur !{{est|n'est pas}} [[from_input]]",
+    "it": "Numero del mittente !{{è|non è}} [[from_input]]",
+    "sv": "Avsändarens nummer !{{är|är inte}} [[from_input]]",
+    "no": "Avsenders nummer !{{er|er ikke}} [[from_input]]",
+    "es": "Número del remitente !{{es|no es}} [[from_input]]",
+    "da": "Afsenders nummer !{{er|er ikke}} [[from_input]]",
+    "ru": "Номер отправителя !{{есть|нет}} [[from_input]]",
+    "pl": "Numer nadawcy !{{jest|nie ma}} [[from_input]]"
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=Whatsapp"
+    },
+    {
+      "name": "from_input",
+      "type": "text",
+      "title": {
+        "en": "Senders number",
+        "nl": "Afzendersnummer",
+        "de": "Absendernummer",
+        "fr": "Numéro de l'expéditeur",
+        "it": "Numero del mittente",
+        "sv": "Avsändarens nummer",
+        "no": "Avsenders nummer",
+        "es": "Número del remitente",
+        "da": "Afsenders nummer",
+        "ru": "Номер отправителя",
+        "pl": "Numer nadawcy"
+      },
+      "placeholder": {
+        "en": "+31612345678",
+        "nl": "+31123456789",
+        "de": "+491234567890",
+        "fr": "+33123456789",
+        "it": "+391234567890",
+        "sv": "+46123456789",
+        "no": "+4712345678",
+        "es": "+34123456789",
+        "da": "+4512345678",
+        "ru": "+79123456789",
+        "pl": "+48123456789"
+      }
+    }
+  ]
+}

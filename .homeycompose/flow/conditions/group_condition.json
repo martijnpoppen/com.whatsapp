@@ -1,0 +1,36 @@
+{
+  "id": "group_condition",
+  "title": {
+    "en": "is group message",
+    "nl": "is groepsbericht",
+    "de": "Ist Gruppennachricht",
+    "fr": "est un message de groupe",
+    "it": "è un messaggio di gruppo",
+    "sv": "är ett gruppförmeddelande",
+    "no": "er Gruppebeskjed",
+    "es": "es un mensaje de grupo",
+    "da": "er Gruppebesked",
+    "ru": "это сообщение группы",
+    "pl": "to wiadomość grupowa"
+  },
+  "titleFormatted": {
+    "en": "!{{is|isn't}} group message",
+    "nl": "!{{is|isn't}} groepsbericht",
+    "de": "!{{ist|ist nicht}} gruppennachricht",
+    "fr": "!{{est|n'est pas}} un message de groupe",
+    "it": "!{{è|non è}} un messaggio di gruppo",
+    "sv": "!{{är|är inte}} ett gruppförmeddelande",
+    "no": "!{{er|er ikke}} gruppebeskjed",
+    "es": "!{{es|no es}} un mensaje de grupo",
+    "da": "!{{er|er ikke}} gruppebesked",
+    "ru": "!{{это|не это}} сообщение группы",
+    "pl": "!{{to|nie jest}} wiadomość grupowa"
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=Whatsapp"
+    }
+  ]
+}

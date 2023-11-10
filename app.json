@@ -72,17 +72,610 @@
   "bugs": {
     "url": "https://community.homey.app/t/app-pro-whatsapp/90749"
   },
-  "api": {
-    "store": {
-      "method": "post",
-      "public": true,
-      "path": "/store"
-    }
-  },
   "source": "https://github.com/martijnpoppen/com.whatsapp",
   "homeyCommunityTopicId": 90749,
   "support": "https://community.homey.app/t/app-pro-whatsapp/90749",
   "flow": {
+    "triggers": [
+      {
+        "deprecated": true,
+        "id": "new_image",
+        "title": {
+          "en": "A new image has been received",
+          "nl": "Een nieuwe afbeelding is ontvangen",
+          "de": "Ein neues Bild wurde empfangen",
+          "fr": "Une nouvelle image a été reçue",
+          "it": "È stata ricevuta una nuova immagine",
+          "sv": "En ny bild har tagits emot",
+          "no": "Et nytt bilde er mottatt",
+          "es": "Se ha recibido una nueva imagen",
+          "da": "Et nyt billede er modtaget",
+          "ru": "Было получено новое изображение",
+          "pl": "Nowy obraz został odebrany"
+        },
+        "platforms": [
+          "local"
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=Whatsapp"
+          }
+        ],
+        "tokens": [
+          {
+            "name": "text",
+            "type": "string",
+            "title": {
+              "en": "Text",
+              "nl": "Tekst",
+              "de": "Text",
+              "fr": "Texte",
+              "it": "Testo",
+              "sv": "Text",
+              "no": "Tekst",
+              "es": "Texto",
+              "da": "Tekst",
+              "ru": "текст",
+              "pl": "Tekst"
+            },
+            "example": {
+              "en": "Test message",
+              "nl": "Test bericht",
+              "de": "Testnachricht",
+              "fr": "Message de test",
+              "it": "Messaggio di prova",
+              "sv": "Testmeddelande",
+              "no": "Testmelding",
+              "es": "Mensaje de prueba",
+              "da": "Testbesked",
+              "ru": "Тестовое сообщение",
+              "pl": "Wiadomość testowa"
+            }
+          },
+          {
+            "name": "from",
+            "type": "string",
+            "title": {
+              "en": "Sender",
+              "nl": "Afzender",
+              "de": "Absender",
+              "fr": "Expéditeur",
+              "it": "Mittente",
+              "sv": "Avsändare",
+              "no": "Avsender",
+              "es": "Remitente",
+              "da": "Afsender",
+              "ru": "Отправитель",
+              "pl": "Nadawca"
+            },
+            "example": {
+              "en": "John Doe",
+              "nl": "Jan Jansen",
+              "de": "Max Mustermann",
+              "fr": "Jean Dupont",
+              "it": "Mario Rossi",
+              "sv": "Johan Andersson",
+              "no": "Ola Nordmann",
+              "es": "Juan Pérez",
+              "da": "Niels Nielsen",
+              "ru": "Ivan Ivanov",
+              "pl": "Jan Kowalski"
+            }
+          },
+          {
+            "name": "fromNumber",
+            "type": "string",
+            "title": {
+              "en": "Senders number",
+              "nl": "Afzendersnummer",
+              "de": "Absendernummer",
+              "fr": "Numéro de l'expéditeur",
+              "it": "Numero del mittente",
+              "sv": "Avsändarens nummer",
+              "no": "Avsenders nummer",
+              "es": "Número del remitente",
+              "da": "Afsenders nummer",
+              "ru": "Номер отправителя",
+              "pl": "Numer nadawcy"
+            },
+            "example": {
+              "en": "+31612345678",
+              "nl": "+31123456789",
+              "de": "+491234567890",
+              "fr": "+33123456789",
+              "it": "+391234567890",
+              "sv": "+46123456789",
+              "no": "+4712345678",
+              "es": "+34123456789",
+              "da": "+4512345678",
+              "ru": "+79123456789",
+              "pl": "+48123456789"
+            }
+          },
+          {
+            "name": "time",
+            "type": "string",
+            "title": {
+              "en": "Time",
+              "nl": "Tijd",
+              "de": "Zeit",
+              "fr": "Temps",
+              "it": "Tempo",
+              "sv": "Tid",
+              "no": "Tid",
+              "es": "Tiempo",
+              "da": "Tid",
+              "ru": "Время",
+              "pl": "Czas"
+            }
+          },
+          {
+            "name": "replyTo",
+            "type": "string",
+            "title": {
+              "en": "Reply code",
+              "nl": "Antwoordcode",
+              "de": "Antwortcode",
+              "fr": "Code de réponse",
+              "it": "Codice di risposta",
+              "sv": "Svars kod",
+              "no": "Svarskode",
+              "es": "Código de respuesta",
+              "da": "Svarskode",
+              "ru": "Код ответа",
+              "pl": "Kod odpowiedzi"
+            }
+          }
+        ]
+      },
+      {
+        "id": "new_message",
+        "title": {
+          "en": "A new message has been received",
+          "nl": "Een nieuwe melding is ontvangen"
+        },
+        "platforms": [
+          "local"
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=Whatsapp"
+          }
+        ],
+        "tokens": [
+          {
+            "name": "text",
+            "type": "string",
+            "title": {
+              "en": "Text",
+              "nl": "Tekst",
+              "de": "Text",
+              "fr": "Texte",
+              "it": "Testo",
+              "sv": "Text",
+              "no": "Tekst",
+              "es": "Texto",
+              "da": "Tekst",
+              "ru": "текст",
+              "pl": "Tekst"
+            },
+            "example": {
+              "en": "Test message"
+            }
+          },
+          {
+            "name": "from",
+            "type": "string",
+            "title": {
+              "en": "Sender",
+              "nl": "Afzender",
+              "de": "Absender",
+              "fr": "Expéditeur",
+              "it": "Mittente",
+              "sv": "Avsändare",
+              "no": "Avsender",
+              "es": "Remitente",
+              "da": "Afsender",
+              "ru": "Отправитель",
+              "pl": "Nadawca"
+            },
+            "example": {
+              "en": "John Doe",
+              "nl": "Jan Jansen",
+              "de": "Max Mustermann",
+              "fr": "Jean Dupont",
+              "it": "Mario Rossi",
+              "sv": "Johan Andersson",
+              "no": "Ola Nordmann",
+              "es": "Juan Pérez",
+              "da": "Niels Nielsen",
+              "ru": "Ivan Ivanov",
+              "pl": "Jan Kowalski"
+            }
+          },
+          {
+            "name": "fromNumber",
+            "type": "string",
+            "title": {
+              "en": "Senders number",
+              "nl": "Afzendersnummer",
+              "de": "Absendernummer",
+              "fr": "Numéro de l'expéditeur",
+              "it": "Numero del mittente",
+              "sv": "Avsändarens nummer",
+              "no": "Avsenders nummer",
+              "es": "Número del remitente",
+              "da": "Afsenders nummer",
+              "ru": "Номер отправителя",
+              "pl": "Numer nadawcy"
+            },
+            "example": {
+              "en": "+31612345678",
+              "nl": "+31123456789",
+              "de": "+491234567890",
+              "fr": "+33123456789",
+              "it": "+391234567890",
+              "sv": "+46123456789",
+              "no": "+4712345678",
+              "es": "+34123456789",
+              "da": "+4512345678",
+              "ru": "+79123456789",
+              "pl": "+48123456789"
+            }
+          },
+          {
+            "name": "time",
+            "type": "string",
+            "title": {
+              "en": "Time",
+              "nl": "Tijd",
+              "de": "Zeit",
+              "fr": "Temps",
+              "it": "Tempo",
+              "sv": "Tid",
+              "no": "Tid",
+              "es": "Tiempo",
+              "da": "Tid",
+              "ru": "Время",
+              "pl": "Czas"
+            }
+          },
+          {
+            "name": "replyTo",
+            "type": "string",
+            "title": {
+              "en": "Reply code",
+              "nl": "Antwoordcode",
+              "de": "Antwortcode",
+              "fr": "Code de réponse",
+              "it": "Codice di risposta",
+              "sv": "Svars kod",
+              "no": "Svarskode",
+              "es": "Código de respuesta",
+              "da": "Svarskode",
+              "ru": "Код ответа",
+              "pl": "Kod odpowiedzi"
+            }
+          }
+        ]
+      }
+    ],
+    "conditions": [
+      {
+        "id": "from_condition",
+        "title": {
+          "en": "Sender",
+          "nl": "Afzender",
+          "de": "Absender",
+          "fr": "Expéditeur",
+          "it": "Mittente",
+          "sv": "Avsändare",
+          "no": "Avsender",
+          "es": "Remitente",
+          "da": "Afsender",
+          "ru": "Отправитель",
+          "pl": "Nadawca"
+        },
+        "titleFormatted": {
+          "en": "Sender !{{is|isn't}} [[from_input]]",
+          "nl": "Afzender !{{is|is niet}} [[from_input]]",
+          "de": "Absender !{{ist|ist nicht}} [[from_input]]",
+          "fr": "Expéditeur !{{est|n'est pas}} [[from_input]]",
+          "it": "Mittente !{{è|non è}} [[from_input]]",
+          "sv": "Avsändare !{{är|är inte}} [[from_input]]",
+          "no": "Avsender !{{er|er ikke}} [[from_input]]",
+          "es": "Remitente !{{es|no es}} [[from_input]]",
+          "da": "Afsender !{{er|er ikke}} [[from_input]]",
+          "ru": "Отправитель !{{есть|нет}} [[from_input]]",
+          "pl": "Nadawca !{{jest|nie ma}} [[from_input]]"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=Whatsapp"
+          },
+          {
+            "name": "from_input",
+            "type": "text",
+            "title": {
+              "en": "Sender",
+              "nl": "Afzender",
+              "de": "Absender",
+              "fr": "Expéditeur",
+              "it": "Mittente",
+              "sv": "Avsändare",
+              "no": "Avsender",
+              "es": "Remitente",
+              "da": "Afsender",
+              "ru": "Отправитель",
+              "pl": "Nadawca"
+            },
+            "placeholder": {
+              "en": "John Doe",
+              "nl": "Jan Jansen",
+              "de": "Max Mustermann",
+              "fr": "Jean Dupont",
+              "it": "Mario Rossi",
+              "sv": "Johan Andersson",
+              "no": "Ola Nordmann",
+              "es": "Juan Pérez",
+              "da": "Niels Nielsen",
+              "ru": "Ivan Ivanov",
+              "pl": "Jan Kowalski"
+            }
+          }
+        ]
+      },
+      {
+        "id": "from_number_condition",
+        "title": {
+          "en": "Senders number",
+          "nl": "Afzendersnummer",
+          "de": "Absendernummer",
+          "fr": "Numéro de l'expéditeur",
+          "it": "Numero del mittente",
+          "sv": "Avsändarens nummer",
+          "no": "Avsenders nummer",
+          "es": "Número del remitente",
+          "da": "Afsenders nummer",
+          "ru": "Номер отправителя",
+          "pl": "Numer nadawcy"
+        },
+        "titleFormatted": {
+          "en": "Senders number !{{is|isn't}} [[from_input]]",
+          "nl": "Afzendersnummer !{{is|is niet}} [[from_input]]",
+          "de": "Absendernummer !{{ist|ist nicht}} [[from_input]]",
+          "fr": "Numéro de l'expéditeur !{{est|n'est pas}} [[from_input]]",
+          "it": "Numero del mittente !{{è|non è}} [[from_input]]",
+          "sv": "Avsändarens nummer !{{är|är inte}} [[from_input]]",
+          "no": "Avsenders nummer !{{er|er ikke}} [[from_input]]",
+          "es": "Número del remitente !{{es|no es}} [[from_input]]",
+          "da": "Afsenders nummer !{{er|er ikke}} [[from_input]]",
+          "ru": "Номер отправителя !{{есть|нет}} [[from_input]]",
+          "pl": "Numer nadawcy !{{jest|nie ma}} [[from_input]]"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=Whatsapp"
+          },
+          {
+            "name": "from_input",
+            "type": "text",
+            "title": {
+              "en": "Senders number",
+              "nl": "Afzendersnummer",
+              "de": "Absendernummer",
+              "fr": "Numéro de l'expéditeur",
+              "it": "Numero del mittente",
+              "sv": "Avsändarens nummer",
+              "no": "Avsenders nummer",
+              "es": "Número del remitente",
+              "da": "Afsenders nummer",
+              "ru": "Номер отправителя",
+              "pl": "Numer nadawcy"
+            },
+            "placeholder": {
+              "en": "+31612345678",
+              "nl": "+31123456789",
+              "de": "+491234567890",
+              "fr": "+33123456789",
+              "it": "+391234567890",
+              "sv": "+46123456789",
+              "no": "+4712345678",
+              "es": "+34123456789",
+              "da": "+4512345678",
+              "ru": "+79123456789",
+              "pl": "+48123456789"
+            }
+          }
+        ]
+      },
+      {
+        "id": "group_condition",
+        "title": {
+          "en": "is group message",
+          "nl": "is groepsbericht",
+          "de": "Ist Gruppennachricht",
+          "fr": "est un message de groupe",
+          "it": "è un messaggio di gruppo",
+          "sv": "är ett gruppförmeddelande",
+          "no": "er Gruppebeskjed",
+          "es": "es un mensaje de grupo",
+          "da": "er Gruppebesked",
+          "ru": "это сообщение группы",
+          "pl": "to wiadomość grupowa"
+        },
+        "titleFormatted": {
+          "en": "!{{is|isn't}} group message",
+          "nl": "!{{is|isn't}} groepsbericht",
+          "de": "!{{ist|ist nicht}} gruppennachricht",
+          "fr": "!{{est|n'est pas}} un message de groupe",
+          "it": "!{{è|non è}} un messaggio di gruppo",
+          "sv": "!{{är|är inte}} ett gruppförmeddelande",
+          "no": "!{{er|er ikke}} gruppebeskjed",
+          "es": "!{{es|no es}} un mensaje de grupo",
+          "da": "!{{er|er ikke}} gruppebesked",
+          "ru": "!{{это|не это}} сообщение группы",
+          "pl": "!{{to|nie jest}} wiadomość grupowa"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=Whatsapp"
+          }
+        ]
+      },
+      {
+        "id": "image_condition",
+        "title": {
+          "en": "message has a Image",
+          "nl": "bericht heeft een afbeelding",
+          "de": "Nachricht enthält ein Bild",
+          "fr": "message contient une image",
+          "it": "il messaggio ha un'immagine",
+          "sv": "meddelandet har en bild",
+          "no": "meldingen har et bilde",
+          "es": "el mensaje tiene una imagen",
+          "da": "beskeden har et billede",
+          "ru": "сообщение содержит изображение",
+          "pl": "wiadomość zawiera obraz"
+        },
+        "titleFormatted": {
+          "en": "Message !{{contains|doesn't contain}} a Image",
+          "nl": "Bericht !{{bevat wel|geen afbeelding",
+          "de": "Nachricht !{{enthält|enthält kein}} Bild",
+          "fr": "Le message !{{contient|ne contient pas}} d'image",
+          "it": "Messaggio !{{con|senza}} immagine",
+          "sv": "Meddelandet !{{innehåller|innehåller inte}} en bild",
+          "no": "Meldingen !{{inneholder|ikke inneholder}} et bilde",
+          "es": "El mensaje !{{contiene|no contiene}} una imagen",
+          "da": "Besked !{{indeholder|indeholder ikke}} et billede",
+          "ru": "Сообщение !{{содержит|не содержит}} изображение",
+          "pl": "Wiadomość !{{zawiera|nie zawiera}} obrazu"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=Whatsapp"
+          }
+        ]
+      },
+      {
+        "id": "text_condition",
+        "title": {
+          "en": "Text",
+          "nl": "Tekst",
+          "de": "Text",
+          "fr": "Texte",
+          "it": "Testo",
+          "sv": "Text",
+          "no": "Tekst",
+          "es": "Texto",
+          "da": "Tekst",
+          "ru": "текст",
+          "pl": "Tekst"
+        },
+        "titleFormatted": {
+          "en": "Text !{{is|isn't}} [[text_input]]",
+          "nl": "Tekst !{{is|is niet}} [[text_input]]",
+          "de": "Text !{{ist|ist nicht}} [[text_input]]",
+          "fr": "Texte !{{est|n'est pas}} [[text_input]]",
+          "it": "Testo !{{è|non è}} [[text_input]]",
+          "sv": "Text !{{är|är inte}} [[text_input]]",
+          "no": "Tekst !{{er|er ikke}} [[text_input]]",
+          "es": "Texto !{{es|no es}} [[text_input]]",
+          "da": "Tekst !{{er|er ikke}} [[text_input]]",
+          "ru": "Текст !{{есть|нет}} [[text_input]]",
+          "pl": "Tekst !{{jest|nie jest}} [[text_input]]"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=Whatsapp"
+          },
+          {
+            "name": "text_input",
+            "type": "text",
+            "title": {
+              "en": "Text",
+              "nl": "Tekst",
+              "de": "Text",
+              "fr": "Texte",
+              "it": "Testo",
+              "sv": "Text",
+              "no": "Tekst",
+              "es": "Texto",
+              "da": "Tekst",
+              "ru": "текст",
+              "pl": "Tekst"
+            }
+          }
+        ]
+      },
+      {
+        "id": "text_contains_condition",
+        "title": {
+          "en": "Text contains",
+          "nl": "Tekst bevat",
+          "de": "Text enthält",
+          "fr": "Le texte contient",
+          "it": "Il testo contiene",
+          "sv": "Texten innehåller",
+          "no": "Teksten inneholder",
+          "es": "El texto contiene",
+          "da": "Tekst indeholder",
+          "ru": "Текст содержит",
+          "pl": "Tekst zawiera"
+        },
+        "titleFormatted": {
+          "en": "Text !{{contains|contains not}} [[text_input]]",
+          "nl": "Tekst !{{bevat|bevat niet}} [[text_input]]",
+          "de": "Text !{{enthält|enthält nicht}} [[text_input]]",
+          "fr": "Texte !{{contient|ne contient pas}} [[text_input]]",
+          "it": "Testo !{{contiene|non contiene}} [[text_input]]",
+          "sv": "Text !{{innehåller|innehåller inte}} [[text_input]]",
+          "no": "Tekst !{{inneholder|ikke inneholder}} [[text_input]]",
+          "es": "Texto !{{contiene|no contiene}} [[text_input]]",
+          "da": "Tekst !{{indeholder|indeholder ikke}} [[text_input]]",
+          "ru": "Текст !{{содержит|не содержит}} [[text_input]]",
+          "pl": "Tekst !{{zawiera|nie zawiera}} [[text_input]]"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=Whatsapp"
+          },
+          {
+            "name": "text_input",
+            "type": "text",
+            "title": {
+              "en": "Text",
+              "nl": "Tekst",
+              "de": "Text",
+              "fr": "Texte",
+              "it": "Testo",
+              "sv": "Text",
+              "no": "Tekst",
+              "es": "Texto",
+              "da": "Tekst",
+              "ru": "текст",
+              "pl": "Tekst"
+            }
+          }
+        ]
+      }
+    ],
     "actions": [
       {
         "title": {
@@ -1014,7 +1607,57 @@
           "template": "done"
         }
       ],
-      "settings": [],
+      "settings": [
+        {
+          "type": "group",
+          "label": {
+            "en": "Listen to messages",
+            "nl": "Luister naar berichten",
+            "de": "Nachrichten anhören",
+            "fr": "Écouter les messages",
+            "it": "Ascolta i messaggi",
+            "sv": "Lyssna på meddelanden",
+            "no": "Lytt til meldinger",
+            "es": "Escuchar mensajes",
+            "da": "Lyt til beskeder",
+            "ru": "Слушать сообщения",
+            "pl": "Słuchaj wiadomości"
+          },
+          "children": [
+            {
+              "id": "trigger_own_message",
+              "type": "checkbox",
+              "hint": {
+                "en": "Trigger flow when receiving a message from yourself",
+                "nl": "Activeer stroom bij het ontvangen van een bericht van jezelf",
+                "de": "Fluss auslösen, wenn Sie eine Nachricht von sich selbst erhalten",
+                "fr": "Déclencher le flux lors de la réception d'un message de votre part",
+                "it": "Attiva il flusso quando ricevi un messaggio da te stesso",
+                "sv": "Utlös flödet när du tar emot ett meddelande från dig själv",
+                "no": "Utløs flyten når du mottar en melding fra deg selv",
+                "es": "Activar flujo al recibir un mensaje tuyo",
+                "da": "Udløs flow, når du modtager en besked fra dig selv",
+                "ru": "Запуск потока при получении сообщения от себя",
+                "pl": "Wyzwalaj przepływ po otrzymaniu wiadomości od siebie"
+              },
+              "label": {
+                "en": "Allow messages from self",
+                "nl": "Berichten van jezelf toestaan",
+                "de": "Nachrichten von sich selbst erlauben",
+                "fr": "Autoriser les messages de soi-même",
+                "it": "Consenti messaggi da te stesso",
+                "sv": "Tillåt meddelanden från dig själv",
+                "no": "Tillat meldinger fra deg selv",
+                "es": "Permitir mensajes de uno mismo",
+                "da": "Tillad beskeder fra dig selv",
+                "ru": "Разрешить сообщения от себя",
+                "pl": "Zezwalaj na wiadomości od siebie"
+              },
+              "value": true
+            }
+          ]
+        }
+      ],
       "name": {
         "en": "WhatsApp"
       },

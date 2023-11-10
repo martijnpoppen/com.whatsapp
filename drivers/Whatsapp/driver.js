@@ -15,13 +15,16 @@ module.exports = class mainDriver extends Homey.Driver {
 
         devices.forEach(async (device) => {
             const deviceObject = device.getData();
-            await this.setWhatsappClient(deviceObject.id);
+            await this.setWhatsappClient(deviceObject.id, device);
         });
     }
 
-    async setWhatsappClient(deviceId) {
+    async setWhatsappClient(deviceId, device = null) {
         this.WhatsappClients[deviceId] = new whatsappClient({
-            deviceId
+            deviceId,
+            homeyData: {
+                driver: this, device
+            }
         });
 
         return this.WhatsappClients[deviceId];

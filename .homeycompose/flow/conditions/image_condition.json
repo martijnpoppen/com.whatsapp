@@ -1,0 +1,36 @@
+{
+  "id": "image_condition",
+  "title": {
+    "en": "message has a Image",
+    "nl": "bericht heeft een afbeelding",
+    "de": "Nachricht enthält ein Bild",
+    "fr": "message contient une image",
+    "it": "il messaggio ha un'immagine",
+    "sv": "meddelandet har en bild",
+    "no": "meldingen har et bilde",
+    "es": "el mensaje tiene una imagen",
+    "da": "beskeden har et billede",
+    "ru": "сообщение содержит изображение",
+    "pl": "wiadomość zawiera obraz"
+  },
+  "titleFormatted": {
+    "en": "Message !{{contains|doesn't contain}} a Image",
+    "nl": "Bericht !{{bevat wel|geen afbeelding",
+    "de": "Nachricht !{{enthält|enthält kein}} Bild",
+    "fr": "Le message !{{contient|ne contient pas}} d'image",
+    "it": "Messaggio !{{con|senza}} immagine",
+    "sv": "Meddelandet !{{innehåller|innehåller inte}} en bild",
+    "no": "Meldingen !{{inneholder|ikke inneholder}} et bilde",
+    "es": "El mensaje !{{contiene|no contiene}} una imagen",
+    "da": "Besked !{{indeholder|indeholder ikke}} et billede",
+    "ru": "Сообщение !{{содержит|не содержит}} изображение",
+    "pl": "Wiadomość !{{zawiera|nie zawiera}} obrazu"
+},
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=Whatsapp"
+    }
+  ]
+}

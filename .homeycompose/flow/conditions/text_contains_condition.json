@@ -1,0 +1,53 @@
+{
+  "id": "text_contains_condition",
+  "title": {
+    "en": "Text contains",
+    "nl": "Tekst bevat",
+    "de": "Text enthält",
+    "fr": "Le texte contient",
+    "it": "Il testo contiene",
+    "sv": "Texten innehåller",
+    "no": "Teksten inneholder",
+    "es": "El texto contiene",
+    "da": "Tekst indeholder",
+    "ru": "Текст содержит",
+    "pl": "Tekst zawiera"
+  },
+  "titleFormatted": {
+    "en": "Text !{{contains|contains not}} [[text_input]]",
+    "nl": "Tekst !{{bevat|bevat niet}} [[text_input]]",
+    "de": "Text !{{enthält|enthält nicht}} [[text_input]]",
+    "fr": "Texte !{{contient|ne contient pas}} [[text_input]]",
+    "it": "Testo !{{contiene|non contiene}} [[text_input]]",
+    "sv": "Text !{{innehåller|innehåller inte}} [[text_input]]",
+    "no": "Tekst !{{inneholder|ikke inneholder}} [[text_input]]",
+    "es": "Texto !{{contiene|no contiene}} [[text_input]]",
+    "da": "Tekst !{{indeholder|indeholder ikke}} [[text_input]]",
+    "ru": "Текст !{{содержит|не содержит}} [[text_input]]",
+    "pl": "Tekst !{{zawiera|nie zawiera}} [[text_input]]"
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=Whatsapp"
+    },
+    {
+      "name": "text_input",
+      "type": "text",
+      "title": {
+        "en": "Text",
+        "nl": "Tekst",
+        "de": "Text",
+        "fr": "Texte",
+        "it": "Testo",
+        "sv": "Text",
+        "no": "Tekst",
+        "es": "Texto",
+        "da": "Tekst",
+        "ru": "текст",
+        "pl": "Tekst"
+      }
+    }
+  ]
+}

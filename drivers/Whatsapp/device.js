@@ -1,5 +1,5 @@
 const Homey = require('homey');
-const { parsePhoneNumber } = require('libphonenumber-js')
+const { parsePhoneNumber } = require('libphonenumber-js');
 
 module.exports = class Whatsapp extends Homey.Device {
     async onInit() {
@@ -10,6 +10,8 @@ module.exports = class Whatsapp extends Homey.Device {
             await this.synchronousStart();
 
             await this.checkCapabilities();
+            await this.setTriggers();
+            await this.setConditions();
             await this.setWhatsappClient();
         } catch (error) {
             this.homey.app.log(`[Device] ${this.getName()} - OnInit Error`, error);
@@ -26,6 +28,67 @@ module.exports = class Whatsapp extends Homey.Device {
 
     async onDeleted() {
         await this.removeWhatsappClient();
+    }
+
+    async setTriggers() {
+        this.new_message = this.homey.flow.getDeviceTriggerCard('new_message');
+        this.new_image = this.homey.flow.getDeviceTriggerCard('new_image');
+    }
+
+    async setConditions() {
+        const text_condition = this.homey.flow.getConditionCard('text_condition');
+        text_condition.registerRunListener(async (args, state) => {
+            this.homey.app.log('[text_condition]', { ...args, device: 'LOG' });
+            const result = state.text === args.text_input;
+
+            this.homey.app.log('[text_condition] - result: ', result);
+            return result;
+        });
+
+        const text_contains_condition = this.homey.flow.getConditionCard('text_contains_condition');
+        text_contains_condition.registerRunListener(async (args, state) => {
+            this.homey.app.log('[text_contains_condition]', { ...args, device: 'LOG' });
+            const result = state.text.includes(args.text_input);
+
+            this.homey.app.log('[text_contains_condition] - result: ', result);
+            return result;
+        });
+
+        const from_condition = this.homey.flow.getConditionCard('from_condition');
+        from_condition.registerRunListener(async (args, state) => {
+            this.homey.app.log('[from_condition]', { ...args, device: 'LOG' });
+            const result = state.from && state.from.toLowerCase() === args.from_input.toLowerCase();
+
+            this.homey.app.log('[from_condition] - result: ', result);
+            return result;
+        });
+
+        const from_number_condition = this.homey.flow.getConditionCard('from_number_condition');
+        from_number_condition.registerRunListener(async (args, state) => {
+            this.homey.app.log('[from_number_condition]', { ...args, device: 'LOG' });
+            const result = state.fromNumber && state.fromNumber.toLowerCase() === args.from_input.toLowerCase();
+
+            this.homey.app.log('[from_number_condition] - result: ', result);
+            return result;
+        });
+
+        const group_condition = this.homey.flow.getConditionCard('group_condition');
+        group_condition.registerRunListener(async (args, state) => {
+            this.homey.app.log('[group_condition]', { ...args, device: 'LOG' });
+            const result = state.group === true;
+
+            this.homey.app.log('[group_condition] - result: ', result);
+            return result;
+        });
+
+        const image_condition = this.homey.flow.getConditionCard('image_condition');
+        image_condition.registerRunListener(async (args, state) => {
+            this.homey.app.log('[image_condition]', { ...args, device: 'LOG' });
+            const result = state.hasImage === true;
+
+            this.homey.app.log('[image_condition] - result: ', result);
+            return result;
+        });
     }
 
     async synchronousStart() {
@@ -70,7 +133,7 @@ module.exports = class Whatsapp extends Homey.Device {
 
             const result = await this.WhatsappClient.startup();
 
-            if(result) {
+            if (result) {
                 this.setAvailable();
             } else {
                 this.setUnavailable('Oops something went wrong. Please try to repair the device.');
@@ -92,10 +155,11 @@ module.exports = class Whatsapp extends Homey.Device {
         this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage`);
 
         const message = params.message && params.message.length ? params.message : '‎';
+
         const isGroup = validateUrl(params.recipient);
         const recipient = await this.getRecipient(params.recipient, isGroup);
 
-        if (recipient && recipient !== params.recipient) {
+        if (recipient) {
             const data = await this.sendMessage(recipient, message, type, params);
 
             this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage`, Object.keys(data).length);
@@ -107,9 +171,13 @@ module.exports = class Whatsapp extends Homey.Device {
     }
 
     async getRecipient(recipient, isGroup) {
+        if (recipient.includes('@g.us') || recipient.includes('@s.whatsapp.net')) {
+            return recipient;
+        }
+
         if (!isGroup) {
             const phoneNumber = parsePhoneNumber(recipient);
-            if(!phoneNumber.isValid()) {
+            if (!phoneNumber.isValid()) {
                 throw new Error('Invalid mobile number (Make sure to include the country code (e.g. +31))');
             }
 
@@ -187,17 +255,58 @@ module.exports = class Whatsapp extends Homey.Device {
         return await sleep(1000);
     }
 
+    // ------------- Triggers -------------
+
+    async messageHelper(msg) {
+        try {
+            const settings = await this.getSettings();
+
+            msg.messages.forEach(async (m) => {
+                console.log(m);
+
+                let newDate = new Date();
+                newDate.setTime(m.messageTimestamp * 1000);
+                let dateString = newDate.toUTCString();
+
+                const group = m.key && m.key.participant ? true : false;
+                const from = m.pushName;
+                const fromJid = group ? m.key.participant : m.key && m.key.remoteJid;
+                const fromNumber = `+${fromJid.split('@')[0]}`;
+                const jid = m.key && m.key.remoteJid;
+                const fromMe = m.key && m.key.fromMe;
+                const triggerAllowed = (fromMe && settings.trigger_own_message) || !fromMe;
+                const hasImage = m.message && m.message.imageMessage ? true : false;
+                
+                let text = m.message && m.message.conversation;
+
+                if (!text) {
+                    text = m.message && m.message.extendedTextMessage && m.message.extendedTextMessage.text || '';
+                }
+
+                if (hasImage) {
+                    text = (m.message && m.message.imageMessage && m.message.imageMessage.caption) || '';
+                }
+
+                const tokens = { replyTo: jid, fromNumber, from, text, time: dateString, group, hasImage };
+                const state = tokens;
+
+                console.log('tokens', tokens);
+
+                triggerAllowed && this.new_message.trigger(this, tokens, state);
+            });
+
+            return true;
+        } catch (error) {
+            console.log('Error in message', error);
+        }
+    }
+
     // ------------- Capabilities -------------
-    async checkCapabilities(overrideSettings = null) {
-        const settings = overrideSettings ? overrideSettings : this.getSettings();
+    async checkCapabilities() {
         const driverManifest = this.driver.manifest;
         let driverCapabilities = driverManifest.capabilities;
 
         const deviceCapabilities = this.getCapabilities();
-
-        if (!settings.enable_receive_message) {
-            driverCapabilities = driverCapabilities.filter((d) => d !== 'receive_message');
-        }
 
         this.homey.app.log(`[Device] ${this.getName()} - Found capabilities =>`, deviceCapabilities);
         this.homey.app.log(`[Device] ${this.getName()} - Driver capabilities =>`, driverCapabilities);
