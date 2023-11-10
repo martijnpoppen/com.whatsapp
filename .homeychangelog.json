@@ -175,5 +175,8 @@
   },
   "1.21.2": {
     "en": "FIX: catch error"
+  },
+  "1.22.0": {
+    "en": "NEW: Receive messages"
   }
 }
