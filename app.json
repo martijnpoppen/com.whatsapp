@@ -1,7 +1,7 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "com.whatsapp",
-  "version": "1.22.1",
+  "version": "1.22.2",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "platforms": [
@@ -1638,13 +1638,13 @@
               "type": "checkbox",
               "hint": {
                 "en": "Trigger flow when receiving a message from yourself",
-                "nl": "Activeer stroom bij het ontvangen van een bericht van jezelf",
-                "de": "Fluss auslösen, wenn Sie eine Nachricht von sich selbst erhalten",
-                "fr": "Déclencher le flux lors de la réception d'un message de votre part",
-                "it": "Attiva il flusso quando ricevi un messaggio da te stesso",
-                "sv": "Utlös flödet när du tar emot ett meddelande från dig själv",
-                "no": "Utløs flyten når du mottar en melding fra deg selv",
-                "es": "Activar flujo al recibir un mensaje tuyo",
+                "nl": "Activeer flow bij het ontvangen van een bericht van jezelf",
+                "de": "flow auslösen, wenn Sie eine Nachricht von sich selbst erhalten",
+                "fr": "Déclencher le flow lors de la réception d'un message de votre part",
+                "it": "Attiva il flow quando ricevi un messaggio da te stesso",
+                "sv": "Utlös flow när du tar emot ett meddelande från dig själv",
+                "no": "Utløs flow når du mottar en melding fra deg selv",
+                "es": "Activar flow al recibir un mensaje tuyo",
                 "da": "Udløs flow, når du modtager en besked fra dig selv",
                 "ru": "Запуск потока при получении сообщения от себя",
                 "pl": "Wyzwalaj przepływ po otrzymaniu wiadomości od siebie"
