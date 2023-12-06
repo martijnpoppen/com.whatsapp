@@ -184,5 +184,8 @@
   },
   "1.22.2": {
     "en": "FIX: text flowcard - case insensitive"
+  },
+  "1.22.3": {
+    "en": "FIX: repair not properly storing session into Whatsapp device, causing logouts"
   }
 }
