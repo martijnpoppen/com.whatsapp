@@ -71,6 +71,8 @@ module.exports = class mainDriver extends Homey.Driver {
         this.tempDB = {};
         this.code = null;
 
+        await device.removeWhatsappClient();
+
         this.homey.app.log(`[Driver] ${this.id} - unsetting store for :`, device.getName());
         const storeData = device.getStore();
         Object.keys(storeData).forEach((storeKey) => {
@@ -102,7 +104,8 @@ module.exports = class mainDriver extends Homey.Driver {
             }
 
             if (view === 'loading') {
-                await this.setWhatsappClient(this.guid);
+                if(this.type === 'repair') await this.setWhatsappClient(this.guid, this.device);
+                if(this.type === 'pair') await this.setWhatsappClient(this.guid);
                 await this.WhatsappClients[this.guid].addDevice(this.phonenumber);
 
                 this.setCheckInterval(session, this.guid);
@@ -124,6 +127,9 @@ module.exports = class mainDriver extends Homey.Driver {
                         name: `Whatsapp`,
                         data: {
                             id: this.guid
+                        },
+                        settings: {
+                            phonenumber: this.phonenumber
                         }
                     }
                 ];
@@ -132,7 +138,11 @@ module.exports = class mainDriver extends Homey.Driver {
 
                 if (this.results.length && this.type === 'repair') {
                     if (this.device) {
-                        this.device.setWhatsappClient();
+                        this.device.setSettings({
+                            phonenumber: this.phonenumber
+                        });
+
+                        await this.device.setWhatsappClient();
                     }
                     session.showView('done');
                 } else {

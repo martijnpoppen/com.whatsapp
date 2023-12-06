@@ -39,7 +39,8 @@ module.exports = class Whatsapp extends Homey.Device {
         const text_condition = this.homey.flow.getConditionCard('text_condition');
         text_condition.registerRunListener(async (args, state) => {
             this.homey.app.log('[text_condition]', { ...args, device: 'LOG' });
-            const result = state.text === args.text_input;
+
+            const result = state.text && state.text.toLowerCase() === args.text_input.toLowerCase();
 
             this.homey.app.log('[text_condition] - result: ', result);
             return result;
@@ -48,7 +49,8 @@ module.exports = class Whatsapp extends Homey.Device {
         const text_contains_condition = this.homey.flow.getConditionCard('text_contains_condition');
         text_contains_condition.registerRunListener(async (args, state) => {
             this.homey.app.log('[text_contains_condition]', { ...args, device: 'LOG' });
-            const result = state.text.includes(args.text_input);
+
+            const result = state.text && state.text.toLowerCase().includes(args.text_input.toLowerCase());
 
             this.homey.app.log('[text_contains_condition] - result: ', result);
             return result;
@@ -144,9 +146,8 @@ module.exports = class Whatsapp extends Homey.Device {
     }
 
     async removeWhatsappClient() {
-        if (this.driver.WhatsappClients[deviceObject.id]) {
-            this.driver.WhatsappClients[deviceObject.id].removeAllListeners();
-            this.driver.WhatsappClients[deviceObject.id] = null;
+        if (this.WhatsappClient) {
+            this.WhatsappClient.deleteDevice();
             this.WhatsappClient = null;
         }
     }
@@ -276,11 +277,11 @@ module.exports = class Whatsapp extends Homey.Device {
                 const fromMe = m.key && m.key.fromMe;
                 const triggerAllowed = (fromMe && settings.trigger_own_message) || !fromMe;
                 const hasImage = m.message && m.message.imageMessage ? true : false;
-                
+
                 let text = m.message && m.message.conversation;
 
                 if (!text) {
-                    text = m.message && m.message.extendedTextMessage && m.message.extendedTextMessage.text || '';
+                    text = (m.message && m.message.extendedTextMessage && m.message.extendedTextMessage.text) || '';
                 }
 
                 if (hasImage) {
