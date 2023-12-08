@@ -23,7 +23,8 @@ module.exports = class mainDriver extends Homey.Driver {
         this.WhatsappClients[deviceId] = new whatsappClient({
             deviceId,
             homeyData: {
-                driver: this, device
+                driver: this,
+                device
             }
         });
 
@@ -31,29 +32,33 @@ module.exports = class mainDriver extends Homey.Driver {
     }
 
     async setCheckInterval(session, guid) {
-        this.onReadyInterval = this.homey.setInterval(async () => {
-            const data = await this.WhatsappClients[guid].getData();
+        try {
+            this.onReadyInterval = this.homey.setInterval(async () => {
+                const data = await this.WhatsappClients[guid].getData();
 
-            this.homey.app.log(`[Driver] ${this.id} - setCheckInterval - ${data.type}`);
+                this.homey.app.log(`[Driver] ${this.id} - setCheckInterval - ${data.type}`);
 
-            if (data.type === 'READY' && data.clientID === guid) {
-                session.showView('loading2');
-            }
+                if (data.type === 'READY' && data.clientID === guid) {
+                    session.showView('loading2');
+                }
 
-            if (data.type === 'CODE' && data.clientID === guid) {
-                this.code = data.msg;
-                await session.emit('code', data.msg);
-            }
+                if (data.type === 'CODE' && data.clientID === guid) {
+                    this.code = data.msg;
+                    await session.emit('code', data.msg);
+                }
 
-            if (data.type === 'CLOSED' && data.clientID === guid) {
-                session.showView('done');
-            }
-        }, 4000);
+                if (data.type === 'CLOSED' && data.clientID === guid) {
+                    session.showView('done');
+                }
+            }, 4000);
 
-        setTimeout(() => {
-            this.homey.app.log(`[Driver] ${this.id} - Disabling interval`);
-            this.homey.clearInterval(this.onReadyInterval);
-        }, 120000);
+            setTimeout(() => {
+                this.homey.app.log(`[Driver] ${this.id} - Disabling interval`);
+                this.homey.clearInterval(this.onReadyInterval);
+            }, 120000);
+        } catch (error) {
+            this.homey.app.error(`[Driver] ${this.id} error`, error);
+        }
     }
 
     async onPair(session) {
@@ -104,8 +109,8 @@ module.exports = class mainDriver extends Homey.Driver {
             }
 
             if (view === 'loading') {
-                if(this.type === 'repair') await this.setWhatsappClient(this.guid, this.device);
-                if(this.type === 'pair') await this.setWhatsappClient(this.guid);
+                if (this.type === 'repair') await this.setWhatsappClient(this.guid, this.device);
+                if (this.type === 'pair') await this.setWhatsappClient(this.guid);
                 await this.WhatsappClients[this.guid].addDevice(this.phonenumber);
 
                 this.setCheckInterval(session, this.guid);
