@@ -190,5 +190,8 @@
   },
   "1.22.4": {
     "en": "FIX: pairing error | FIX: show error when something goes wrong | FIX: get auth failure | FIX: update library"
+  },
+  "1.23.0": {
+    "en": "FIX: pairing error | FIX: show error when something goes wrong | FIX: get auth failure | NEW: update library"
   }
 }
