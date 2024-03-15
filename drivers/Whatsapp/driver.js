@@ -39,7 +39,7 @@ module.exports = class mainDriver extends Homey.Driver {
                 this.homey.app.log(`[Driver] ${this.id} - setCheckInterval - ${data.type}`);
 
                 if (data.type === 'READY' && data.clientID === guid) {
-                    session.showView('loading2');
+                    if(session)  session.showView('loading2');
                 }
 
                 if (data.type === 'CODE' && data.clientID === guid) {
@@ -48,7 +48,7 @@ module.exports = class mainDriver extends Homey.Driver {
                 }
 
                 if (data.type === 'CLOSED' && data.clientID === guid) {
-                    session.showView('done');
+                    if(session) session.showView('done');
                 }
             }, 4000);
 
@@ -60,6 +60,12 @@ module.exports = class mainDriver extends Homey.Driver {
             this.homey.app.error(`[Driver] ${this.id} error`, error);
         }
     }
+
+    async resetInterval() {
+        this.homey.app.log(`[Driver] ${this.id} - ResetInterval - Disabling interval`);
+        this.homey.clearInterval(this.onReadyInterval);
+    }
+
 
     async onPair(session) {
         this.type = 'pair';
@@ -125,7 +131,7 @@ module.exports = class mainDriver extends Homey.Driver {
             }
 
             if (view === 'loading2') {
-                this.homey.clearInterval(this.onReadyInterval);
+                this.resetInterval();
 
                 this.results = [
                     {

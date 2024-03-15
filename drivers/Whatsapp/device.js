@@ -138,7 +138,7 @@ module.exports = class Whatsapp extends Homey.Device {
             if (result) {
                 this.setAvailable();
             } else {
-                this.setUnavailable('Oops something went wrong. Please try to repair the device.');
+                this.setUnavailable('New paring code is needed. Please try to repair the device.');
             }
         } catch (error) {
             this.homey.app.log(`[Device] ${this.getName()} - setWhatsappClient - error =>`, error);
@@ -172,7 +172,7 @@ module.exports = class Whatsapp extends Homey.Device {
     }
 
     async getRecipient(recipient, isGroup) {
-        if (recipient.includes('@g.us') || recipient.includes('@s.whatsapp.net')) {
+        if (recipient.includes('@g.us') || recipient.includes('@s.whatsapp.net') || recipient.includes('@newsletter')) {
             return recipient;
         }
 
