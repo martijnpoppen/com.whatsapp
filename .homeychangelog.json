@@ -187,5 +187,8 @@
   },
   "1.22.3": {
     "en": "FIX: repair not properly storing session into Whatsapp device, causing logouts"
+  },
+  "1.22.4": {
+    "en": "FIX: pairing error | FIX: show error when something goes wrong | FIX: get auth failure | FIX: update library"
   }
 }
