@@ -193,5 +193,8 @@
   },
   "1.23.0": {
     "en": "FIX: pairing error | FIX: show error when something goes wrong | FIX: get auth failure | NEW: update library"
+  },
+  "1.23.1": {
+    "en": "FIX: service unavailable error"
   }
 }
