@@ -39,16 +39,16 @@ module.exports = class mainDriver extends Homey.Driver {
                 this.homey.app.log(`[Driver] ${this.id} - setCheckInterval - ${data.type}`);
 
                 if (data.type === 'READY' && data.clientID === guid) {
-                    if(session)  session.showView('loading2');
+                    if (session) session.showView('loading2');
                 }
 
                 if (data.type === 'CODE' && data.clientID === guid) {
                     this.code = data.msg;
-                    await session.emit('code', data.msg);
+                    if (session) await session.emit('code', data.msg);
                 }
 
                 if (data.type === 'CLOSED' && data.clientID === guid) {
-                    if(session) session.showView('done');
+                    if (session) session.showView('done');
                 }
             }, 4000);
 
@@ -65,7 +65,6 @@ module.exports = class mainDriver extends Homey.Driver {
         this.homey.app.log(`[Driver] ${this.id} - ResetInterval - Disabling interval`);
         this.homey.clearInterval(this.onReadyInterval);
     }
-
 
     async onPair(session) {
         this.type = 'pair';
@@ -111,7 +110,7 @@ module.exports = class mainDriver extends Homey.Driver {
             }
 
             if (view === 'whatsapp_pairing_code') {
-                await session.emit('code', this.code);
+                if (session) await session.emit('code', this.code);
             }
 
             if (view === 'loading') {
@@ -123,11 +122,11 @@ module.exports = class mainDriver extends Homey.Driver {
 
                 await sleep(5000);
                 if (this.code.length) {
-                    session.showView('whatsapp_pairing_code');
+                    if (session) session.showView('whatsapp_pairing_code');
                 }
 
                 await sleep(3000);
-                session.showView('whatsapp_pairing_code');
+                if (session) session.showView('whatsapp_pairing_code');
             }
 
             if (view === 'loading2') {
@@ -155,9 +154,9 @@ module.exports = class mainDriver extends Homey.Driver {
 
                         await this.device.setWhatsappClient();
                     }
-                    session.showView('done');
+                    if (session) session.showView('done');
                 } else {
-                    session.showView('list_devices');
+                    if (session) session.showView('list_devices');
                 }
             }
         });
