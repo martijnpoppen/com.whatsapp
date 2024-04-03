@@ -196,5 +196,8 @@
   },
   "1.23.1": {
     "en": "FIX: service unavailable error"
+  },
+  "1.23.2": {
+    "en": "FIX: service unavailable error"
   }
 }
