@@ -199,5 +199,11 @@
   },
   "1.23.2": {
     "en": "FIX: service unavailable error"
+  },
+  "1.24.0": {
+    "en": "NEW: update Whatsapp SDK"
+  },
+  "1.25.0": {
+    "en": "NEW: update SDK"
   }
 }
