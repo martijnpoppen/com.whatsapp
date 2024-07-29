@@ -205,5 +205,8 @@
   },
   "1.25.0": {
     "en": "NEW: update SDK"
+  },
+  "1.25.1": {
+    "en": "NEW: enhance pairing for new SDK"
   }
 }
