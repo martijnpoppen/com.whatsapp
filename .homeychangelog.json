@@ -217,5 +217,8 @@
   },
   "1.26.2": {
     "en": "FIX: light mode colors for Widget"
+  },
+  "1.26.3": {
+    "en": "FIX: error during pairing"
   }
 }

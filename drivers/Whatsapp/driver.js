@@ -57,6 +57,7 @@ module.exports = class mainDriver extends Homey.Driver {
                 this.homey.clearInterval(this.onReadyInterval);
             }, 120000);
         } catch (error) {
+            this.homey.clearInterval(this.onReadyInterval);
             this.homey.app.error(`[Driver] ${this.id} error`, error);
         }
     }
