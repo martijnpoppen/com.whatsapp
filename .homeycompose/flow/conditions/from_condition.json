@@ -33,6 +33,36 @@
       "type": "device",
       "name": "device",
       "filter": "driver_id=Whatsapp"
+    },
+    {
+      "name": "from_input",
+      "type": "text",
+      "title": {
+        "en": "Sender",
+        "nl": "Afzender",
+        "de": "Absender",
+        "fr": "Expéditeur",
+        "it": "Mittente",
+        "sv": "Avsändare",
+        "no": "Avsender",
+        "es": "Remitente",
+        "da": "Afsender",
+        "ru": "Отправитель",
+        "pl": "Nadawca"
+      },
+      "placeholder": {
+        "en": "John Doe",
+        "nl": "Jan Jansen",
+        "de": "Max Mustermann",
+        "fr": "Jean Dupont",
+        "it": "Mario Rossi",
+        "sv": "Johan Andersson",
+        "no": "Ola Nordmann",
+        "es": "Juan Pérez",
+        "da": "Niels Nielsen",
+        "ru": "Ivan Ivanov",
+        "pl": "Jan Kowalski"
+      }
     }
   ]
 }
