@@ -11,7 +11,8 @@
     "es": "Texto",
     "da": "Tekst",
     "ru": "текст",
-    "pl": "Tekst"
+    "pl": "Tekst",
+    "ko": "텍스트"
   },  
   "titleFormatted": {
     "en": "Text !{{is|isn't}} [[text_input]]",
@@ -24,7 +25,8 @@
     "es": "Texto !{{es|no es}} [[text_input]]",
     "da": "Tekst !{{er|er ikke}} [[text_input]]",
     "ru": "Текст !{{есть|нет}} [[text_input]]",
-    "pl": "Tekst !{{jest|nie jest}} [[text_input]]"
+    "pl": "Tekst !{{jest|nie jest}} [[text_input]]",
+    "ko": "텍스트 !{{이다|아니다}} [[text_input]]"
   },
   "args": [
     {
@@ -46,7 +48,8 @@
         "es": "Texto",
         "da": "Tekst",
         "ru": "текст",
-        "pl": "Tekst"
+        "pl": "Tekst",
+        "ko": "텍스트"
       }
     }
   ]
