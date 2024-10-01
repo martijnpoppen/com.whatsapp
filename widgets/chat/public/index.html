@@ -1,0 +1,161 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="./output.css">
+    <style>
+        :root {
+            background-color: var(--homey-background-color) !important;
+            color: var(--homey-color-white) !important;
+        }
+
+        .chat-bubble {
+            background-color: var(--homey-color-mono-200) !important;
+            color: var(--homey-color-white) !important;
+        }
+
+        .chat-header {
+            color: var(--homey-color-white) !important;
+        }
+    </style>
+</head>
+
+<body id="chat" class="homey-widget">
+    <script type="text/javascript">
+        function onHomeyReady (Homey) {
+            Homey.ready({ height: 600 });
+
+            setTimeout(() => {
+                init(Homey)
+            }, 3000);
+
+        }
+
+        function renderDate (timestamp) {
+            const date = new Date(timestamp);
+            // Format the date in DD-MM-YYYY
+            const optionsDate = { year: 'numeric', month: '2-digit', day: '2-digit' };
+            const shortDate = date.toLocaleDateString('nl-Nl', optionsDate); // 'en-GB' for day-month-year format
+
+            // Format the time in 24-hour format
+            const optionsTime = { hour: '2-digit', minute: '2-digit', hour12: false };
+            const shortTime = date.toLocaleTimeString('nl-NL', optionsTime);
+
+            return `${shortDate} ${shortTime}`;
+        }
+
+        function init (Homey) {
+            const settings = Homey.getSettings();
+            const widgetId = Homey.getWidgetInstanceId()
+            const widgetIdFour = widgetId.substring(widgetId.length - 4);
+            const localStorageKey = `messages-${widgetId}`;
+            const messages = window.localStorage.getItem(localStorageKey);
+            let groupJid = null;
+
+            if (messages) {
+                let parsedMessages = JSON.parse(messages);
+                if (parsedMessages.length > 30) {
+                    parsedMessages = parsedMessages.slice(parsedMessages.length - 30);
+                }
+
+                parsedMessages.forEach((message) => {
+                    parseMessage(message, settings);
+                });
+            } else {
+                window.localStorage.setItem(localStorageKey, JSON.stringify([]));
+            }
+
+            Homey.api('GET', `/?widgetId=${widgetId}`).then((response) => {
+                console.log('Received initial chat:', response);
+
+                if (response) {
+                    groupJid = response;
+                } else {
+                    console.log('No groupJid set in store');
+                    parseMessage({ text: `${Homey.__('widget.setup')} <br /><br /><br /> CODE: ${widgetIdFour}`, fromMe: false, timeStamp: Date.now(), from: 'Whatsapp Widget', hasImage: false, imageUrl: null, base64Image: null }, settings);
+                }
+            }).catch((error) => {
+                console.error('Failed to get initial chat:', error);
+            });
+
+            Homey.on('chat', (data) => {
+                console.log('Received data:', data);
+
+                // Check if the message contains the widgetId
+                // If so, set the groupJid
+                // This is a one-time setup
+                if (data.text && data.text.includes(widgetIdFour) && data.group) {
+                    Homey.api('GET', `/setWidgetChatInstance?widgetId=${widgetId}&jid=${data.jid}`).then((response) => {
+                        groupJid = data.jid;
+
+                        parseMessage({ text: `✅`, fromMe: false, timeStamp: Date.now(), from: 'Whatsapp Widget', hasImage: false, imageUrl: null, base64Image: null }, settings);
+                    }).catch((error) => {
+                        console.error('Failed to get chat:', error);
+                    });
+                }
+
+                // Check if the groupJid is set and the message is from the group
+                // If so, parse the message
+                if (groupJid && groupJid === data.jid) {
+                    let lastMessages = JSON.parse(window.localStorage.getItem(localStorageKey));
+                    
+                    if (lastMessages.length > 30) {
+                        lastMessages = lastMessages.slice(lastMessages.length - 30);
+                    }
+
+                    window.localStorage.setItem(localStorageKey, JSON.stringify([...lastMessages, data]));
+
+                    parseMessage(data, settings);
+                } else {
+                    console.log('Skip message parse - No groupJid set or message is not from group', groupJid, data.group);
+                }
+            });
+        }
+
+        function parseMessage (data, settings) {
+            const { invertChat, showFromMe, fromMeName } = settings;
+
+            const { text, from, fromMe, timeStamp, hasImage, imageUrl, base64Image } = data;
+            const isFromMe = invertChat ? !fromMe : fromMe;
+            const image = imageUrl || base64Image;
+            const chatClass = isFromMe ? 'chat-end' : 'chat-start';
+            const background = isFromMe ? '99cdfd' : '8cdd66';
+
+
+            if (isFromMe && !showFromMe) {
+                // Don't show messages from Self
+                return;
+            }
+
+            let chat = document.getElementById('chat');
+            chat.innerHTML += `
+                    <div class="chat ${chatClass}">
+                    <div class="chat-image avatar">
+                    <div class="w-10 rounded-full">
+                        <img
+                        alt="${fromMe ? fromMeName : from}"
+                        src="https://ui-avatars.com/api/?background=${background}&name=${fromMe ? fromMeName : from}" />
+                    </div>
+                    </div>
+                    <div class="chat-header">${fromMe ? fromMeName : from}
+                    <time class="text-xs opacity-50">${renderDate(timeStamp)}</time>
+                    </div>
+                    <div class="chat-bubble">
+                        ${hasImage ? `<img alt="${fromMe ? fromMeName : from}" src="${image}" />` : ''}
+                        
+                        ${text.replace(/↵/g, '<br />')}</div>
+                </div>
+                `;
+
+
+            chat.scrollTop = chat.scrollHeight;
+
+            const count = chat.querySelectorAll('.chat').length;
+
+            if (count > 30) {
+                chat.firstElementChild.remove();
+            }
+        }
+    </script>
+</body>
+
+</html>

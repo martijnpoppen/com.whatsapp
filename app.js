@@ -38,6 +38,23 @@ class App extends Homey.App {
             this.log('sendNotifications - error', console.error());
         }
     }
+
+    async getWidgetChatInstance(widgetId) {
+        const driver = this.homey.drivers.getDriver('Whatsapp');
+        const devices = driver.getDevices();
+        const device = devices.find(device => device.getStoreValue(widgetId));
+
+        return device ? device.getStoreValue(widgetId) : null;
+    }
+
+    async setWidgetChatInstance(widgetId, jid) {
+        const driver = this.homey.drivers.getDriver('Whatsapp');
+        const devices = driver.getDevices();
+        
+        devices.forEach(device => {
+            device.setStoreValue(widgetId, jid);
+        });
+    }
 }
 
 module.exports = App;

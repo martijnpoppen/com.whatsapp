@@ -3,5 +3,8 @@
         "invalid_login": "Number not valid. Make sure to prefix with a + and include country code",
         "login": "Continue",
         "loading": "Loading"
+    },
+    "widget": {
+        "setup": "To setup this widget. Send the code below inside the groupchat you want to connect to this widget."
     }
 }

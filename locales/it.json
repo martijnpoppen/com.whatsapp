@@ -1,0 +1,10 @@
+{
+    "login_credentials": {
+        "invalid_login": "Numero non valido. Assicurati di anteporre un + e includere il prefisso internazionale",
+        "login": "Continua",
+        "loading": "Caricamento"
+    },
+    "widget": {
+        "setup": "Per configurare questo widget, invia il codice qui sotto nella chat di gruppo a cui desideri connettere questo widget."
+    }
+}

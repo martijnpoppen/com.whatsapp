@@ -1,7 +1,7 @@
 {
   "id": "com.whatsapp",
-  "version": "1.25.1",
-  "compatibility": ">=5.0.0",
+  "version": "1.26.0",
+  "compatibility": ">=12.1.0",
   "sdk": 3,
   "platforms": [
     "local"
@@ -25,6 +25,127 @@
       "Text",
       "Telegram",
       "CallMeBot"
+    ],
+    "nl": [
+      "Whatsapp",
+      "Berichten",
+      "Bericht",
+      "App",
+      "TextMeBot",
+      "Bot",
+      "Text",
+      "Telegram",
+      "CallMeBot"
+    ],
+    "de": [
+      "Whatsapp",
+      "Nachrichten",
+      "Nachricht",
+      "App",
+      "TextMeBot",
+      "Bot",
+      "Text",
+      "Telegram",
+      "CallMeBot"
+    ],
+    "fr": [
+      "Whatsapp",
+      "Messages",
+      "Message",
+      "App",
+      "TextMeBot",
+      "Bot",
+      "Text",
+      "Telegram",
+      "CallMeBot"
+    ],
+    "it": [
+      "Whatsapp",
+      "Messaggi",
+      "Messaggio",
+      "App",
+      "TextMeBot",
+      "Bot",
+      "Text",
+      "Telegram",
+      "CallMeBot"
+    ],
+    "sv": [
+      "Whatsapp",
+      "Meddelanden",
+      "Meddelande",
+      "App",
+      "TextMeBot",
+      "Bot",
+      "Text",
+      "Telegram",
+      "CallMeBot"
+    ],
+    "no": [
+      "Whatsapp",
+      "Meldinger",
+      "Melding",
+      "App",
+      "TextMeBot",
+      "Bot",
+      "Text",
+      "Telegram",
+      "CallMeBot"
+    ],
+    "es": [
+      "Whatsapp",
+      "Mensajes",
+      "Mensaje",
+      "App",
+      "TextMeBot",
+      "Bot",
+      "Text",
+      "Telegram",
+      "CallMeBot"
+    ],
+    "da": [
+      "Whatsapp",
+      "Beskeder",
+      "Besked",
+      "App",
+      "TextMeBot",
+      "Bot",
+      "Text",
+      "Telegram",
+      "CallMeBot"
+    ],
+    "ru": [
+      "Whatsapp",
+      "Сообщения",
+      "Сообщение",
+      "App",
+      "TextMeBot",
+      "Bot",
+      "Text",
+      "Telegram",
+      "CallMeBot"
+    ],
+    "pl": [
+      "Whatsapp",
+      "Wiadomości",
+      "Wiadomość",
+      "App",
+      "TextMeBot",
+      "Bot",
+      "Text",
+      "Telegram",
+      "CallMeBot"
+    ],
+    "ko": [
+      "Whatsapp",
+      "메시지",
+      "메시지",
+      "App",
+      "TextMeBot",
+      "Bot",
+      "Text",
+      "Telegram",
+      "CallMeBot"
     ]
   },
   "category": [
@@ -36,13 +157,13 @@
   },
   "author": {
     "name": "Martijn Poppen",
-    "email": "textmebot@martijnpoppen.nl"
+    "email": "whatsapp@martijnpoppen.nl"
   },
   "contributors": {
     "developers": [
       {
         "name": "Martijn Poppen",
-        "email": "textmebot@martijnpoppen.nl"
+        "email": "whatsapp@martijnpoppen.nl"
       },
       {
         "name": "Léon van der Linden",

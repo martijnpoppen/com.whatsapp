@@ -1,0 +1,10 @@
+{
+    "login_credentials": {
+        "invalid_login": "Nummer ikke gyldigt. Sørg for at præfikse med et + og inkludere landekode",
+        "login": "Fortsæt",
+        "loading": "Indlæser"
+    },
+    "widget": {
+        "setup": "For at opsætte denne widget skal du sende koden nedenfor i gruppechatten, du vil forbinde til denne widget."
+    }
+}

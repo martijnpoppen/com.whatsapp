@@ -1,5 +1,6 @@
 const Homey = require('homey');
 const { parsePhoneNumber } = require('libphonenumber-js');
+const { validateUrl, sleep } = require('../../lib/helpers');
 
 module.exports = class Whatsapp extends Homey.Device {
     async onInit() {
@@ -161,7 +162,7 @@ module.exports = class Whatsapp extends Homey.Device {
         const recipient = await this.getRecipient(params.recipient, isGroup);
 
         if (recipient) {
-            const data = await this.sendMessage(recipient, message, type, params);
+            const data = await this.sendMessage(recipient, message, type, params, isGroup);
 
             this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage`, Object.keys(data).length);
 
@@ -215,18 +216,28 @@ module.exports = class Whatsapp extends Homey.Device {
         return recipient;
     }
 
-    async sendMessage(recipient, message, msgType, params = null) {
+    async sendMessage(recipient, message, msgType, params = null, isGroup = false) {
         let data = {};
 
         if (recipient && message && !msgType) {
             this.homey.app.log(`[Device] ${this.getName()} - sendMessage - sendText`, { recipient, message, msgType });
 
+            this.homey.api.realtime('chat', { jid: recipient, from: '', fromMe: true, timeStamp: Date.now(), text: message, group: isGroup, hasImage: false, imageUrl: null, base64Image: null });
+
             data = await this.WhatsappClient.sendText(recipient, message);
         } else if (recipient && msgType) {
             let fileUrl = params.droptoken || params.file || null;
+            let realtimeFileUrl = fileUrl;
+
             if (!!fileUrl && !!fileUrl.localUrl) {
                 fileUrl = fileUrl.localUrl;
             }
+
+            if (!!realtimeFileUrl && !!realtimeFileUrl.cloudUrl) {
+                realtimeFileUrl = realtimeFileUrl.cloudUrl;
+            }
+        
+            this.homey.api.realtime('chat', { jid: recipient, from: '', fromMe: true, timeStamp: Date.now(), text: message, group: isGroup, hasImage: msgType === 'image', imageUrl: realtimeFileUrl, base64Image: null });
 
             this.homey.app.log(`[Device] ${this.getName()} - sendMessage - send${msgType}`, { ...params, recipient, message, fileUrl, msgType, device: 'LOG' });
 
@@ -277,6 +288,10 @@ module.exports = class Whatsapp extends Homey.Device {
                 const fromMe = m.key && m.key.fromMe;
                 const triggerAllowed = (fromMe && settings.trigger_own_message) || !fromMe;
                 const hasImage = m.message && m.message.imageMessage ? true : false;
+                const imageBuffer = hasImage ? await this.WhatsappClient.downloadMediaMsg(m) : null;
+                const base64Image = imageBuffer ? imageBuffer.toString('base64') : null;
+
+                console.log(imageBuffer)
 
                 let text = m.message && m.message.conversation;
 
@@ -291,7 +306,9 @@ module.exports = class Whatsapp extends Homey.Device {
                 const tokens = { replyTo: jid, fromNumber, from, text, time: dateString, group, hasImage };
                 const state = tokens;
 
-                console.log('tokens', tokens);
+                console.log('tokens', tokens);                
+
+                this.homey.api.realtime("chat", { jid, from: from, fromMe, timeStamp: m.messageTimestamp * 1000, text, group, hasImage, imgUrl: null, base64Image: `data:image/jpeg;base64,${base64Image}`, m });
 
                 triggerAllowed && this.new_message.trigger(this, tokens, state);
             });

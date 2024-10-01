@@ -208,5 +208,8 @@
   },
   "1.25.1": {
     "en": "NEW: enhance pairing for new SDK"
+  },
+  "1.26.0": {
+    "en": "NEW: Add dashboard widget"
   }
 }

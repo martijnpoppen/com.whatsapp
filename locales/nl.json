@@ -1,0 +1,10 @@
+{
+    "login_credentials": {
+        "invalid_login": "Nummer niet geldig. Zorg ervoor dat u een + gebruikt en de landcode opneemt",
+        "login": "Doorgaan",
+        "loading": "Laden"
+    },
+    "widget": {
+        "setup": "Om deze widget in te stellen, stuurt u de onderstaande code in de groepschat die u met deze widget wilt verbinden."
+    }
+}

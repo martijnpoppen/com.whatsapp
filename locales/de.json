@@ -1,0 +1,10 @@
+{
+    "login_credentials": {
+        "invalid_login": "Nummer ungültig. Stellen Sie sicher, dass Sie einem + beginnen und die Landesvorwahl einschließen",
+        "login": "Fortsetzen",
+        "loading": "Wird geladen"
+    },
+    "widget": {
+        "setup": "Um dieses Widget einzurichten, senden Sie den unten stehenden Code in den Gruppenchat, den Sie mit diesem Widget verbinden möchten."
+    }
+}

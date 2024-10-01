@@ -1,0 +1,10 @@
+{
+    "login_credentials": {
+        "invalid_login": "Numer nieprawidłowy. Upewnij się, że numer zaczyna się od + i zawiera kod kraju",
+        "login": "Kontynuuj",
+        "loading": "Ładowanie"
+    },
+    "widget": {
+        "setup": "Aby skonfigurować ten widżet, wyślij poniższy kod w czacie grupowym, do którego chcesz podłączyć ten widżet."
+    }
+}

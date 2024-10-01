@@ -1,0 +1,85 @@
+{
+  "name": {
+    "en": "WhatsApp Chat view ",
+    "nl": "WhatsApp Chatweergave",
+    "de": "WhatsApp Chat-Ansicht",
+    "fr": "WhatsApp Vue du chat",
+    "it": "WhatsApp Visualizzazione chat",
+    "sv": "WhatsApp Chattvy",
+    "no": "WhatsApp Chatvisning",
+    "es": "WhatsApp Vista de chat",
+    "da": "WhatsApp Chatvisning",
+    "ru": "WhatsApp Просмотр чата",
+    "pl": "WhatsApp Widok czatu",
+    "ko": "WhatsApp 채팅 보기"
+  },
+  "settings": [
+    {
+      "id": "showFromMe",
+      "type": "checkbox",
+      "value": true,
+      "title": {
+        "en": "Show messages send by me",
+        "nl": "Toon berichten die ik heb verzonden",
+        "de": "Nachrichten anzeigen, die ich gesendet habe",
+        "fr": "Afficher les messages envoyés par moi",
+        "it": "Mostra i messaggi inviati da me",
+        "sv": "Visa meddelanden som jag skickat",
+        "no": "Vis meldinger sendt av meg",
+        "es": "Mostrar mensajes enviados por mí",
+        "da": "Vis beskeder sendt af mig",
+        "ru": "Показать сообщения, отправленные мной",
+        "pl": "Pokaż wiadomości wysłane przeze mnie",
+        "ko": "내가 보낸 메시지 표시"
+      }
+    },
+    {
+      "id": "invertChat",
+      "type": "checkbox",
+      "value": true,
+      "title": {
+        "en": "Invert chat order (left/right)",
+        "nl": "Chatvolgorde omkeren (links/rechts)",
+        "de": "Chat-Reihenfolge umkehren (links/rechts)",
+        "fr": "Inverser l'ordre du chat (gauche/droite)",
+        "it": "Inverti l'ordine della chat (sinistra/destra)",
+        "sv": "Invertera chattordning (vänster/höger)",
+        "no": "Inverter chatrekkefølge (venstre/høyre)",
+        "es": "Invertir el orden del chat (izquierda/derecha)",
+        "da": "Omvend chatrækkefølge (venstre/højre)",
+        "ru": "Инвертировать порядок чата (слева/справа)",
+        "pl": "Odwróć kolejność czatu (lewo/prawo)",
+        "ko": "채팅 순서 반전 (왼쪽/오른쪽)"
+      }
+    },
+    {
+      "id": "fromMeName",
+      "type": "text",
+      "value": "Homey",
+      "title": {
+        "en": "Name for messages send by me",
+        "nl": "Naam voor berichten die ik heb verzonden",
+        "de": "Name für Nachrichten, die ich gesendet habe",
+        "fr": "Nom pour les messages envoyés par moi",
+        "it": "Nome per i messaggi inviati da me",
+        "sv": "Namn för meddelanden som jag skickat",
+        "no": "Navn for meldinger sendt av meg",
+        "es": "Nombre para mensajes enviados por mí",
+        "da": "Navn for beskeder sendt af mig",
+        "ru": "Имя для сообщений, отправленных мной",
+        "pl": "Nazwa dla wiadomości wysłanych przeze mnie",
+        "ko": "내가 보낸 메시지에 대한 이름"
+      }
+    }
+  ],
+  "api": {
+    "getWidgetChatInstance": {
+      "method": "GET",
+      "path": "/"
+    },
+    "setWidgetChatInstance": {
+        "method": "GET",
+        "path": "/setWidgetChatInstance"
+    }
+  }
+}

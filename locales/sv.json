@@ -1,0 +1,10 @@
+{
+    "login_credentials": {
+        "invalid_login": "Nummer inte giltigt. Se till att prefixa med ett + och inkludera landskod",
+        "login": "Fortsätt",
+        "loading": "Laddar"
+    },
+    "widget": {
+        "setup": "För att ställa in denna widget, skicka koden nedan i gruppchatten du vill ansluta till denna widget."
+    }
+}
