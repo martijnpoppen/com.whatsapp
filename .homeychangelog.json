@@ -211,5 +211,11 @@
   },
   "1.26.0": {
     "en": "NEW: Add dashboard widget"
+  },
+  "1.26.1": {
+    "en": "? NEW: Add dashboard widget"
+  },
+  "1.26.2": {
+    "en": "FIX: light mode colors for Widget"
   }
 }
