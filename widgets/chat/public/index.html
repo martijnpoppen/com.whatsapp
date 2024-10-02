@@ -8,8 +8,12 @@
             color: var(--homey-color-mono-1000) !important;
         }
 
+        .homey-widget-full {
+            padding-bottom: var(--homey-su-4);
+        }
+
         .chat-bubble {
-            background-color: var(--homey-color-mono-025);
+            background-color: var(--homey-color-mono-000);
             color: var(--homey-color-mono-1000);
         }
 
@@ -27,10 +31,20 @@
             left: 50%;
             transform: translate(-50%, -50%);
         }
+
+        .avatar-green {
+            background-color: var(--homey-color-green-300);
+            color: #1d1d1d;
+        }
+
+        .avatar-blue {
+            background-color: var(--homey-color-blue-200);
+            color: #1d1d1d;
+        }
     </style>
 </head>
 
-<body id="chat" class="homey-widget">
+<body id="chat" class="homey-widget-full">
     <span id="loading" class="loading loading-ring loading-lg"></span>
     <script type="text/javascript">
         // globalVars
@@ -39,10 +53,12 @@
 
         function onHomeyReady (Homey) {
             const settings = Homey.getSettings();
+
             Homey.ready({ height: settings.widgetHeight || 600 });
 
             // cleanup old storage implementation
             window.localStorage.clear();
+
 
             // NextTick to make sure the Homey object is ready
             setTimeout(() => {
@@ -68,7 +84,7 @@
             return `${shortDate} ${shortTime}`;
         }
 
-        function getWidgetJid(Homey) {
+        function getWidgetJid (Homey) {
             const settings = Homey.getSettings();
             const widgetId = Homey.getWidgetInstanceId()
             const widgetIdFour = widgetId.substring(widgetId.length - 4);
@@ -90,7 +106,7 @@
             });
         }
 
-        function getWidgetChats(Homey, groupJid) {
+        function getWidgetChats (Homey, groupJid) {
             const settings = Homey.getSettings();
 
             Homey.api('GET', `/getWidgetChats?jid=${groupJid}`).then((response) => {
@@ -101,7 +117,13 @@
                     messages.forEach((msg) => {
                         parseMessage(msg, settings);
                     });
+
                     hideLoader();
+
+                    setTimeout(() => {
+                        const chat = document.getElementById('chat');
+                        chat.scrollTop = chat.scrollHeight;
+                    }, 1000);
                 } else {
                     console.log('No messages found');
                 }
@@ -110,9 +132,9 @@
             });
         }
 
-        function hideLoader() {
+        function hideLoader () {
             widgetInitialized = true;
-            
+
             document.getElementById('loading').style.display = 'none';
         }
 
@@ -152,35 +174,35 @@
         }
 
         function parseMessage (data, settings) {
-            const { invertChat, showFromMe, fromMeName } = settings;
+            const { invertChat, showFromMe, showFromOthers, fromMeName } = settings;
 
             const { text, from, fromMe, timeStamp, hasImage, imageUrl, base64Image } = data;
             const isFromMe = invertChat ? !fromMe : fromMe;
             const image = imageUrl || base64Image;
             const chatClass = isFromMe ? 'chat-end' : 'chat-start';
-            const background = isFromMe ? '99cdfd' : '8cdd66';
+            const background = isFromMe ? 'avatar-blue' : 'avatar-green';
 
+            const hideMessageFromOthers = !fromMe && !showFromOthers;
+            const hideMessageFromMe = fromMe && !showFromMe;
+            const hideEmptyMessage = !text || text === '' | text.length < 1;
 
-            if (isFromMe && !showFromMe) {
-                // Don't show messages from Self
+            if (hideMessageFromOthers || hideMessageFromMe || hideEmptyMessage) {
                 return;
             }
 
             let chat = document.getElementById('chat');
             chat.innerHTML += `
                     <div class="chat ${chatClass}">
-                    <div class="chat-image avatar">
-                    <div class="w-10 rounded-full">
-                        <img
-                        alt="${fromMe ? fromMeName : from}"
-                        src="https://ui-avatars.com/api/?background=${background}&name=${fromMe ? fromMeName : from}" />
+                    <div class="chat-image avatar placeholder">
+                    <div class="w-10 rounded-full ${background}">
+                        <span class="text-3xl">${fromMe ? fromMeName.substring(0, 1) : from.substring(0, 1)}</span>
                     </div>
                     </div>
                     <div class="chat-header">${fromMe ? fromMeName : from}
                     <time class="text-xs opacity-50">${renderDate(timeStamp)}</time>
                     </div>
                     <div class="chat-bubble">
-                        ${hasImage ? `<img alt="${fromMe ? fromMeName : from}" src="${image}" />` : ''}
+                        ${hasImage ? `<img onclick="openPopup('${image}')" alt="${fromMe ? fromMeName : from}" src="${image}" />` : ''}
                         
                         ${text.replace(/↵/g, '<br />')}</div>
                 </div>
@@ -188,6 +210,24 @@
 
 
             chat.scrollTop = chat.scrollHeight;
+        }
+
+        function openPopup (img) {
+            const validUrl = validateUrl(img);
+            if (validUrl) {
+                Homey.popup(img);
+            } else {
+                return;
+            }
+        }
+
+        function validateUrl (url) {
+            const urlRegex = /^https?:\/\/(?:.*\/)?[^\/.]+$/g;
+            if (urlRegex.test(url)) {
+                return true;
+            } else {
+                return false;
+            }
         }
     </script>
 </body>
