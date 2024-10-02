@@ -15,6 +15,39 @@
   },
   "settings": [
     {
+        "id": "widgetHeight",
+        "type": "number",
+        "value": 600,
+        "title": {
+            "en": "Widget height",
+            "nl": "Widgethoogte",
+            "de": "Widget-Höhe",
+            "fr": "Hauteur du widget",
+            "it": "Altezza del widget",
+            "sv": "Widgethöjd",
+            "no": "Widgethøyde",
+            "es": "Altura del widget",
+            "da": "Widgethøjde",
+            "ru": "Высота виджета",
+            "pl": "Wysokość widżetu",
+            "ko": "위젯 높이"
+        },
+        "hint": {
+            "en": "Height of the widget in pixels",
+            "nl": "Hoogte van de widget in pixels",
+            "de": "Höhe des Widgets in Pixeln",
+            "fr": "Hauteur du widget en pixels",
+            "it": "Altezza del widget in pixel",
+            "sv": "Höjden på widgeten i pixlar",
+            "no": "Høyden på widgeten i piksler",
+            "es": "Altura del widget en píxeles",
+            "da": "Højden af widget i pixels",
+            "ru": "Высота виджета в пикселях",
+            "pl": "Wysokość widżetu w pikselach",
+            "ko": "위젯의 높이(픽셀)"
+        }
+    },
+    {
       "id": "showFromMe",
       "type": "checkbox",
       "value": true,
@@ -75,11 +108,15 @@
   "api": {
     "getWidgetChatInstance": {
       "method": "GET",
-      "path": "/"
+      "path": "/getWidgetChatInstance"
     },
     "setWidgetChatInstance": {
         "method": "GET",
         "path": "/setWidgetChatInstance"
+    },
+    "getWidgetChats": {
+      "method": "GET",
+      "path": "/getWidgetChats"
     }
   }
 }

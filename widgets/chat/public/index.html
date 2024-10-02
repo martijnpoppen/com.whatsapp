@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="./output.css">
     <style>
         :root {
-            background-color: var(--homey-background-color) !important;
+            background-color: transparent !important;
             color: var(--homey-color-mono-1000) !important;
         }
 
@@ -20,16 +20,37 @@
         .chat-header {
             color: var(--homey-color-mono-1000) !important;
         }
+
+        #loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
     </style>
 </head>
 
 <body id="chat" class="homey-widget">
+    <span id="loading" class="loading loading-ring loading-lg"></span>
     <script type="text/javascript">
-        function onHomeyReady (Homey) {
-            Homey.ready({ height: 600 });
+        // globalVars
+        let groupJid = null;
+        let widgetInitialized = false;
 
+        function onHomeyReady (Homey) {
+            const settings = Homey.getSettings();
+            Homey.ready({ height: settings.widgetHeight || 600 });
+
+            // cleanup old storage implementation
+            window.localStorage.clear();
+
+            // NextTick to make sure the Homey object is ready
             setTimeout(() => {
-                init(Homey)
+                // Get the widget Jid. This is the group Jid
+                getWidgetJid(Homey);
+
+                // Initialize the chat listener
+                initChatListener(Homey);
             }, 3000);
 
         }
@@ -47,39 +68,58 @@
             return `${shortDate} ${shortTime}`;
         }
 
-        function init (Homey) {
+        function getWidgetJid(Homey) {
             const settings = Homey.getSettings();
             const widgetId = Homey.getWidgetInstanceId()
             const widgetIdFour = widgetId.substring(widgetId.length - 4);
-            const localStorageKey = `messages-${widgetId}`;
-            const messages = window.localStorage.getItem(localStorageKey);
-            let groupJid = null;
 
-            if (messages) {
-                let parsedMessages = JSON.parse(messages);
-                if (parsedMessages.length > 30) {
-                    parsedMessages = parsedMessages.slice(parsedMessages.length - 30);
-                }
-
-                parsedMessages.forEach((message) => {
-                    parseMessage(message, settings);
-                });
-            } else {
-                window.localStorage.setItem(localStorageKey, JSON.stringify([]));
-            }
-
-            Homey.api('GET', `/?widgetId=${widgetId}`).then((response) => {
+            Homey.api('GET', `/getWidgetChatInstance?widgetId=${widgetId}`).then((response) => {
                 console.log('Received initial chat:', response);
 
                 if (response) {
                     groupJid = response;
+
+                    getWidgetChats(Homey, groupJid);
                 } else {
                     console.log('No groupJid set in store');
                     parseMessage({ text: `${Homey.__('widget.setup')} <br /><br /><br /> CODE: ${widgetIdFour}`, fromMe: false, timeStamp: Date.now(), from: 'Whatsapp Widget', hasImage: false, imageUrl: null, base64Image: null }, settings);
+                    hideLoader();
                 }
             }).catch((error) => {
                 console.error('Failed to get initial chat:', error);
             });
+        }
+
+        function getWidgetChats(Homey, groupJid) {
+            const settings = Homey.getSettings();
+
+            Homey.api('GET', `/getWidgetChats?jid=${groupJid}`).then((response) => {
+                console.log('Received chats:', response);
+
+                if (response) {
+                    const messages = JSON.parse(response);
+                    messages.forEach((msg) => {
+                        parseMessage(msg, settings);
+                    });
+                    hideLoader();
+                } else {
+                    console.log('No messages found');
+                }
+            }).catch((error) => {
+                console.error('Failed to get chat messages:', error);
+            });
+        }
+
+        function hideLoader() {
+            widgetInitialized = true;
+            
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        function initChatListener (Homey) {
+            const settings = Homey.getSettings();
+            const widgetId = Homey.getWidgetInstanceId()
+            const widgetIdFour = widgetId.substring(widgetId.length - 4);
 
             Homey.on('chat', (data) => {
                 console.log('Received data:', data);
@@ -91,6 +131,8 @@
                     Homey.api('GET', `/setWidgetChatInstance?widgetId=${widgetId}&jid=${data.jid}`).then((response) => {
                         groupJid = data.jid;
 
+                        hideLoader();
+
                         parseMessage({ text: `✅`, fromMe: false, timeStamp: Date.now(), from: 'Whatsapp Widget', hasImage: false, imageUrl: null, base64Image: null }, settings);
                     }).catch((error) => {
                         console.error('Failed to get chat:', error);
@@ -99,14 +141,8 @@
 
                 // Check if the groupJid is set and the message is from the group
                 // If so, parse the message
-                if (groupJid && groupJid === data.jid) {
-                    let lastMessages = JSON.parse(window.localStorage.getItem(localStorageKey));
-                    
-                    if (lastMessages.length > 30) {
-                        lastMessages = lastMessages.slice(lastMessages.length - 30);
-                    }
-
-                    window.localStorage.setItem(localStorageKey, JSON.stringify([...lastMessages, data]));
+                if (groupJid && groupJid === data.jid && widgetInitialized) {
+                    hideLoader();
 
                     parseMessage(data, settings);
                 } else {
@@ -152,12 +188,6 @@
 
 
             chat.scrollTop = chat.scrollHeight;
-
-            const count = chat.querySelectorAll('.chat').length;
-
-            if (count > 30) {
-                chat.firstElementChild.remove();
-            }
         }
     </script>
 </body>

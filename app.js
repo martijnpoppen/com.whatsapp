@@ -55,6 +55,14 @@ class App extends Homey.App {
             device.setStoreValue(widgetId, jid);
         });
     }
+
+    async getWidgetChats(jid) {
+        const driver = this.homey.drivers.getDriver('Whatsapp');
+        const devices = driver.getDevices();
+        const device = devices.find(device => device.getStoreValue(`widget-chat-${jid}`));
+
+        return device ? device.getStoreValue(`widget-chat-${jid}`) : null;
+    }
 }
 
 module.exports = App;

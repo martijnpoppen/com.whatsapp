@@ -220,5 +220,8 @@
   },
   "1.26.3": {
     "en": "FIX: error during pairing"
+  },
+  "1.26.4": {
+    "en": "NEW: better caching mechanism for Widget"
   }
 }
