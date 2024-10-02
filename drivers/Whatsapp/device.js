@@ -222,7 +222,17 @@ module.exports = class Whatsapp extends Homey.Device {
         if (recipient && message && !msgType) {
             this.homey.app.log(`[Device] ${this.getName()} - sendMessage - sendText`, { recipient, message, msgType });
 
-            this.sendToWidget('chat', { jid: recipient, from: '', fromMe: true, timeStamp: Date.now(), text: message, group: isGroup, hasImage: false, imageUrl: null, base64Image: null });
+            this.sendToWidget({
+                jid: recipient,
+                from: '',
+                fromMe: true,
+                timeStamp: Date.now(),
+                text: message,
+                group: isGroup,
+                hasImage: false,
+                imageUrl: null,
+                base64Image: null
+            });
 
             data = await this.WhatsappClient.sendText(recipient, message);
         } else if (recipient && msgType) {

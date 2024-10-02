@@ -223,5 +223,8 @@
   },
   "1.26.4": {
     "en": "NEW: better caching mechanism for Widget"
+  },
+  "1.26.5": {
+    "en": "FIX: small issue in widget when sending from self"
   }
 }
