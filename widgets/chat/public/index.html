@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="./output.css">
     <style>
         :root {
-            background-color: transparent !important;
+            background-color: var(--homey-color-mono-025) !important;
             color: var(--homey-color-mono-1000) !important;
         }
 
@@ -15,6 +15,9 @@
         .chat-bubble {
             background-color: var(--homey-color-mono-000);
             color: var(--homey-color-mono-1000);
+            font-size: var(--homey-font-size-small);
+            min-height: 2.25rem;
+            min-width: 2.25rem
         }
 
         .homey-dark-mode .chat-bubble {
@@ -46,6 +49,8 @@
 
 <body id="chat" class="homey-widget-full">
     <span id="loading" class="loading loading-ring loading-lg"></span>
+    <script type="text/javascript" src="./helpers.js"></script>
+    
     <script type="text/javascript">
         // globalVars
         let groupJid = null;
@@ -178,7 +183,7 @@
 
             const { text, from, fromMe, timeStamp, hasImage, imageUrl, base64Image } = data;
             const isFromMe = invertChat ? !fromMe : fromMe;
-            const image = imageUrl || base64Image;
+            const image = base64Image;
             const chatClass = isFromMe ? 'chat-end' : 'chat-start';
             const background = isFromMe ? 'avatar-blue' : 'avatar-green';
 
@@ -202,32 +207,14 @@
                     <time class="text-xs opacity-50">${renderDate(timeStamp)}</time>
                     </div>
                     <div class="chat-bubble">
-                        ${hasImage ? `<img onclick="openPopup('${image}')" alt="${fromMe ? fromMeName : from}" src="${image}" />` : ''}
+                        ${hasImage ? `<img alt="${fromMe ? fromMeName : from}" src="${image}" />` : ''}
                         
-                        ${text.replace(/↵/g, '<br />')}</div>
+                        ${formatText(text)}</div>
                 </div>
                 `;
 
 
             chat.scrollTop = chat.scrollHeight;
-        }
-
-        function openPopup (img) {
-            const validUrl = validateUrl(img);
-            if (validUrl) {
-                Homey.popup(img);
-            } else {
-                return;
-            }
-        }
-
-        function validateUrl (url) {
-            const urlRegex = /^https?:\/\/(?:.*\/)?[^\/.]+$/g;
-            if (urlRegex.test(url)) {
-                return true;
-            } else {
-                return false;
-            }
         }
     </script>
 </body>

@@ -1,6 +1,6 @@
 const Homey = require('homey');
 const { parsePhoneNumber } = require('libphonenumber-js');
-const { validateUrl, sleep } = require('../../lib/helpers');
+const { validateUrl, sleep, getBase64Image } = require('../../lib/helpers');
 
 module.exports = class Whatsapp extends Homey.Device {
     async onInit() {
@@ -237,14 +237,9 @@ module.exports = class Whatsapp extends Homey.Device {
             data = await this.WhatsappClient.sendText(recipient, message);
         } else if (recipient && msgType) {
             let fileUrl = params.droptoken || params.file || null;
-            let realtimeFileUrl = fileUrl;
 
             if (!!fileUrl && !!fileUrl.localUrl) {
                 fileUrl = fileUrl.localUrl;
-            }
-
-            if (!!realtimeFileUrl && !!realtimeFileUrl.cloudUrl) {
-                realtimeFileUrl = realtimeFileUrl.cloudUrl;
             }
 
             this.sendToWidget({
@@ -255,7 +250,7 @@ module.exports = class Whatsapp extends Homey.Device {
                 text: message,
                 group: isGroup,
                 hasImage: msgType === 'image',
-                imageUrl: realtimeFileUrl,
+                imageUrl: fileUrl,
                 base64Image: null
             });
 
@@ -341,6 +336,11 @@ module.exports = class Whatsapp extends Homey.Device {
 
     async sendToWidget(data) {
         let chat = this.getStoreValue(`widget-chat-${data.jid}`);
+
+        if(data.imageUrl) {
+            const base64Image = await getBase64Image(data.imageUrl);
+            data.base64Image = `data:image/jpeg;base64,${base64Image}`;
+        }
 
         if (chat) {
             let parsedChat = JSON.parse(chat);

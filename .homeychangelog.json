@@ -227,7 +227,10 @@
   "1.26.5": {
     "en": "FIX: small issue in widget when sending from self"
   },
-    "1.26.6": {
-        "en": "OPT: Added showFromOthers setting to widget | OPT: Added image popup to widget | OPT: name bullets native css | FIX: deleted messages showed as new messages"
-    },
+  "1.26.6": {
+    "en": "OPT: Added showFromOthers setting to widget | OPT: Added image popup to widget | OPT: name bullets native css | FIX: deleted messages showed as new messages"
+  },
+  "1.26.7": {
+    "en": "FIX: font-size"
+  }
 }
