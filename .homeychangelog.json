@@ -232,5 +232,11 @@
   },
   "1.26.7": {
     "en": "FIX: font-size"
+  },
+  "1.27.0": {
+    "en": "FIX: widget image url changed moved to base64 img | NEW: widget text formatting | FIX: widget background color on Android "
+  },
+  "1.27.1": {
+    "en": "FIX: app crash"
   }
 }

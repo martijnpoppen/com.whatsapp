@@ -8,6 +8,8 @@ module.exports = class Whatsapp extends Homey.Device {
             this.homey.app.log('[Device] - init =>', this.getName());
             this.setUnavailable(`Connecting to WhatsApp`);
 
+            this.cleanupWidgetStore();
+
             await this.synchronousStart();
 
             await this.checkCapabilities();
@@ -334,28 +336,6 @@ module.exports = class Whatsapp extends Homey.Device {
         }
     }
 
-    async sendToWidget(data) {
-        let chat = this.getStoreValue(`widget-chat-${data.jid}`);
-
-        if(data.imageUrl) {
-            const base64Image = await getBase64Image(data.imageUrl);
-            data.base64Image = `data:image/jpeg;base64,${base64Image}`;
-        }
-
-        if (chat) {
-            let parsedChat = JSON.parse(chat);
-            if (parsedChat.length > 30) {
-                parsedChat = parsedChat.slice(parsedChat.length - 30);
-            }
-
-            this.setStoreValue(`widget-chat-${data.jid}`, JSON.stringify([...parsedChat, data]));
-        } else {
-            this.setStoreValue(`widget-chat-${data.jid}`, JSON.stringify([]));
-        }
-
-        this.homey.api.realtime('chat', data);
-    }
-
     // ------------- Capabilities -------------
     async checkCapabilities() {
         const driverManifest = this.driver.manifest;
@@ -398,6 +378,82 @@ module.exports = class Whatsapp extends Homey.Device {
             }
         } catch (error) {
             this.homey.app.log(error);
+        }
+    }
+
+    async sendToWidget(data) {
+        const widgetJids = await this.getWidgetJids();
+        let chat = this.getStoreValue(`widget-chat-${data.jid}`);
+
+        if (data.imageUrl) {
+            const base64Image = await getBase64Image(data.imageUrl);
+            data.base64Image = `data:image/jpeg;base64,${base64Image}`;
+        }
+
+        if (chat) {
+            let parsedChat = JSON.parse(chat);
+            if (parsedChat.length > 20) {
+                parsedChat = parsedChat.slice(parsedChat.length - 20);
+            }
+
+            this.setStoreValue(`widget-chat-${data.jid}`, JSON.stringify([...parsedChat, data]));
+        } else if (widgetJids.includes(data.jid)) {
+            this.setStoreValue(`widget-chat-${data.jid}`, JSON.stringify([]));
+        }
+
+        this.homey.api.realtime('chat', data);
+    }
+
+    async getWidgetJids(updateKeys = false) {
+        const widgetJids = [];
+        const storeData = this.getStore();
+
+        for await(const [storeKey, storeValue] of Object.entries(storeData)) {
+            if (storeKey.startsWith('widget-instance-') || storeValue.endsWith('@s.whatsapp.net') || storeValue.endsWith('@g.us')) {
+                if (!widgetJids.includes(storeValue)) {
+                    this.homey.app.log(`[Device] ${this.getName()} - getWidgetJids - found jid`, storeValue);
+                    widgetJids.push(storeValue);
+                }
+
+                if (updateKeys && !storeKey.startsWith('widget-instance-') && storeKey.length === 36) {
+                    this.homey.app.log(`[Device] ${this.getName()} - getWidgetJids - update storekey ${storeKey} to widget-instance-${storeKey} for value`, storeValue);
+                    this.setStoreValue(`widget-instance-${storeKey}`, storeValue);
+                    this.unsetStoreValue(storeKey);
+                }
+            }
+        }
+
+        this.homey.app.log(`[Device] ${this.getName()} - getWidgetJids - found widgetJids`, widgetJids);
+
+        return widgetJids;
+    }
+
+    async cleanupWidgetStore() {
+        const updateKeys = true;
+        const widgetJids = await this.getWidgetJids(updateKeys);
+
+        const storeData = this.getStore();
+
+        Object.keys(storeData).forEach((storeKey) => {
+            if (storeKey.startsWith('widget-chat-')) {
+                const jid = storeKey.replace('widget-chat-', '');
+                const found = widgetJids.find((w) => w === jid);
+
+                if (!found) {
+                    this.homey.app.log(`[Device] ${this.getName()} - cleanupWidgetStore - removing key`, storeKey);
+                    this.unsetStoreValue(storeKey);
+                }
+            }
+        });
+    }
+
+    async cleanupWidgetInstanceDuplicates(key, value) {
+        const storeData = this.getStore();
+        for (const [storeKey, storeValue] of Object.entries(storeData)) {
+            if (storeKey.startsWith('widget-instance-') && storeValue === value && storeKey !== key) {
+                this.homey.app.log(`[Device] ${this.getName()} - cleanupWidgetDuplicates - removing key`, storeKey, storeValue);
+                this.unsetStoreValue(storeKey);
+            }
         }
     }
 };

@@ -42,9 +42,16 @@ class App extends Homey.App {
     async getWidgetChatInstance(widgetId) {
         const driver = this.homey.drivers.getDriver('Whatsapp');
         const devices = driver.getDevices();
-        const device = devices.find(device => device.getStoreValue(widgetId));
+        const device = devices.find(device => device.getStoreValue(`widget-instance-${widgetId}`));
 
-        return device ? device.getStoreValue(widgetId) : null;
+        if(device) {
+            const storeValue = device.getStoreValue(`widget-instance-${widgetId}`);
+            device.cleanupWidgetInstanceDuplicates(`widget-instance-${widgetId}`, storeValue)
+
+            return storeValue
+        }
+
+        return null;
     }
 
     async setWidgetChatInstance(widgetId, jid) {
@@ -52,7 +59,7 @@ class App extends Homey.App {
         const devices = driver.getDevices();
         
         devices.forEach(device => {
-            device.setStoreValue(widgetId, jid);
+            device.setStoreValue(`widget-instance-${widgetId}`, jid);
         });
     }
 
@@ -63,6 +70,13 @@ class App extends Homey.App {
 
         return device ? device.getStoreValue(`widget-chat-${jid}`) : null;
     }
+
+    // async cleanupWidgetInstances() {
+    //     const widget = await this.homey.dashboards.getWidget('chat');
+    //     const instances = widget.getInstances();
+
+    //   console.log(instances);
+    // }
 }
 
 module.exports = App;
