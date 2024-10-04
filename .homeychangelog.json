@@ -238,5 +238,8 @@
   },
   "1.27.1": {
     "en": "FIX: app crash"
+  },
+  "1.27.2": {
+    "en": "FIX: Widget setup was not showing when showFromOthers was disabled"
   }
 }
