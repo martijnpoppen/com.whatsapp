@@ -103,7 +103,7 @@
                     getWidgetChats(Homey, groupJid);
                 } else {
                     console.log('No groupJid set in store');
-                    parseMessage({ text: `${Homey.__('widget.setup')} <br /><br /><br /> CODE: ${widgetIdFour}`, fromMe: false, timeStamp: Date.now(), from: 'Whatsapp Widget', hasImage: false, imageUrl: null, base64Image: null }, settings);
+                    parseMessage({ text: `${Homey.__('widget.setup')} <br /><br /><br /> CODE: ${widgetIdFour}`, fromMe: false, timeStamp: Date.now(), from: 'Whatsapp Widget', hasImage: false, base64Image: null }, settings, true);
                     hideLoader();
                 }
             }).catch((error) => {
@@ -160,7 +160,7 @@
 
                         hideLoader();
 
-                        parseMessage({ text: `✅`, fromMe: false, timeStamp: Date.now(), from: 'Whatsapp Widget', hasImage: false, imageUrl: null, base64Image: null }, settings);
+                        parseMessage({ text: `✅`, fromMe: false, timeStamp: Date.now(), from: 'Whatsapp Widget', hasImage: false, base64Image: null }, settings, true);
                     }).catch((error) => {
                         console.error('Failed to get chat:', error);
                     });
@@ -169,8 +169,6 @@
                 // Check if the groupJid is set and the message is from the group
                 // If so, parse the message
                 if (groupJid && groupJid === data.jid && widgetInitialized) {
-                    hideLoader();
-
                     parseMessage(data, settings);
                 } else {
                     console.log('Skip message parse - No groupJid set or message is not from group', groupJid, data.group);
@@ -178,10 +176,10 @@
             });
         }
 
-        function parseMessage (data, settings) {
+        function parseMessage (data, settings, isSetup = false) {
             const { invertChat, showFromMe, showFromOthers, fromMeName } = settings;
 
-            const { text, from, fromMe, timeStamp, hasImage, imageUrl, base64Image } = data;
+            const { text, from, fromMe, timeStamp, hasImage, base64Image } = data;
             const isFromMe = invertChat ? !fromMe : fromMe;
             const image = base64Image;
             const chatClass = isFromMe ? 'chat-end' : 'chat-start';
@@ -191,9 +189,11 @@
             const hideMessageFromMe = fromMe && !showFromMe;
             const hideEmptyMessage = !text || text === '' | text.length < 1;
 
-            if (hideMessageFromOthers || hideMessageFromMe || hideEmptyMessage) {
+            if (!isSetup && (hideMessageFromOthers || hideMessageFromMe || hideEmptyMessage)) {
                 return;
             }
+
+            hideLoader();
 
             let chat = document.getElementById('chat');
             chat.innerHTML += `
