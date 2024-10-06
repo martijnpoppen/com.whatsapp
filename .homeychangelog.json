@@ -241,5 +241,11 @@
   },
   "1.27.2": {
     "en": "FIX: Widget setup was not showing when showFromOthers was disabled"
+  },
+  "1.27.3": {
+    "en": "NEW: add clear widget button to device"
+  },
+  "1.27.4": {
+    "en": "FIX: for app crash"
   }
 }
