@@ -1,0 +1,22 @@
+{
+    "platforms": ["local"],
+    "type": "boolean",
+    "title": {
+      "en": "Clear All Widget Chats",
+        "nl": "Wis alle widgetberichten",
+        "de": "Alle Widget-Chats löschen",
+        "fr": "Effacer tous les chats de widget",
+        "it": "Cancella tutte le chat dei widget",
+        "sv": "Rensa alla widget-chattar",
+        "no": "Fjern alle widget-samtaler",
+        "es": "Borrar todos los chats de widgets",
+        "da": "Ryd alle widget-chats",
+        "ru": "Очистить все виджет-чаты",
+        "pl": "Wyczyść wszystkie rozmowy na widżecie",
+        "ko": "모든 위젯 채팅 지우기"
+    },
+    "getable": true,
+    "setable": true,
+    "uiComponent": "button"
+  }
+  

@@ -2,7 +2,7 @@
     "name": {
         "en": "WhatsApp"
     },
-    "capabilities": ["send_data"],
+    "capabilities": ["send_data", "widget_cache"],
     "$extends": [
         "device",
         "pair",

@@ -13,6 +13,8 @@ module.exports = class Whatsapp extends Homey.Device {
             await this.synchronousStart();
 
             await this.checkCapabilities();
+
+            await this.setCapabilityListeners();
             await this.setTriggers();
             await this.setConditions();
             await this.setWhatsappClient();
@@ -381,6 +383,18 @@ module.exports = class Whatsapp extends Homey.Device {
         }
     }
 
+    async setCapabilityListeners() {
+        if (this.hasCapability('widget_cache')) {
+            this.registerCapabilityListener('widget_cache', async (value) => {
+                if (value) {
+                    const clearAll = true;
+                    this.cleanupWidgetStore(clearAll);
+                    this.homey.app.log(`[Device] ${this.getName()} - CapabilityListener - widget_cache`, value);
+                }
+            });
+        }
+    }
+
     async sendToWidget(data) {
         const widgetJids = await this.getWidgetJids();
         let chat = this.getStoreValue(`widget-chat-${data.jid}`);
@@ -404,22 +418,14 @@ module.exports = class Whatsapp extends Homey.Device {
         this.homey.api.realtime('chat', data);
     }
 
-    async getWidgetJids(updateKeys = false) {
+    async getWidgetJids() {
         const widgetJids = [];
         const storeData = this.getStore();
 
-        for await(const [storeKey, storeValue] of Object.entries(storeData)) {
-            if (storeKey.startsWith('widget-instance-') || storeValue.endsWith('@s.whatsapp.net') || storeValue.endsWith('@g.us')) {
-                if (!widgetJids.includes(storeValue)) {
-                    this.homey.app.log(`[Device] ${this.getName()} - getWidgetJids - found jid`, storeValue);
-                    widgetJids.push(storeValue);
-                }
-
-                if (updateKeys && !storeKey.startsWith('widget-instance-') && storeKey.length === 36) {
-                    this.homey.app.log(`[Device] ${this.getName()} - getWidgetJids - update storekey ${storeKey} to widget-instance-${storeKey} for value`, storeValue);
-                    this.setStoreValue(`widget-instance-${storeKey}`, storeValue);
-                    this.unsetStoreValue(storeKey);
-                }
+        for await (const [storeKey, storeValue] of Object.entries(storeData)) {
+            if (storeKey.startsWith('widget-instance-') && !widgetJids.includes(storeValue)) {
+                this.homey.app.log(`[Device] ${this.getName()} - getWidgetJids - found jid`, storeValue);
+                widgetJids.push(storeValue);
             }
         }
 
@@ -428,21 +434,29 @@ module.exports = class Whatsapp extends Homey.Device {
         return widgetJids;
     }
 
-    async cleanupWidgetStore() {
-        const updateKeys = true;
-        const widgetJids = await this.getWidgetJids(updateKeys);
+    async cleanupWidgetStore(clearAll = false) {
+        const widgetJids = await this.getWidgetJids();
 
         const storeData = this.getStore();
+
+        if (clearAll && this.getCapabilityValue('widget_cache')) {
+            this.setCapabilityValue('widget_cache', false);
+        }
 
         Object.keys(storeData).forEach((storeKey) => {
             if (storeKey.startsWith('widget-chat-')) {
                 const jid = storeKey.replace('widget-chat-', '');
                 const found = widgetJids.find((w) => w === jid);
 
-                if (!found) {
-                    this.homey.app.log(`[Device] ${this.getName()} - cleanupWidgetStore - removing key`, storeKey);
+                if (!found || clearAll) {
+                    this.homey.app.log(`[Device] ${this.getName()} - cleanupWidgetStore - clearAll: ${clearAll} - removing key: ${storeKey}`);
                     this.unsetStoreValue(storeKey);
                 }
+            }
+
+            if (storeKey.startsWith('widget-instance-') && clearAll) {
+                this.homey.app.log(`[Device] ${this.getName()} - cleanupWidgetStore - clearAll - removing key`, storeKey);
+                this.unsetStoreValue(storeKey);
             }
         });
     }

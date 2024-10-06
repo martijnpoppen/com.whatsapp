@@ -70,13 +70,6 @@ class App extends Homey.App {
 
         return device ? device.getStoreValue(`widget-chat-${jid}`) : null;
     }
-
-    // async cleanupWidgetInstances() {
-    //     const widget = await this.homey.dashboards.getWidget('chat');
-    //     const instances = widget.getInstances();
-
-    //   console.log(instances);
-    // }
 }
 
 module.exports = App;

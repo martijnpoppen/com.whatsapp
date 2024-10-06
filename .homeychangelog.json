@@ -247,5 +247,8 @@
   },
   "1.27.4": {
     "en": "FIX: for app crash"
+  },
+  "1.27.5": {
+    "en": "FIX: for app crash"
   }
 }
