@@ -289,5 +289,8 @@
   },
   "1.29.1": {
     "en": "FIX: for HP19 - nodejs not working with new sDK"
+  },
+  "1.29.2": {
+    "en": "FIX: hp19 sdk fix"
   }
 }
