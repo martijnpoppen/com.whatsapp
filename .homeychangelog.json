@@ -286,5 +286,8 @@
   },
   "1.29.0": {
     "en": "NEW: update Whatsapp SDK | FIX: pairing error"
+  },
+  "1.29.1": {
+    "en": "FIX: for HP19 - nodejs not working with new sDK"
   }
 }
