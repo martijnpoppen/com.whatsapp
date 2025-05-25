@@ -77,18 +77,16 @@ module.exports = class mainDriver extends Homey.Driver {
     }
 
     async onRepair(session, device) {
+        const settings = device.getSettings();
         this.type = 'repair';
         this.device = device;
+        this.phonenumber = settings.phonenumber;
         this.tempDB = {};
         this.code = null;
 
         await device.removeWhatsappClient();
 
         this.homey.app.log(`[Driver] ${this.id} - unsetting store for :`, device.getName());
-        const storeData = device.getStore();
-        Object.keys(storeData).forEach((storeKey) => {
-            device.unsetStoreValue(storeKey);
-        });
 
         this.setPairingSession(session);
     }
@@ -115,8 +113,23 @@ module.exports = class mainDriver extends Homey.Driver {
             }
 
             if (view === 'loading') {
-                if (this.type === 'repair') await this.setWhatsappClient(this.guid, this.device);
-                if (this.type === 'pair') await this.setWhatsappClient(this.guid);
+                if(this.type === 'repair') {
+                    const storeData = this.device.getStore();
+                    // create a loop with await to unset all store values
+            
+                    for await(const key of Object.keys(storeData)) {  
+                        this.homey.app.log(`[Driver] ${this.id} - unsetting key:`, key);       
+                        await this.device.unsetStoreValue(key);
+                    }
+
+                    await this.setWhatsappClient(this.guid, this.device);
+                }
+
+
+                if (this.type === 'pair') {
+                    await this.setWhatsappClient(this.guid);
+                }
+
                 await this.WhatsappClients[this.guid].addDevice(this.phonenumber);
 
                 this.setCheckInterval(session, this.guid);

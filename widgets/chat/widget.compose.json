@@ -13,6 +13,7 @@
     "pl": "WhatsApp Widok czatu",
     "ko": "WhatsApp 채팅 보기"
   },
+  "transparent": true,
   "settings": [
     {
         "id": "widgetHeight",

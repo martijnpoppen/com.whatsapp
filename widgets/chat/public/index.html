@@ -105,7 +105,7 @@
                     getWidgetChats(Homey, groupJid);
                 } else {
                     console.log('No groupJid set in store');
-                    parseMessage({ text: `${Homey.__('widget.setup')} <br /><br /><br /> CODE: ${widgetIdFour}`, fromMe: false, timeStamp: Date.now(), from: 'Whatsapp Widget', hasImage: false, base64Image: null }, settings, true);
+                    parseMessage({ text: `${Homey.__('widget.setup')} <br /><br /><br /> <strong>${widgetIdFour}</strong>`, fromMe: false, timeStamp: Date.now(), from: 'Whatsapp Widget', hasImage: false, base64Image: null }, settings, true);
                     hideLoader();
                 }
             }).catch((error) => {

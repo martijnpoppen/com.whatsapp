@@ -16,6 +16,7 @@ class App extends Homey.App {
 
     async onInit() {
         this.log(`${this.homey.manifest.id} - ${this.homey.manifest.version} started...`);
+        this.log(`${this.homey.manifest.id} Running on Node.js version:`, process.version);
 
         await flowActions.init(this.homey);
 
@@ -38,6 +39,19 @@ class App extends Homey.App {
             this.log('sendNotifications - error', console.error());
         }
     }
+
+    async getLocalImageAddress() {
+        this.log(`getLocalImageAddress`);
+    
+        const host = await this.homey.cloud.getLocalAddress();
+        const replaceHost = host.split(':')[0];
+        const hypenedHost = replaceHost.replace(/\./g, '-');
+        const address = `https://${hypenedHost}.homey.homeylocal.com/api/image/`;
+    
+        this.log(`getLocalImageAddress`, address);
+
+        return address;
+      }
 
     async getWidgetChatInstance(widgetId) {
         const driver = this.homey.drivers.getDriver('Whatsapp');

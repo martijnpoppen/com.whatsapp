@@ -1,0 +1,37 @@
+{
+  "id": "new_pairing_code",
+  "title": {
+    "en": "A new pairing code is needed for Whatsapp",
+    "nl": "Een nieuwe koppelingscode is nodig voor Whatsapp",
+    "de": "Ein neuer Koppelungscode wird für Whatsapp benötigt",
+    "fr": "Un nouveau code d'appairage est nécessaire pour Whatsapp",
+    "it": "È necessario un nuovo codice di accoppiamento per Whatsapp",
+    "sv": "En ny parkod behövs för Whatsapp",
+    "no": "En ny parkode er nødvendig for Whatsapp",
+    "es": "Se necesita un nuevo código de emparejamiento para Whatsapp",
+    "da": "En ny parkode er nødvendig for Whatsapp",
+    "ru": "Для Whatsapp требуется новый код сопряжения",
+    "pl": "Dla Whatsapp potrzebny jest nowy kod parowania"   
+  },
+  "hint": {
+    "en": "When the connection to Whatsapp is lost, a new pairing code is needed. This might happen due to multiple reasons. Can be network issues, phone restart, or other reasons. To fix this, you need to pair your phone with Homey again. Go to the device tile in the Homey app and click on 'Repair device'.",
+    "nl": "Wanneer de verbinding met Whatsapp verloren gaat, is een nieuwe koppelingscode nodig. Dit kan om verschillende redenen gebeuren. Het kan zijn dat er netwerkproblemen zijn, dat de telefoon opnieuw is opgestart of om andere redenen. Om dit op te lossen, moet je je telefoon opnieuw koppelen met Homey. Ga naar de apparaattegel in de Homey-app en klik op 'Apparaat repareren'.",
+    "de": "Wenn die Verbindung zu Whatsapp verloren geht, wird ein neuer Koppelungscode benötigt. Dies kann aus verschiedenen Gründen geschehen. Es kann Netzwerkprobleme, einen Neustart des Telefons oder andere Gründe geben. Um dies zu beheben, müssen Sie Ihr Telefon erneut mit Homey koppeln. Gehen Sie zur Gerätekachel in der Homey-App und klicken Sie auf 'Gerät reparieren'.",
+    "fr": "Lorsque la connexion à Whatsapp est perdue, un nouveau code d'appairage est nécessaire. Cela peut se produire pour diverses raisons. Il peut s'agir de problèmes de réseau, d'un redémarrage du téléphone ou d'autres raisons. Pour résoudre ce problème, vous devez à nouveau associer votre téléphone à Homey. Allez sur la tuile de l'appareil dans l'application Homey et cliquez sur 'Réparer l'appareil'.",
+    "it": "Quando la connessione a Whatsapp viene persa, è necessario un nuovo codice di accoppiamento. Ciò può accadere per vari motivi. Potrebbero esserci problemi di rete, un riavvio del telefono o altri motivi. Per risolvere questo problema, è necessario accoppiare nuovamente il telefono con Homey. Vai sulla scheda del dispositivo nell'app Homey e fai clic su 'Ripara dispositivo'.",
+    "sv": "När anslutningen till Whatsapp bryts behövs en ny parkod. Detta kan hända av olika anledningar. Det kan vara nätverksproblem, en omstart av telefonen eller andra orsaker. För att åtgärda detta måste du para ihop din telefon med Homey igen. Gå till enhetens platta i Homey-appen och klicka på 'Reparera enhet'.",
+    "no": "Når tilkoblingen til Whatsapp mistes, er en ny parkode nødvendig. Dette kan skje av flere årsaker. Det kan være nettverksproblemer, en omstart av telefonen eller andre årsaker. For å løse dette, må du pare telefonen med Homey igjen. Gå til enhetsflisen i Homey-appen og klikk på 'Reparer enhet'.",
+    "es": "Cuando se pierde la conexión a Whatsapp, se necesita un nuevo código de emparejamiento. Esto puede suceder por varias razones. Pueden ser problemas de red, un reinicio del teléfono u otras razones. Para solucionar esto, debes emparejar tu teléfono con Homey nuevamente. Ve a la ficha del dispositivo en la aplicación Homey y haz clic en 'Reparar dispositivo'.",
+    "da": "Når forbindelsen til Whatsapp mistes, er en ny parkode nødvendig. Dette kan ske af flere årsager. Det kan være netværksproblemer, en genstart af telefonen eller andre årsager. For at løse dette skal du parre din telefon med Homey igen. Gå til enhedsflisen i Homey-appen og klik på 'Reparer enhed'.",
+    "ru": "Когда соединение с Whatsapp теряется, требуется новый код сопряжения. Это может произойти по разным причинам. Могут быть проблемы с сетью, перезагрузка телефона или другие причины. Чтобы исправить это, вам нужно снова сопрячь свой телефон с Homey. Перейдите на плитку устройства в приложении Homey и нажмите 'Исправить устройство'.",
+    "pl": "Kiedy połączenie z Whatsapp zostaje utracone, potrzebny jest nowy kod parowania. Może to się zdarzyć z różnych powodów. Mogą to być problemy z siecią, ponowne uruchomienie telefonu lub inne przyczyny. Aby to naprawić, musisz ponownie sparować telefon z Homey. Przejdź do kafelka urządzenia w aplikacji Homey i kliknij 'Napraw urządzenie'."
+  },
+  "platforms": ["local"],
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=Whatsapp"
+    }
+  ]
+}

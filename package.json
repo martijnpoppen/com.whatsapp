@@ -6,10 +6,10 @@
     "url": "https://github.com/martijnpoppen/com.whatsapp"
   },
   "dependencies": {
-    "@whiskeysockets/baileys": "^6.7.5",
+    "@whiskeysockets/baileys": "^6.7.17",
     "axios": "^1.4.0",
     "fs-extra": "^11.1.1",
-    "libphonenumber-js": "^1.10.48",
+    "libphonenumber-js": "^1.12.8",
     "perfect-debounce": "^1.0.0",
     "qr-image": "^3.2.0"
   }

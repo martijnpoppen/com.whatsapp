@@ -38,6 +38,7 @@ module.exports = class Whatsapp extends Homey.Device {
     async setTriggers() {
         this.new_message = this.homey.flow.getDeviceTriggerCard('new_message');
         this.new_image = this.homey.flow.getDeviceTriggerCard('new_image');
+        this.new_pairing_code = this.homey.flow.getDeviceTriggerCard('new_pairing_code');
     }
 
     async setConditions() {
@@ -134,6 +135,7 @@ module.exports = class Whatsapp extends Homey.Device {
     async setWhatsappClient() {
         try {
             const deviceObject = this.getData();
+            const settings = await this.getSettings();
             this.homey.app.log(`[Device] - ${this.getName()} => setWhatsappClient`);
 
             this.WhatsappClient = this.driver.WhatsappClients[deviceObject.id];
@@ -143,7 +145,9 @@ module.exports = class Whatsapp extends Homey.Device {
             if (result) {
                 this.setAvailable();
             } else {
-                this.setUnavailable('New paring code is needed. Please try to repair the device.');
+                await this.new_pairing_code.trigger(this);
+                await this.setUnavailable('New pairing code is needed. Please try to repair the device.');
+                await this.homey.notifications.createNotification({excerpt: `[WhatsApp] - (${settings.phonenumber}) - New pairing code is needed. Please try to repair the device.`});
             }
         } catch (error) {
             this.homey.app.log(`[Device] ${this.getName()} - setWhatsappClient - error =>`, error);
@@ -222,6 +226,7 @@ module.exports = class Whatsapp extends Homey.Device {
 
     async sendMessage(recipient, message, msgType, params = null, isGroup = false) {
         let data = {};
+        const options = await this.getOptions(message);
 
         if (recipient && message && !msgType) {
             this.homey.app.log(`[Device] ${this.getName()} - sendMessage - sendText`, { recipient, message, msgType });
@@ -238,12 +243,17 @@ module.exports = class Whatsapp extends Homey.Device {
                 base64Image: null
             });
 
-            data = await this.WhatsappClient.sendText(recipient, message);
+            data = await this.WhatsappClient.sendText(recipient, message, options);
         } else if (recipient && msgType) {
             let fileUrl = params.droptoken || params.file || null;
 
-            if (!!fileUrl && !!fileUrl.localUrl) {
-                fileUrl = fileUrl.localUrl;
+            // if (!!fileUrl && !!fileUrl.localUrl && fileUrl.localUrl.length) {
+            //     fileUrl = fileUrl.localUrl;
+            // } else 
+            if (!!fileUrl && !!fileUrl.cloudUrl && fileUrl.cloudUrl.length) {
+                fileUrl = fileUrl.cloudUrl;
+            } else if (fileUrl && !!fileUrl.id && fileUrl.id.length) {
+                fileUrl = `${await this.homey.app.getLocalImageAddress()}${fileUrl.id}`;
             }
 
             this.sendToWidget({
@@ -261,18 +271,18 @@ module.exports = class Whatsapp extends Homey.Device {
             this.homey.app.log(`[Device] ${this.getName()} - sendMessage - send${msgType}`, { ...params, recipient, message, fileUrl, msgType, device: 'LOG' });
 
             if (msgType === 'video' || msgType === 'image') {
-                data = await this.WhatsappClient.sendMedia(recipient, fileUrl, message, msgType);
+                data = await this.WhatsappClient.sendMedia(recipient, fileUrl, message, msgType, options);
             } else if (msgType === 'audio') {
                 throw new Error('Audio is not supported yet');
             } else if (msgType === 'document') {
-                data = await this.WhatsappClient.sendFile(recipient, fileUrl);
+                data = await this.WhatsappClient.sendFile(recipient, fileUrl, options);
             } else if (msgType === 'location') {
                 const { lat } = params;
 
                 const splittedParam = lat.split(',');
 
                 if (splittedParam.length > 1) {
-                    data = await this.WhatsappClient.sendLocation(recipient, splittedParam[0], splittedParam[1], message);
+                    (data = await this.WhatsappClient.sendLocation(recipient, splittedParam[0], splittedParam[1], message)), options;
                 } else {
                     throw new Error('Invalid location, use comma separated Latitude,Longitude');
                 }
@@ -280,6 +290,29 @@ module.exports = class Whatsapp extends Homey.Device {
         }
 
         return data || true;
+    }
+
+    async getOptions(message) {
+        try {
+            const regex = /@(\S+)/g;
+            const matches = [...message.matchAll(regex)];
+            const mentions = [];
+    
+            matches.forEach((match) => {
+                const phoneNumber = parsePhoneNumber(`+${match[1]}`);
+                if (phoneNumber.isValid()) {
+                    mentions.push(`${match[1]}@s.whatsapp.net`);
+                }
+            });
+    
+            this.homey.app.log(`[Device] ${this.getName()} - getOptions`, { mentions });
+    
+            return { mentions };
+        } catch (error) {
+            this.homey.app.log(`[Device] ${this.getName()} - getOptions`, error);
+            return {};
+        }
+      
     }
 
     async coolDown() {
@@ -307,10 +340,6 @@ module.exports = class Whatsapp extends Homey.Device {
                 const fromMe = m.key && m.key.fromMe;
                 const triggerAllowed = (fromMe && settings.trigger_own_message) || !fromMe;
                 const hasImage = m.message && m.message.imageMessage ? true : false;
-                const imageBuffer = hasImage ? await this.WhatsappClient.downloadMediaMsg(m) : null;
-                const base64Image = imageBuffer ? imageBuffer.toString('base64') : null;
-
-                console.log(imageBuffer);
 
                 let text = m.message && m.message.conversation;
 
@@ -322,14 +351,14 @@ module.exports = class Whatsapp extends Homey.Device {
                     text = (m.message && m.message.imageMessage && m.message.imageMessage.caption) || '';
                 }
 
-                const tokens = { replyTo: jid, fromNumber, from, text, time: dateString, group, hasImage };
+                const tokens = { replyTo: jid, fromNumber, from: from ? from : '', text, time: dateString, group, hasImage };
                 const state = tokens;
 
                 console.log('tokens', tokens);
 
                 triggerAllowed && this.new_message.trigger(this, tokens, state);
 
-                this.sendToWidget({ jid, from: from, fromMe, timeStamp: m.messageTimestamp * 1000, text, group, hasImage, imgUrl: null, base64Image: `data:image/jpeg;base64,${base64Image}` });
+                this.sendToWidget({ jid, from: from, fromMe, timeStamp: m.messageTimestamp * 1000, text, group, hasImage, imgUrl: null, base64Image: null, m });
             });
 
             return true;
@@ -395,27 +424,43 @@ module.exports = class Whatsapp extends Homey.Device {
         }
     }
 
+    // Widgets
     async sendToWidget(data) {
         const widgetJids = await this.getWidgetJids();
         let chat = this.getStoreValue(`widget-chat-${data.jid}`);
 
-        if (data.imageUrl) {
+        // When image is sent from Homey
+        if (data.imageUrl && (chat || widgetJids.includes(data.jid))) {
             const base64Image = await getBase64Image(data.imageUrl);
             data.base64Image = `data:image/jpeg;base64,${base64Image}`;
         }
 
+        // When image is received from Whatsapp
+        if (data.m && data.hasImage) {
+            const imageBuffer = await this.WhatsappClient.downloadMediaMsg(data.m);
+            const base64Image = imageBuffer ? imageBuffer.toString('base64') : null;
+            data.base64Image = base64Image ? `data:image/jpeg;base64,${base64Image}` : null;
+            
+            // delete m in data
+            delete data.m;
+        }
+
         if (chat) {
+            const maxChats = 15
             let parsedChat = JSON.parse(chat);
-            if (parsedChat.length > 20) {
-                parsedChat = parsedChat.slice(parsedChat.length - 20);
+            if (parsedChat.length > maxChats) {
+                parsedChat = parsedChat.slice(parsedChat.length - maxChats);
             }
 
             this.setStoreValue(`widget-chat-${data.jid}`, JSON.stringify([...parsedChat, data]));
+            this.homey.api.realtime('chat', data);
         } else if (widgetJids.includes(data.jid)) {
             this.setStoreValue(`widget-chat-${data.jid}`, JSON.stringify([]));
-        }
 
-        this.homey.api.realtime('chat', data);
+            this.homey.api.realtime('chat', data);
+        } else if (data.text.length === 4 && data.group && !data.hasImage) {
+            this.homey.api.realtime('chat', data);
+        }
     }
 
     async getWidgetJids() {
@@ -435,30 +480,31 @@ module.exports = class Whatsapp extends Homey.Device {
     }
 
     async cleanupWidgetStore(clearAll = false) {
-        const widgetJids = await this.getWidgetJids();
+        this.homey.app.log(`[Device] ${this.getName()} - cleanupWidgetStore - clearAll: ${clearAll}`);
 
-        const storeData = this.getStore();
+        const widgetJids = await this.getWidgetJids();
+        const storeData = await this.getStore();
 
         if (clearAll && this.getCapabilityValue('widget_cache')) {
-            this.setCapabilityValue('widget_cache', false);
+            await this.setCapabilityValue('widget_cache', false);
         }
 
-        Object.keys(storeData).forEach((storeKey) => {
+        for await(const storeKey of Object.keys(storeData)) {
             if (storeKey.startsWith('widget-chat-')) {
                 const jid = storeKey.replace('widget-chat-', '');
                 const found = widgetJids.find((w) => w === jid);
 
                 if (!found || clearAll) {
                     this.homey.app.log(`[Device] ${this.getName()} - cleanupWidgetStore - clearAll: ${clearAll} - removing key: ${storeKey}`);
-                    this.unsetStoreValue(storeKey);
+                    await this.unsetStoreValue(storeKey);
                 }
             }
 
             if (storeKey.startsWith('widget-instance-') && clearAll) {
                 this.homey.app.log(`[Device] ${this.getName()} - cleanupWidgetStore - clearAll - removing key`, storeKey);
-                this.unsetStoreValue(storeKey);
+                await this.unsetStoreValue(storeKey);
             }
-        });
+        }
     }
 
     async cleanupWidgetInstanceDuplicates(key, value) {

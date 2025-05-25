@@ -253,5 +253,38 @@
   },
   "1.27.6": {
     "en": "FIX: scroll on Android"
+  },
+  "1.27.7": {
+    "en": "NEW: add mentions to flowcars | FIX: optimize performance for widgets"
+  },
+  "1.27.8": {
+    "en": "FIX: Widget setup"
+  },
+  "1.27.9": {
+    "en": "FIX: don't throw an error in flow when @ is part of content and not a number"
+  },
+  "1.27.10": {
+    "en": "OPT: properly add transparent mode for Widget"
+  },
+  "1.27.11": {
+    "en": "FIX: images: use cloud url if the image is not available locally on Homey"
+  },
+  "1.27.12": {
+    "en": "FIX: images when localurl is not available"
+  },
+  "1.27.13": {
+    "en": "FIX: images when localurl is not available"
+  },
+  "1.27.14": {
+    "en": "FIX: images when localurl is not available"
+  },
+  "1.28.0": {
+    "en": "NEW: add pairing code reminder flowcard | NEW: add timeline notification when repair is needed | FIX: repair flow timeout fixed"
+  },
+  "1.28.1": {
+    "en": "NEW: update SDK"
+  },
+  "1.29.0": {
+    "en": "NEW: update Whatsapp SDK | FIX: pairing error"
   }
 }
