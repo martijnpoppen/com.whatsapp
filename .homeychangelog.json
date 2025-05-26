@@ -295,5 +295,8 @@
   },
   "1.29.3": {
     "en": "FIX: HP19 SDK fix"
+  },
+  "1.30.0": {
+    "en": "NEW: add fallback for older nodeJS version to work with WA SDK"
   }
 }
