@@ -307,5 +307,8 @@
   },
   "1.31.2": {
     "en": "FIX: get correct senders number"
+  },
+  "1.32.0": {
+    "en": "NEW: update SDK | NEW: mjs"
   }
 }

@@ -1,9 +1,9 @@
-const Homey = require('homey');
-const { GetGUID, sleep } = require('../../lib/helpers');
-const whatsappClient = require('../../lib/com.whatsapp.api');
-const { parsePhoneNumber } = require('libphonenumber-js');
+import Homey from 'homey';
+import { GetGUID, sleep } from '../../lib/helpers/index.mjs';
+import whatsappClient from '../../lib/com.whatsapp.api/index.mjs';
+import { parsePhoneNumber } from 'libphonenumber-js';
 
-module.exports = class mainDriver extends Homey.Driver {
+export default class mainDriver extends Homey.Driver {
     async onInit() {
         this.homey.app.log('[Driver] - init', this.id);
         this.homey.app.log(`[Driver] - version`, Homey.manifest.version);

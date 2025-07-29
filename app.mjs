@@ -1,9 +1,9 @@
 'use strict';
 
-const Homey = require('homey');
-const flowActions = require('./lib/flows/actions');
+import Homey from 'homey';
+import flowActions from './lib/flows/actions.mjs';
 
-class App extends Homey.App {
+export default class App extends Homey.App {
     log() {
         console.log.bind(this, '[log]').apply(this, arguments);
     }
@@ -85,5 +85,3 @@ class App extends Homey.App {
         return device ? device.getStoreValue(`widget-chat-${jid}`) : null;
     }
 }
-
-module.exports = App;

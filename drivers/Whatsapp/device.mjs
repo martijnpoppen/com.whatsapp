@@ -1,8 +1,8 @@
-const Homey = require('homey');
-const { parsePhoneNumber } = require('libphonenumber-js');
-const { validateUrl, sleep, getBase64Image } = require('../../lib/helpers');
+import Homey from 'homey';
+import { parsePhoneNumber } from 'libphonenumber-js';
+import { validateUrl, sleep, getBase64Image } from '../../lib/helpers/index.mjs';
 
-module.exports = class Whatsapp extends Homey.Device {
+export default class Whatsapp extends Homey.Device {
     async onInit() {
         try {
             this.homey.app.log('[Device] - init =>', this.getName());
