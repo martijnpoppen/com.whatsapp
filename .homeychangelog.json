@@ -298,5 +298,14 @@
   },
   "1.30.0": {
     "en": "NEW: add fallback for older nodeJS version to work with WA SDK"
+  },
+  "1.31.0": {
+    "en": "NEW: add support for anonymous participant ID"
+  },
+  "1.31.1": {
+    "en": "FIX: senders number hash"
+  },
+  "1.31.2": {
+    "en": "FIX: get correct senders number"
   }
 }

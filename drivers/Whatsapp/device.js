@@ -147,7 +147,7 @@ module.exports = class Whatsapp extends Homey.Device {
             } else {
                 await this.new_pairing_code.trigger(this);
                 await this.setUnavailable('New pairing code is needed. Please try to repair the device.');
-                await this.homey.notifications.createNotification({excerpt: `[WhatsApp] - (${settings.phonenumber}) - New pairing code is needed. Please try to repair the device.`});
+                await this.homey.notifications.createNotification({ excerpt: `[WhatsApp] - (${settings.phonenumber}) - New pairing code is needed. Please try to repair the device.` });
             }
         } catch (error) {
             this.homey.app.log(`[Device] ${this.getName()} - setWhatsappClient - error =>`, error);
@@ -249,7 +249,7 @@ module.exports = class Whatsapp extends Homey.Device {
 
             // if (!!fileUrl && !!fileUrl.localUrl && fileUrl.localUrl.length) {
             //     fileUrl = fileUrl.localUrl;
-            // } else 
+            // } else
             if (!!fileUrl && !!fileUrl.cloudUrl && fileUrl.cloudUrl.length) {
                 fileUrl = fileUrl.cloudUrl;
             } else if (fileUrl && !!fileUrl.id && fileUrl.id.length) {
@@ -297,22 +297,21 @@ module.exports = class Whatsapp extends Homey.Device {
             const regex = /@(\S+)/g;
             const matches = [...message.matchAll(regex)];
             const mentions = [];
-    
+
             matches.forEach((match) => {
                 const phoneNumber = parsePhoneNumber(`+${match[1]}`);
                 if (phoneNumber.isValid()) {
                     mentions.push(`${match[1]}@s.whatsapp.net`);
                 }
             });
-    
+
             this.homey.app.log(`[Device] ${this.getName()} - getOptions`, { mentions });
-    
+
             return { mentions };
         } catch (error) {
             this.homey.app.log(`[Device] ${this.getName()} - getOptions`, error);
             return {};
         }
-      
     }
 
     async coolDown() {
@@ -334,7 +333,17 @@ module.exports = class Whatsapp extends Homey.Device {
 
                 const group = m.key && m.key.participant ? true : false;
                 const from = m.pushName;
-                const fromJid = group ? m.key.participant : m.key && m.key.remoteJid;
+
+                let fromJid = 'unkwown@unknown';
+
+                if (group && m.key && m.key.participantPn) {
+                    fromJid = m.key.participant;
+                } else if (group && m.key && m.key.participant) {
+                    fromJid = m.key.participant;
+                } else if (m.key && m.key.remoteJid) {
+                    fromJid = m.key.remoteJid;
+                }
+
                 const fromNumber = `+${fromJid.split('@')[0]}`;
                 const jid = m.key && m.key.remoteJid;
                 const fromMe = m.key && m.key.fromMe;
@@ -440,13 +449,13 @@ module.exports = class Whatsapp extends Homey.Device {
             const imageBuffer = await this.WhatsappClient.downloadMediaMsg(data.m);
             const base64Image = imageBuffer ? imageBuffer.toString('base64') : null;
             data.base64Image = base64Image ? `data:image/jpeg;base64,${base64Image}` : null;
-            
+
             // delete m in data
             delete data.m;
         }
 
         if (chat) {
-            const maxChats = 15
+            const maxChats = 15;
             let parsedChat = JSON.parse(chat);
             if (parsedChat.length > maxChats) {
                 parsedChat = parsedChat.slice(parsedChat.length - maxChats);
@@ -489,7 +498,7 @@ module.exports = class Whatsapp extends Homey.Device {
             await this.setCapabilityValue('widget_cache', false);
         }
 
-        for await(const storeKey of Object.keys(storeData)) {
+        for await (const storeKey of Object.keys(storeData)) {
             if (storeKey.startsWith('widget-chat-')) {
                 const jid = storeKey.replace('widget-chat-', '');
                 const found = widgetJids.find((w) => w === jid);
