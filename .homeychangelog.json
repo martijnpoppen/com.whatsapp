@@ -322,5 +322,8 @@
   },
   "1.33.2": {
     "en": "FIX: app error"
+  },
+  "1.33.3": {
+    "en": "FIX: app error on HP19"
   }
 }
