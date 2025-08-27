@@ -334,10 +334,10 @@ export default class Whatsapp extends Homey.Device {
                 const group = m.key && m.key.participant ? true : false;
                 const from = m.pushName;
 
-                let fromJid = 'unkwown@unknown';
+                let fromJid = 'unknown@unknown';
 
                 if (group && m.key && m.key.participantPn) {
-                    fromJid = m.key.participant;
+                    fromJid = m.key.participantPn;
                 } else if (group && m.key && m.key.participant) {
                     fromJid = m.key.participant;
                 } else if (m.key && m.key.remoteJid) {

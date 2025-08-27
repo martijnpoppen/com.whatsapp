@@ -310,5 +310,8 @@
   },
   "1.32.0": {
     "en": "NEW: update SDK | NEW: mjs"
+  },
+  "1.32.1": {
+    "en": "FIX: get correct particpant number (decrypt LID)"
   }
 }
