@@ -313,5 +313,8 @@
   },
   "1.32.1": {
     "en": "FIX: get correct particpant number (decrypt LID)"
+  },
+  "1.33.0": {
+    "en": "NEW: update whatsapp client"
   }
 }
