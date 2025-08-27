@@ -316,5 +316,11 @@
   },
   "1.33.0": {
     "en": "NEW: update whatsapp client"
+  },
+  "1.33.1": {
+    "en": "FIX: app error"
+  },
+  "1.33.2": {
+    "en": "FIX: app error"
   }
 }
