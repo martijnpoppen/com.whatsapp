@@ -89,6 +89,18 @@ export default class Whatsapp extends Homey.Device {
             return result;
         });
 
+        const group_code_condition = this.homey.flow.getConditionCard('group_code_condition');
+        group_code_condition.registerRunListener(async (args, state) => {
+            this.homey.app.log('[group_code_condition]', { ...args, device: 'LOG' });
+            const parsedInput = this.parseGroupInvite(args.group_code_input);
+            this.homey.app.log('[group_code_condition] - parsedInput: ', parsedInput);
+            this.homey.app.log('[group_code_condition] - state.groupCode: ', state.groupCode);
+            const result = state.groupCode === parsedInput;
+
+            this.homey.app.log('[group_code_condition] - result: ', result);
+            return result;
+        });
+
         const image_condition = this.homey.flow.getConditionCard('image_condition');
         image_condition.registerRunListener(async (args, state) => {
             this.homey.app.log('[image_condition]', { ...args, device: 'LOG' });
@@ -196,24 +208,20 @@ export default class Whatsapp extends Homey.Device {
             recipient = recipient.replace(' ', '');
             recipient = `${recipient}@s.whatsapp.net`;
         } else if (isGroup) {
-            recipient = recipient.replace(' ', '');
-            recipient = recipient.replace(' ', '');
-            recipient = recipient.replace(' ', '');
+            const inviteCode = this.parseGroupInvite(recipient);
+            this.homey.app.log(`[Device] ${this.getName()} - getRecipient - fetching group JID`, inviteCode);
 
-            const groupJid = recipient.replace(' ', '').split('/').pop();
-            this.homey.app.log(`[Device] ${this.getName()} - getRecipient - fetching group JID`, groupJid);
-
-            recipient = (await this.getStoreValue(groupJid)) || null;
+            recipient = (await this.getStoreValue(inviteCode)) || null;
             this.homey.app.log(`[Device] ${this.getName()} - getRecipient - fetching group JID from store: `, recipient);
 
             if (!recipient) {
-                recipient = (await this.WhatsappClient.getGroupWithInvite(groupJid)) || null;
+                recipient = (await this.WhatsappClient.getGroupWithInvite(inviteCode)) || null;
                 this.homey.app.log(`[Device] ${this.getName()} - getRecipient - fetching group JID from WhatsappClient`, recipient);
 
                 if (recipient) {
                     recipient = recipient.id;
 
-                    await this.setStoreValue(groupJid, recipient);
+                    await this.setStoreValue(inviteCode, recipient);
                     this.homey.app.log(`[Device] ${this.getName()} - getRecipient - saved group JID to Store`, recipient);
                 } else {
                     throw new Error('Could not get group ID. Is the group link correct?');
@@ -286,6 +294,24 @@ export default class Whatsapp extends Homey.Device {
                 } else {
                     throw new Error('Invalid location, use comma separated Latitude,Longitude');
                 }
+            } else if (msgType === 'poll') {
+                let values = [];
+                const {option1, option2, option3, option4, option5, option6, option7, option8, selectableCount} = params;
+                if (option1) values.push(option1);
+                if (option2) values.push(option2);
+                if (option3) values.push(option3);
+                if (option4) values.push(option4);
+                if (option5) values.push(option5);
+                if (option6) values.push(option6);
+                if (option7) values.push(option7);
+                if (option8) values.push(option8);
+
+
+                if (values.length < 2) {
+                    throw new Error('Please provide at least 2 poll values');
+                }
+
+                data = await this.WhatsappClient.sendPoll(recipient, message, values, selectableCount || 1);
             }
         }
 
@@ -298,12 +324,17 @@ export default class Whatsapp extends Homey.Device {
             const matches = [...message.matchAll(regex)];
             const mentions = [];
 
-            matches.forEach((match) => {
-                const phoneNumber = parsePhoneNumber(`+${match[1]}`);
-                if (phoneNumber.isValid()) {
+            for (const match  of matches) {
+                const pn = await this.WhatsappClient.getPNForLID(`${match[1]}@lid`);
+                const parsedPn = this.getParsedPhoneNumber(pn);
+                const phoneNumber = parsedPn ? parsePhoneNumber(parsedPn) : parsePhoneNumber(`+${match[1]}`);
+
+                if (phoneNumber.isValid() && parsedPn) {
+                    mentions.push(`${match[1]}@lid`);
+                } else if (phoneNumber.isValid()) {
                     mentions.push(`${match[1]}@s.whatsapp.net`);
                 }
-            });
+            }
 
             this.homey.app.log(`[Device] ${this.getName()} - getOptions`, { mentions });
 
@@ -312,6 +343,24 @@ export default class Whatsapp extends Homey.Device {
             this.homey.app.log(`[Device] ${this.getName()} - getOptions`, error);
             return {};
         }
+    }
+
+    getParsedPhoneNumber(pn) {
+        if (pn && pn.includes(':')) {
+            return `+${pn.split(':')[0]}`;
+        } else if (pn && pn.includes('@')) {
+            return `+${pn.split('@')[0]}`;
+        } else {
+            return null;
+        }
+    }
+
+    parseGroupInvite(inviteLink) {
+        let inviteCode  = inviteLink.replace(/\s+/g, '');
+        inviteCode = inviteCode.split('/').pop();
+        inviteCode = inviteCode.includes('?') ? inviteCode.split('?')[0] : inviteCode;
+
+        return inviteCode;
     }
 
     async coolDown() {
@@ -331,24 +380,30 @@ export default class Whatsapp extends Homey.Device {
                 newDate.setTime(m.messageTimestamp * 1000);
                 let dateString = newDate.toUTCString();
 
+                const jid = m.key && m.key.remoteJid;
                 const group = m.key && m.key.participant ? true : false;
+                const groupCode = group && await this.WhatsappClient.getGroupInviteById(jid);
+
+                console.log('Group code:', groupCode)
+                
                 const from = m.pushName;
 
-                let fromJid = 'unknown@unknown';
+                const fromJid = m.key.participant || jid;
+                const pn = await this.WhatsappClient.getPNForLID(fromJid)
+                console.log('Message from:', pn, fromJid)
 
-                if (group && m.key && m.key.participantPn) {
-                    fromJid = m.key.participantPn;
-                } else if (group && m.key && m.key.participant) {
-                    fromJid = m.key.participant;
-                } else if (m.key && m.key.remoteJid) {
-                    fromJid = m.key.remoteJid;
-                }
+                const fromNumber = this.getParsedPhoneNumber(pn)
 
-                const fromNumber = `+${fromJid.split('@')[0]}`;
-                const jid = m.key && m.key.remoteJid;
+
                 const fromMe = m.key && m.key.fromMe;
                 const triggerAllowed = (fromMe && settings.trigger_own_message) || !fromMe;
                 const hasImage = m.message && m.message.imageMessage ? true : false;
+                const isPollUpdate = m.message && m.message.pollUpdateMessage ? true : false;
+                
+                if (isPollUpdate) {
+                    console.log('Ignoring poll update message', m.message.pollUpdateMessage);
+                    return false;
+                }
 
                 let text = m.message && m.message.conversation;
 
@@ -360,7 +415,7 @@ export default class Whatsapp extends Homey.Device {
                     text = (m.message && m.message.imageMessage && m.message.imageMessage.caption) || '';
                 }
 
-                const tokens = { replyTo: jid, fromNumber, from: from ? from : '', text, time: dateString, group, hasImage };
+                const tokens = { replyTo: jid, fromNumber, groupCode, from: from ? from : '', text, time: dateString, group, hasImage };
                 const state = tokens;
 
                 console.log('tokens', tokens);

@@ -55,7 +55,7 @@
     
     <script type="text/javascript">
         // globalVars
-        let groupJid = null;
+        let inviteCode = null;
         let widgetInitialized = false;
 
         function onHomeyReady (Homey) {
@@ -100,11 +100,11 @@
                 console.log('Received initial chat:', response);
 
                 if (response) {
-                    groupJid = response;
+                    inviteCode = response;
 
-                    getWidgetChats(Homey, groupJid);
+                    getWidgetChats(Homey, inviteCode);
                 } else {
-                    console.log('No groupJid set in store');
+                    console.log('No inviteCode set in store');
                     parseMessage({ text: `${Homey.__('widget.setup')} <br /><br /><br /> <strong>${widgetIdFour}</strong>`, fromMe: false, timeStamp: Date.now(), from: 'Whatsapp Widget', hasImage: false, base64Image: null }, settings, true);
                     hideLoader();
                 }
@@ -113,10 +113,10 @@
             });
         }
 
-        function getWidgetChats (Homey, groupJid) {
+        function getWidgetChats (Homey, inviteCode) {
             const settings = Homey.getSettings();
 
-            Homey.api('GET', `/getWidgetChats?jid=${groupJid}`).then((response) => {
+            Homey.api('GET', `/getWidgetChats?jid=${inviteCode}`).then((response) => {
                 console.log('Received chats:', response);
 
                 if (response) {
@@ -154,11 +154,11 @@
                 console.log('Received data:', data);
 
                 // Check if the message contains the widgetId
-                // If so, set the groupJid
+                // If so, set the inviteCode
                 // This is a one-time setup
                 if (data.text && data.text.includes(widgetIdFour) && data.group) {
                     Homey.api('GET', `/setWidgetChatInstance?widgetId=${widgetId}&jid=${data.jid}`).then((response) => {
-                        groupJid = data.jid;
+                        inviteCode = data.jid;
 
                         hideLoader();
 
@@ -168,12 +168,12 @@
                     });
                 }
 
-                // Check if the groupJid is set and the message is from the group
+                // Check if the inviteCode is set and the message is from the group
                 // If so, parse the message
-                if (groupJid && groupJid === data.jid && widgetInitialized) {
+                if (inviteCode && inviteCode === data.jid && widgetInitialized) {
                     parseMessage(data, settings);
                 } else {
-                    console.log('Skip message parse - No groupJid set or message is not from group', groupJid, data.group);
+                    console.log('Skip message parse - No inviteCode set or message is not from group', inviteCode, data.group);
                 }
             });
         }

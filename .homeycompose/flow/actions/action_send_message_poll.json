@@ -1,0 +1,281 @@
+{
+  "title": {
+    "en": "Send Poll",
+    "nl": "Verstuur Poll",
+    "de": "Sende Umfrage",
+    "fr": "Envoyer un sondage",
+    "it": "Invia sondaggio",
+    "sv": "Skicka undersökning",
+    "no": "Send avstemning",
+    "es": "Enviar encuesta",
+    "da": "Send afstemning",
+    "ru": "Отправить опрос",
+    "pl": "Wyślij ankietę",
+    "ko": "설문조사 보내기"
+  },
+  "titleFormatted": {
+    "en": "Send Poll [[message]] with [[option1]], [[option2]], [[option3]], [[option4]], [[option5]], [[option6]], [[option7]], [[option8]] to [[recipient]] ([[selectableCount]] selectable)",
+    "nl": "Verstuur Poll [[message]] met [[option1]], [[option2]], [[option3]], [[option4]], [[option5]], [[option6]], [[option7]], [[option8]] naar [[recipient]] ([[selectableCount]] selecteerbare)",
+    "de": "Sende Umfrage [[message]] mit [[option1]], [[option2]], [[option3]], [[option4]], [[option5]], [[option6]], [[option7]], [[option8]] an [[recipient]] ([[selectableCount]] auswählbar)",
+    "fr": "Envoyer un sondage [[message]] avec [[option1]], [[option2]], [[option3]], [[option4]], [[option5]], [[option6]], [[option7]], [[option8]] à [[recipient]] ([[selectableCount]] sélectionnable)",
+    "it": "Invia sondaggio [[message]] con [[option1]], [[option2]], [[option3]], [[option4]], [[option5]], [[option6]], [[option7]], [[option8]] a [[recipient]] ([[selectableCount]] selezionabile)",
+    "sv": "Skicka undersökning [[message]] med [[option1]], [[option2]], [[option3]], [[option4]], [[option5]], [[option6]], [[option7]], [[option8]] till [[recipient]] ([[selectableCount]] valbar)",
+    "no": "Send avstemning [[message]] med [[option1]], [[option2]], [[option3]], [[option4]], [[option5]], [[option6]], [[option7]], [[option8]] til [[recipient]] ([[selectableCount]] valbar)",
+    "es": "Enviar encuesta [[message]] con [[option1]], [[option2]], [[option3]], [[option4]], [[option5]], [[option6]], [[option7]], [[option8]] a [[recipient]] ([[selectableCount]] seleccionable)",
+    "da": "Send afstemning [[message]] med [[option1]], [[option2]], [[option3]], [[option4]], [[option5]], [[option6]], [[option7]], [[option8]] til [[recipient]] ([[selectableCount]] valbar)",
+    "ru": "Отправить опрос [[message]] с [[option1]], [[option2]], [[option3]], [[option4]], [[option5]], [[option6]], [[option7]], [[option8]] на [[recipient]] ([[selectableCount]] выбираемый)",
+    "pl": "Wyślij ankietę [[message]] z [[option1]], [[option2]], [[option3]], [[option4]], [[option5]], [[option6]], [[option7]], [[option8]] do [[recipient]] ([[selectableCount]] wybieralny)",
+    "ko": "설문조사 [[message]]를 [[option1]], [[option2]], [[option3]], [[option4]], [[option5]], [[option6]], [[option7]], [[option8]]와 함께 [[recipient]]로 보내기 ([[selectableCount]] 선택 가능)"
+  },
+  "hint": {
+    "en": "Phone number: Use with country code! e.g. (+31 -> +31601020304) || Groups: Copy the invite link of your WhatsApp group and paste it here. Based on the link, the app will know which group to send a message to.",
+    "nl": "Telefoonnummer: Gebruik met landcode! bijv. (+31 -> +31601020304) || Groepen: Kopieer de uitnodigingslink van je WhatsApp-groep en plak deze hier. Op basis van de link weet de app naar welke groep het bericht moet worden verzonden.",
+    "de": "Telefonnummer: Mit Ländervorwahl verwenden! z.B. (+49 -> +491234567890) || Gruppen: Kopiere den Einladungslink deiner WhatsApp-Gruppe und füge ihn hier ein. Basierend auf dem Link weiß die App, in welche Gruppe sie eine Nachricht senden soll.",
+    "fr": "Numéro de téléphone : Utilisez-le avec le code pays ! Ex. (+33 -> +33601020304) || Groupes : Copiez le lien d'invitation de votre groupe WhatsApp et collez-le ici. En fonction du lien, l'application saura dans quel groupe envoyer un message.",
+    "it": "Numero di telefono: Utilizzare con il codice del paese! Es. (+39 -> +393123456789) || Gruppi: Copia il link di invito del tuo gruppo WhatsApp e incollalo qui. In base al link, l'applicazione saprà a quale gruppo inviare un messaggio.",
+    "sv": "Telefonnummer: Använd med landskod! t.ex. (+46 -> +46701234567) || Grupper: Kopiera inbjudningslänken till din WhatsApp-grupp och klistra in den här. Baserat på länken kommer appen att veta vilken grupp den ska skicka ett meddelande till.",
+    "no": "Telefonnummer: Bruk med landskode! f.eks. (+47 -> +4798765432) || Grupper: Kopier invitasjonslenken til WhatsApp-gruppen din og lim den inn her. Basert på lenken vil appen vite hvilken gruppe den skal sende en melding til.",
+    "es": "Número de teléfono: ¡Usar con código de país! ej. (+34 -> +34601020304) || Grupos: Copia el enlace de invitación de tu grupo de WhatsApp y pégalo aquí. Basado en el enlace, la aplicación sabrá a qué grupo enviar un mensaje.",
+    "da": "Telefonnummer: Brug med landekode! f.eks. (+45 -> +4512345678) || Grupper: Kopier linket til din WhatsApp-gruppeinvitation og indsæt det her. Baseret på linket vil appen vide, hvilken gruppe der skal sendes en besked til.",
+    "ru": "Телефонный номер: Используйте с указанием кода страны! например (+7 -> +79123456789) || Группы: Скопируйте пригласительную ссылку на вашу группу WhatsApp и вставьте ее здесь. По ссылке приложение определит, в какую группу отправить сообщение.",
+    "pl": "Numer telefonu: Użyj z kodem kraju! np. (+31 -> +31601020304) || Grupy: Skopiuj link do zaproszenia do swojej grupy WhatsApp i wklej go tutaj. Na podstawie linku aplikacja będzie wiedzieć, do której grupy wysłać wiadomość.",
+    "ko": "전화번호: 국가 코드와 함께 사용하세요! 예: (+82 -> +821012345678) || 그룹: WhatsApp 그룹의 초대 링크를 복사하여 여기에 붙여넣으세요. 링크를 기반으로 앱이 어떤 그룹에 메시지를 보낼지 알 수 있습니다."
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "placeholder": {
+        "en": "Select device",
+        "nl": "Selecteer apparaat"
+      },
+      "filter": "driver_id=Whatsapp|Whatsapp_cloud&capabilities=send_data"
+    },
+    {
+      "type": "text",
+      "name": "recipient",
+      "required": true,
+      "title": {
+        "en": "Mobile number / Group invite link",
+        "nl": "Mobiel nummer / Groepsuitnodigingslink",
+        "de": "Mobiltelefonnummer / Gruppeneinladungslink",
+        "fr": "Numéro de téléphone mobile / Lien d'invitation de groupe",
+        "it": "Numero di cellulare / Link invito al gruppo",
+        "sv": "Mobilnummer / Inbjudningslänk till grupp",
+        "no": "Mobilnummer / Gruppeinvitasjonslenke",
+        "es": "Número de teléfono móvil / Enlace de invitación de grupo",
+        "da": "Mobilnummer / Gruppeinvitation link",
+        "ru": "Мобильный номер / Ссылка для приглашения в группу",
+        "pl": "Numer telefonu komórkowego / Link do zaproszenia do grupy",
+        "ko": "휴대폰 번호 / 그룹 초대 링크"
+      }
+    },
+    {
+      "type": "text",
+      "name": "message",
+      "required": true,
+      "title": {
+        "en": "Poll title",
+        "nl": "Poll titel",
+        "de": "Umfrage Titel",
+        "fr": "Titre du sondage",
+        "it": "Titolo del sondaggio",
+        "sv": "Enkät titel",
+        "no": "Poll tittel",
+        "es": "Título de la encuesta",
+        "da": "Afstemning titel",
+        "ru": "Название опроса",
+        "pl": "Tytuł ankiety",
+        "ko": "설문조사 제목"
+      }
+    },
+     {
+      "type": "text",
+      "name": "option1",
+      "required": true,
+      "title": {
+        "en": "Question/Option 1",
+        "nl": "Vraag/Optie 1",
+        "de": "Frage/Option 1",
+        "fr": "Question/Option 1",
+        "it": "Domanda/Opzione 1",
+        "sv": "Fråga/Alternativ 1",
+        "no": "Spørsmål/Alternativ 1",
+        "es": "Pregunta/Opción 1",
+        "da": "Spørgsmål/Mulighed 1",
+        "ru": "Вопрос/Вариант 1",
+        "pl": "Pytanie/Opcja 1",
+        "ko": "질문/옵션 1"
+      }
+    },
+    {
+      "type": "text",
+      "name": "option2",
+      "required": true,
+      "title": {
+        "en": "Question/Option 2",
+        "nl": "Vraag/Optie 2",
+        "de": "Frage/Option 2",
+        "fr": "Question/Option 2",
+        "it": "Domanda/Opzione 2",
+        "sv": "Fråga/Alternativ 2",
+        "no": "Spørsmål/Alternativ 2",
+        "es": "Pregunta/Opción 2",
+        "da": "Spørgsmål/Mulighed 2",
+        "ru": "Вопрос/Вариант 2",
+        "pl": "Pytanie/Opcja 2",
+        "ko": "질문/옵션 2"
+      }
+    },
+    {
+      "type": "text",
+      "name": "option3",
+      "required": true,
+      "title": {
+        "en": "Question/Option 3",
+        "nl": "Vraag/Optie 3",
+        "de": "Frage/Option 3",
+        "fr": "Question/Option 3",
+        "it": "Domanda/Opzione 3",
+        "sv": "Fråga/Alternativ 3",
+        "no": "Spørsmål/Alternativ 3",
+        "es": "Pregunta/Opción 3",
+        "da": "Spørgsmål/Mulighed 3",
+        "ru": "Вопрос/Вариант 3",
+        "pl": "Pytanie/Opcja 3",
+        "ko": "질문/옵션 3"
+      }
+    },
+    {
+      "type": "text",
+      "name": "option4",
+      "required": true,
+      "title": {
+        "en": "Question/Option 4",
+        "nl": "Vraag/Optie 4",
+        "de": "Frage/Option 4",
+        "fr": "Question/Option 4",
+        "it": "Domanda/Opzione 4",
+        "sv": "Fråga/Alternativ 4",
+        "no": "Spørsmål/Alternativ 4",
+        "es": "Pregunta/Opción 4",
+        "da": "Spørgsmål/Mulighed 4",
+        "ru": "Вопрос/Вариант 4",
+        "pl": "Pytanie/Opcja 4",
+        "ko": "질문/옵션 4"
+      }
+    },
+        {
+      "type": "text",
+      "name": "option5",
+      "required": true,
+      "title": {
+        "en": "Question/Option 5",
+        "nl": "Vraag/Optie 5",
+        "de": "Frage/Option 5",
+        "fr": "Question/Option 5",
+        "it": "Domanda/Opzione 5",
+        "sv": "Fråga/Alternativ 5",
+        "no": "Spørsmål/Alternativ 5",
+        "es": "Pregunta/Opción 5",
+        "da": "Spørgsmål/Mulighed 5",
+        "ru": "Вопрос/Вариант 5",
+        "pl": "Pytanie/Opcja 5",
+        "ko": "질문/옵션 5"
+      }
+    },
+    {
+      "type": "text",
+      "name": "option6",
+      "required": true,
+      "title": {
+        "en": "Question/Option 6",
+        "nl": "Vraag/Optie 6",
+        "de": "Frage/Option 6",
+        "fr": "Question/Option 6",
+        "it": "Domanda/Opzione 6",
+        "sv": "Fråga/Alternativ 6",
+        "no": "Spørsmål/Alternativ 6",
+        "es": "Pregunta/Opción 6",
+        "da": "Spørgsmål/Mulighed 6",
+        "ru": "Вопрос/Вариант 6",
+        "pl": "Pytanie/Opcja 6",
+        "ko": "질문/옵션 6"
+      }
+    },
+    {
+      "type": "text",
+      "name": "option7",
+      "required": true,
+      "title": {
+        "en": "Question/Option 7",
+        "nl": "Vraag/Optie 7",
+        "de": "Frage/Option 7",
+        "fr": "Question/Option 7",
+        "it": "Domanda/Opzione 7",
+        "sv": "Fråga/Alternativ 7",
+        "no": "Spørsmål/Alternativ 7",
+        "es": "Pregunta/Opción 7",
+        "da": "Spørgsmål/Mulighed 7",
+        "ru": "Вопрос/Вариант 7",
+        "pl": "Pytanie/Opcja 7",
+        "ko": "질문/옵션 7"
+      }
+    },
+    {
+      "type": "text",
+      "name": "option8",
+      "required": true,
+      "title": {
+        "en": "Question/Option 8",
+        "nl": "Vraag/Optie 8",
+        "de": "Frage/Option 8",
+        "fr": "Question/Option 8",
+        "it": "Domanda/Opzione 8",
+        "sv": "Fråga/Alternativ 8",
+        "no": "Spørsmål/Alternativ 8",
+        "es": "Pregunta/Opción 8",
+        "da": "Spørgsmål/Mulighed 8",
+        "ru": "Вопрос/Вариант 8",
+        "pl": "Pytanie/Opcja 8",
+        "ko": "질문/옵션 8"
+      }
+    },
+    {
+        "type": "number",
+        "name": "selectableCount",
+        "required": false,
+        "min": 1,
+        "max": 8,
+        "title": {
+            "en": "How many options can be selected (1-8)",
+            "nl": "Hoeveel opties kunnen worden geselecteerd (1-8)",
+            "de": "Wie viele Optionen können ausgewählt werden (1-8)",
+            "fr": "Combien d'options peuvent être sélectionnées (1-8)",
+            "it": "Quante opzioni possono essere selezionate (1-8)",
+            "sv": "Hur många alternativ kan väljas (1-8)",
+            "no": "Hvor mange alternativer kan velges (1-8)",
+            "es": "Cuántas opciones se pueden seleccionar (1-8)",
+            "da": "Hvor mange muligheder kan vælges (1-8)",
+            "ru": "Сколько вариантов можно выбрать (1-8)",
+            "pl": "Ile opcji można wybrać (1-8)",
+            "ko": "선택할 수 있는 옵션 수(1-8)"
+        },
+        "placeholder": {
+            "en": "Default: 1",
+            "nl": "Standaard: 1",
+            "de": "Standard: 1",
+            "fr": "Par défaut : 1",
+            "it": "Predefinito: 1",
+            "sv": "Standard: 1",
+            "no": "Standard: 1",
+            "es": "Predeterminado: 1",
+            "da": "Standard: 1",
+            "ru": "По умолчанию: 1",
+            "pl": "Domyślnie: 1",
+            "ko": "기본값: 1"
+        }
+    }
+  ],
+  "platforms": ["local"]
+}

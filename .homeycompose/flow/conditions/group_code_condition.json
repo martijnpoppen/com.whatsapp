@@ -1,0 +1,79 @@
+{
+  "id": "group_code_condition",
+  "title": {
+    "en": "Group invite link",
+    "nl": "Groep uitnodigingslink",
+    "de": "Gruppen-Einladungslink",
+    "fr": "Lien d'invitation au groupe",
+    "it": "Link di invito al gruppo",
+    "sv": "Gruppinbjudningslänk",
+    "no": "Gruppinbjudningslenke",
+    "es": "Enlace de invitación al grupo",
+    "da": "Gruppens invitationslink",
+    "ru": "Ссылка на приглашение в группу",
+    "pl": "Link do zaproszenia do grupy"
+  },
+  "titleFormatted": {
+    "en": "Group invite link !{{is|isn't}} [[group_code_input]]",
+    "nl": "Groep uitnodigingslink !{{is|is niet}} [[group_code_input]]",
+    "de": "Gruppen-Einladungslink !{{ist|ist nicht}} [[group_code_input]]",
+    "fr": "Lien d'invitation au groupe !{{est|n'est pas}} [[group_code_input]]",
+    "it": "Link di invito al gruppo !{{è|non è}} [[group_code_input]]",
+    "sv": "Gruppinbjudningslänk !{{är|är inte}} [[group_code_input]]",
+    "no": "Gruppinbjudningslenke !{{er|er ikke}} [[group_code_input]]",
+    "es": "Enlace de invitación al grupo !{{es|no es}} [[group_code_input]]",
+    "da": "Gruppens invitationslink !{{er|er ikke}} [[group_code_input]]",
+    "ru": "Ссылка на приглашение в группу !{{есть|нет}} [[group_code_input]]",
+    "pl": "Link do zaproszenia do grupy !{{jest|nie ma}} [[group_code_input]]"
+  },
+  "hint": {
+    "en": "Make sure the number used in Homey is admin of the group",
+    "nl": "Zorg ervoor dat het nummer dat in Homey wordt gebruikt beheerder is van de groep",
+    "de": "Stellen Sie sicher, dass die in Homey verwendete Nummer Administrator der Gruppe ist",
+    "fr": "Assurez-vous que le numéro utilisé dans Homey est administrateur du groupe",
+    "it": "Assicurati che il numero utilizzato in Homey sia amministratore del gruppo",
+    "sv": "Se till att numret som används i Homey är administratör för gruppen",
+    "no": "Sørg for at nummeret som brukes i Homey er administrator for gruppen",
+    "es": "Asegúrate de que el número utilizado en Homey es administrador del grupo",
+    "da": "Sørg for, at det nummer, der bruges i Homey, er administrator for gruppen",
+    "ru": "Убедитесь, что номер, используемый в Homey, является администратором группы",
+    "pl": "Upewnij się, że numer używany w Homey jest administratorem grupy"
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=Whatsapp"
+    },
+    {
+      "name": "group_code_input",
+      "type": "text",
+      "title": {
+        "en": "Group invite link",
+        "nl": "Groep uitnodigingslink",
+        "de": "Gruppen-Einladungslink",
+        "fr": "Lien d'invitation au groupe",
+        "it": "Link di invito al gruppo",
+        "sv": "Gruppinbjudningslänk",
+        "no": "Gruppinbjudningslenke",
+        "es": "Enlace de invitación al grupo",
+        "da": "Gruppens invitationslink",
+        "ru": "Ссылка на приглашение в группу",
+        "pl": "Link do zaproszenia do grupy"
+      },
+      "placeholder": {
+        "en": "https://chat.whatsapp.com/ABCDEFGHIJKLMNOP",
+        "nl": "https://chat.whatsapp.com/ABCDEFGHIJKLMNOP",
+        "de": "https://chat.whatsapp.com/ABCDEFGHIJKLMNOP",
+        "fr": "https://chat.whatsapp.com/ABCDEFGHIJKLMNOP",
+        "it": "https://chat.whatsapp.com/ABCDEFGHIJKLMNOP",
+        "sv": "https://chat.whatsapp.com/ABCDEFGHIJKLMNOP",
+        "no": "https://chat.whatsapp.com/ABCDEFGHIJKLMNOP",
+        "es": "https://chat.whatsapp.com/ABCDEFGHIJKLMNOP",
+        "da": "https://chat.whatsapp.com/ABCDEFGHIJKLMNOP",
+        "ru": "https://chat.whatsapp.com/ABCDEFGHIJKLMNOP",
+        "pl": "https://chat.whatsapp.com/ABCDEFGHIJKLMNOP"
+      }
+    }
+  ]
+}

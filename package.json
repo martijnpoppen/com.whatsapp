@@ -11,6 +11,7 @@
     "baileys": "https://github.com/martijnpoppen/baileys/tarball/homey-integration",
     "fs-extra": "^11.1.1",
     "libphonenumber-js": "^1.12.8",
+    "lru-cache": "^11.1.0",
     "perfect-debounce": "^1.0.0"
   }
 }
