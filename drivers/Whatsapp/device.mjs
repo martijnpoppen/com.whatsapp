@@ -351,7 +351,7 @@ export default class Whatsapp extends Homey.Device {
         } else if (pn && pn.includes('@')) {
             return `+${pn.split('@')[0]}`;
         } else {
-            return null;
+            return `+${pn}`;
         }
     }
 
@@ -392,8 +392,7 @@ export default class Whatsapp extends Homey.Device {
                 const pn = await this.WhatsappClient.getPNForLID(fromJid)
                 console.log('Message from:', pn, fromJid)
 
-                const fromNumber = this.getParsedPhoneNumber(pn)
-
+                const fromNumber = this.getParsedPhoneNumber(pn) || `+${fromJid.split('@')[0]}`;
 
                 const fromMe = m.key && m.key.fromMe;
                 const triggerAllowed = (fromMe && settings.trigger_own_message) || !fromMe;

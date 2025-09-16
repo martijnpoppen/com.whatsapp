@@ -1,12 +1,12 @@
 {
   "overrides": [
     {
-      "files": ["*.html", "**/*.js"],
+      "files": ["*.html", "**/*.js", "**/*.mjs", "**/*.mts", "**/*.json", "**/*.jsonc", "**/*.ts", "**/*.tsx"],
       "options": {
         "semi": true,
         "singleQuote": true,
         "tabWidth": 4,
-        "printWidth": 200,
+        "printWidth": 400,
         "trailingComma": "none"
       }
     }

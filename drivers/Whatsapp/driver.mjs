@@ -20,11 +20,16 @@ export default class mainDriver extends Homey.Driver {
     }
 
     async setWhatsappClient(deviceId, device = null) {
+        if( this.WhatsappClients[deviceId]) {
+            delete this.WhatsappClients[deviceId];
+        }
+
         this.WhatsappClients[deviceId] = new whatsappClient({
             deviceId,
             homeyData: {
                 driver: this,
-                device
+                device,
+                app: this.homey.app,
             }
         });
 
@@ -86,15 +91,13 @@ export default class mainDriver extends Homey.Driver {
 
         await device.removeWhatsappClient();
 
-        this.homey.app.log(`[Driver] ${this.id} - unsetting store for :`, device.getName());
-
         this.setPairingSession(session);
     }
 
     async setPairingSession(session) {
         const deviceObject = this.device && this.device.getData();
 
-        this.guid = this.device ? deviceObject.id : `${this.homeyCloudId}_${GetGUID()}`;
+        this.guid = deviceObject ? deviceObject.id : `${this.homeyCloudId}_${GetGUID()}`;
 
         session.setHandler('showView', async (view) => {
             this.homey.app.log(`[Driver] ${this.id} - currentView:`, { view, type: this.type });
@@ -114,19 +117,8 @@ export default class mainDriver extends Homey.Driver {
 
             if (view === 'loading') {
                 if(this.type === 'repair') {
-                    const storeData = this.device.getStore();
-                    // create a loop with await to unset all store values
-            
-                    for await(const key of Object.keys(storeData)) {  
-                        this.homey.app.log(`[Driver] ${this.id} - unsetting key:`, key);       
-                        await this.device.unsetStoreValue(key);
-                    }
-
                     await this.setWhatsappClient(this.guid, this.device);
-                }
-
-
-                if (this.type === 'pair') {
+                } else {
                     await this.setWhatsappClient(this.guid);
                 }
 
