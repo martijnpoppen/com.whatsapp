@@ -194,10 +194,12 @@ export default class Whatsapp extends Homey.Device {
 
     async getRecipient(recipient, isGroup) {
         if (recipient.includes('@g.us') || recipient.includes('@s.whatsapp.net') || recipient.includes('@newsletter')) {
+            this.homey.app.log(`[Device] ${this.getName()} - getRecipient - already a JID`, recipient);
             return recipient;
         }
 
         if (!isGroup) {
+            this.homey.app.log(`[Device] ${this.getName()} - getRecipient - not a group`, recipient);
             const phoneNumber = parsePhoneNumber(recipient);
             if (!phoneNumber.isValid()) {
                 throw new Error('Invalid mobile number (Make sure to include the country code (e.g. +31))');
@@ -228,6 +230,8 @@ export default class Whatsapp extends Homey.Device {
                 }
             }
         }
+
+        this.homey.app.log(`[Device] ${this.getName()} - getRecipient - final JID`, recipient);
 
         return recipient;
     }
@@ -296,7 +300,7 @@ export default class Whatsapp extends Homey.Device {
                 }
             } else if (msgType === 'poll') {
                 let values = [];
-                const {option1, option2, option3, option4, option5, option6, option7, option8, selectableCount} = params;
+                const { option1, option2, option3, option4, option5, option6, option7, option8, selectableCount } = params;
                 if (option1) values.push(option1);
                 if (option2) values.push(option2);
                 if (option3) values.push(option3);
@@ -305,7 +309,6 @@ export default class Whatsapp extends Homey.Device {
                 if (option6) values.push(option6);
                 if (option7) values.push(option7);
                 if (option8) values.push(option8);
-
 
                 if (values.length < 2) {
                     throw new Error('Please provide at least 2 poll values');
@@ -320,19 +323,25 @@ export default class Whatsapp extends Homey.Device {
 
     async getOptions(message) {
         try {
+            this.homey.app.log(`[Device] ${this.getName()} - getOptions`, { message });
             const regex = /@(\S+)/g;
             const matches = [...message.matchAll(regex)];
             const mentions = [];
 
-            for (const match  of matches) {
-                const pn = await this.WhatsappClient.getPNForLID(`${match[1]}@lid`);
-                const parsedPn = this.getParsedPhoneNumber(pn);
-                const phoneNumber = parsedPn ? parsePhoneNumber(parsedPn) : parsePhoneNumber(`+${match[1]}`);
+            for (const match of matches) {
+                if (/^\d+$/.test(match[1])) { // check if only numbers
 
-                if (phoneNumber.isValid() && parsedPn) {
-                    mentions.push(`${match[1]}@lid`);
-                } else if (phoneNumber.isValid()) {
-                    mentions.push(`${match[1]}@s.whatsapp.net`);
+                    this.homey.app.log(`[Device] ${this.getName()} - getOptions - found mention`, match[1]);
+
+                    const pn = await this.WhatsappClient.getPNForLID(`${match[1]}@lid`);
+                    const parsedPn = pn ? this.getParsedPhoneNumber(pn) : undefined;
+                    const phoneNumber = parsedPn ? parsePhoneNumber(parsedPn) : parsePhoneNumber(`+${match[1]}`);
+
+                    if (phoneNumber.isValid() && parsedPn) {
+                        mentions.push(`${match[1]}@lid`);
+                    } else if (phoneNumber.isValid()) {
+                        mentions.push(`${match[1]}@s.whatsapp.net`);
+                    }
                 }
             }
 
@@ -356,7 +365,7 @@ export default class Whatsapp extends Homey.Device {
     }
 
     parseGroupInvite(inviteLink) {
-        let inviteCode  = inviteLink.replace(/\s+/g, '');
+        let inviteCode = inviteLink.replace(/\s+/g, '');
         inviteCode = inviteCode.split('/').pop();
         inviteCode = inviteCode.includes('?') ? inviteCode.split('?')[0] : inviteCode;
 
@@ -382,15 +391,15 @@ export default class Whatsapp extends Homey.Device {
 
                 const jid = m.key && m.key.remoteJid;
                 const group = m.key && m.key.participant ? true : false;
-                const groupCode = group && await this.WhatsappClient.getGroupInviteById(jid);
+                const groupCode = group && (await this.WhatsappClient.getGroupInviteById(jid));
 
-                console.log('Group code:', groupCode)
-                
+                console.log('Group code:', groupCode);
+
                 const from = m.pushName;
 
                 const fromJid = m.key.participant || jid;
-                const pn = await this.WhatsappClient.getPNForLID(fromJid)
-                console.log('Message from:', pn, fromJid)
+                const pn = await this.WhatsappClient.getPNForLID(fromJid);
+                console.log('Message from:', pn, fromJid);
 
                 const fromNumber = this.getParsedPhoneNumber(pn) || `+${fromJid.split('@')[0]}`;
 
@@ -398,7 +407,7 @@ export default class Whatsapp extends Homey.Device {
                 const triggerAllowed = (fromMe && settings.trigger_own_message) || !fromMe;
                 const hasImage = m.message && m.message.imageMessage ? true : false;
                 const isPollUpdate = m.message && m.message.pollUpdateMessage ? true : false;
-                
+
                 if (isPollUpdate) {
                     console.log('Ignoring poll update message', m.message.pollUpdateMessage);
                     return false;
@@ -579,4 +588,4 @@ export default class Whatsapp extends Homey.Device {
             }
         }
     }
-};
+}
