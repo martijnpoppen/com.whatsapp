@@ -1,8 +1,8 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "com.whatsapp",
-  "version": "1.34.0",
-  "compatibility": ">=12.1.0",
+  "version": "1.35.0",
+  "compatibility": ">=12.3.0",
   "sdk": 3,
   "platforms": [
     "local"
@@ -2224,14 +2224,14 @@
         "en": "WhatsApp"
       },
       "capabilities": [
-        "send_data",
-        "widget_cache"
+        "send_data"
       ],
       "id": "Whatsapp"
     }
   ],
   "widgets": {
     "chat": {
+      "id": "chat",
       "name": {
         "en": "WhatsApp Chat view ",
         "nl": "WhatsApp Chatweergave",
@@ -2246,8 +2246,47 @@
         "pl": "WhatsApp Widok czatu",
         "ko": "WhatsApp 채팅 보기"
       },
+      "devices": {
+        "type": "app",
+        "singular": true,
+        "filter": {
+          "capabilities": "send_data"
+        }
+      },
       "transparent": true,
       "settings": [
+        {
+          "type": "text",
+          "id": "dataId",
+          "title": {
+            "en": "Mobile number / Group invite link",
+            "nl": "Mobiel nummer / Groepsuitnodigingslink",
+            "de": "Mobiltelefonnummer / Gruppeneinladungslink",
+            "fr": "Numéro de téléphone mobile / Lien d'invitation de groupe",
+            "it": "Numero di cellulare / Link invito al gruppo",
+            "sv": "Mobilnummer / Inbjudningslänk till grupp",
+            "no": "Mobilnummer / Gruppeinvitasjonslenke",
+            "es": "Número de teléfono móvil / Enlace de invitación de grupo",
+            "da": "Mobilnummer / Gruppeinvitation link",
+            "ru": "Мобильный номер / Ссылка для приглашения в группу",
+            "pl": "Numer telefonu komórkowego / Link do zaproszenia do grupy",
+            "ko": "휴대폰 번호 / 그룹 초대 링크"
+          },
+          "hint": {
+            "en": "Phone number: Use with country code! e.g. (+31 -> +31601020304) || Groups: Copy the invite link of your WhatsApp group and paste it here.",
+            "nl": "Telefoonnummer: Gebruik met landcode! bijv. (+31 -> +31601020304) || Groepen: Kopieer de uitnodigingslink van je WhatsApp-groep en plak deze hier.",
+            "de": "Telefonnummer: Mit Ländervorwahl verwenden! z.B. (+49 -> +491234567890) || Gruppen: Kopiere den Einladungslink deiner WhatsApp-Gruppe und füge ihn hier ein.",
+            "fr": "Numéro de téléphone : Utilisez-le avec le code pays ! Ex. (+33 -> +33601020304) || Groupes : Copiez le lien d'invitation de votre groupe WhatsApp et collez-le ici.",
+            "it": "Numero di telefono: Utilizzare con il codice del paese! Es. (+39 -> +393123456789) || Gruppi: Copia il link di invito del tuo gruppo WhatsApp e incollalo qui.",
+            "sv": "Telefonnummer: Använd med landskod! t.ex. (+46 -> +46701234567) || Grupper: Kopiera inbjudningslänken till din WhatsApp-grupp och klistra in den här.",
+            "no": "Telefonnummer: Bruk med landskode! f.eks. (+47 -> +4798765432) || Grupper: Kopier invitasjonslenken til WhatsApp-gruppen din og lim den inn her.",
+            "es": "Número de teléfono: ¡Usar con código de país! ej. (+34 -> +34601020304) || Grupos: Copia el enlace de invitación de tu grupo de WhatsApp y pégalo aquí.",
+            "da": "Telefonnummer: Brug med landekode! f.eks. (+45 -> +4512345678) || Grupper: Kopier linket til din WhatsApp-gruppeinvitation og indsæt det her.",
+            "ru": "Телефонный номер: Используйте с указанием кода страны! например (+7 -> +79123456789) || Группы: Скопируйте пригласительную ссылку на вашу группу WhatsApp и вставьте ее здесь.",
+            "pl": "Numer telefonu: Użyj z kodem kraju! np. (+31 -> +31601020304) || Grupy: Skopiuj link do zaproszenia do swojej grupy WhatsApp i wklej go tutaj.",
+            "ko": "전화번호: 국가 코드와 함께 사용하세요! 예: (+82 -> +821012345678) || 그룹: WhatsApp 그룹의 초대 링크를 복사하여 여기에 붙여넣으세요."
+          }
+        },
         {
           "id": "widgetHeight",
           "type": "number",
@@ -2359,20 +2398,15 @@
         }
       ],
       "api": {
-        "getWidgetChatInstance": {
-          "method": "GET",
-          "path": "/getWidgetChatInstance"
+        "setWidgetInstance": {
+          "method": "POST",
+          "path": "/setWidgetInstance"
         },
-        "setWidgetChatInstance": {
-          "method": "GET",
-          "path": "/setWidgetChatInstance"
-        },
-        "getWidgetChats": {
-          "method": "GET",
-          "path": "/getWidgetChats"
+        "getWidgetInstance": {
+          "method": "POST",
+          "path": "/getWidgetInstance"
         }
-      },
-      "id": "chat"
+      }
     }
   },
   "capabilities": {

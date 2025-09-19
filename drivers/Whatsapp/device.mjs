@@ -1,6 +1,6 @@
 import Homey from 'homey';
 import { parsePhoneNumber } from 'libphonenumber-js';
-import { validateUrl, sleep, getBase64Image } from '../../lib/helpers/index.mjs';
+import { validateUrl, sleep, getBase64Image, toConsistentId } from '../../lib/helpers/index.mjs';
 
 export default class Whatsapp extends Homey.Device {
     async onInit() {
@@ -9,12 +9,11 @@ export default class Whatsapp extends Homey.Device {
             this.setUnavailable(`Connecting to WhatsApp`);
 
             this.cleanupWidgetStore();
+            this.widgetInstanceHeartbeats();
 
             await this.synchronousStart();
 
             await this.checkCapabilities();
-
-            await this.setCapabilityListeners();
             await this.setTriggers();
             await this.setConditions();
             await this.setWhatsappClient();
@@ -44,69 +43,69 @@ export default class Whatsapp extends Homey.Device {
     async setConditions() {
         const text_condition = this.homey.flow.getConditionCard('text_condition');
         text_condition.registerRunListener(async (args, state) => {
-            this.homey.app.log('[text_condition]', { ...args, device: 'LOG' });
+            this.homey.app.log(`[Device] ${this.getName()} - [text_condition]`, { ...args, device: 'LOG' });
 
             const result = state.text && state.text.toLowerCase() === args.text_input.toLowerCase();
 
-            this.homey.app.log('[text_condition] - result: ', result);
+            this.homey.app.log(`[Device] ${this.getName()} - [text_condition] - result: `, result);
             return result;
         });
 
         const text_contains_condition = this.homey.flow.getConditionCard('text_contains_condition');
         text_contains_condition.registerRunListener(async (args, state) => {
-            this.homey.app.log('[text_contains_condition]', { ...args, device: 'LOG' });
+            this.homey.app.log(`[Device] ${this.getName()} - [text_contains_condition]`, { ...args, device: 'LOG' });
 
             const result = state.text && state.text.toLowerCase().includes(args.text_input.toLowerCase());
 
-            this.homey.app.log('[text_contains_condition] - result: ', result);
+            this.homey.app.log(`[Device] ${this.getName()} - [text_contains_condition] - result: `, result);
             return result;
         });
 
         const from_condition = this.homey.flow.getConditionCard('from_condition');
         from_condition.registerRunListener(async (args, state) => {
-            this.homey.app.log('[from_condition]', { ...args, device: 'LOG' });
+            this.homey.app.log(`[Device] ${this.getName()} - [from_condition]`, { ...args, device: 'LOG' });
             const result = state.from && state.from.toLowerCase() === args.from_input.toLowerCase();
 
-            this.homey.app.log('[from_condition] - result: ', result);
+            this.homey.app.log(`[Device] ${this.getName()} - [from_condition] - result: `, result);
             return result;
         });
 
         const from_number_condition = this.homey.flow.getConditionCard('from_number_condition');
         from_number_condition.registerRunListener(async (args, state) => {
-            this.homey.app.log('[from_number_condition]', { ...args, device: 'LOG' });
+            this.homey.app.log(`[Device] ${this.getName()} - [from_number_condition]`, { ...args, device: 'LOG' });
             const result = state.fromNumber && state.fromNumber.toLowerCase() === args.from_input.toLowerCase();
 
-            this.homey.app.log('[from_number_condition] - result: ', result);
+            this.homey.app.log(`[Device] ${this.getName()} - [from_number_condition] - result: `, result);
             return result;
         });
 
         const group_condition = this.homey.flow.getConditionCard('group_condition');
         group_condition.registerRunListener(async (args, state) => {
-            this.homey.app.log('[group_condition]', { ...args, device: 'LOG' });
+            this.homey.app.log(`[Device] ${this.getName()} - [group_condition]`, { ...args, device: 'LOG' });
             const result = state.group === true;
 
-            this.homey.app.log('[group_condition] - result: ', result);
+            this.homey.app.log(`[Device] ${this.getName()} - [group_condition] - result: `, result);
             return result;
         });
 
         const group_code_condition = this.homey.flow.getConditionCard('group_code_condition');
         group_code_condition.registerRunListener(async (args, state) => {
-            this.homey.app.log('[group_code_condition]', { ...args, device: 'LOG' });
+            this.homey.app.log(`[Device] ${this.getName()} - [group_code_condition]`, { ...args, device: 'LOG' });
             const parsedInput = this.parseGroupInvite(args.group_code_input);
-            this.homey.app.log('[group_code_condition] - parsedInput: ', parsedInput);
-            this.homey.app.log('[group_code_condition] - state.groupCode: ', state.groupCode);
+            this.homey.app.log(`[Device] ${this.getName()} - [group_code_condition] - parsedInput: `, parsedInput);
+            this.homey.app.log(`[Device] ${this.getName()} - [group_code_condition] - state.groupCode: `, state.groupCode);
             const result = state.groupCode === parsedInput;
 
-            this.homey.app.log('[group_code_condition] - result: ', result);
+            this.homey.app.log(`[Device] ${this.getName()} - [group_code_condition] - result: `, result);
             return result;
         });
 
         const image_condition = this.homey.flow.getConditionCard('image_condition');
         image_condition.registerRunListener(async (args, state) => {
-            this.homey.app.log('[image_condition]', { ...args, device: 'LOG' });
+            this.homey.app.log(`[Device] ${this.getName()} - [image_condition]`, { ...args, device: 'LOG' });
             const result = state.hasImage === true;
 
-            this.homey.app.log('[image_condition] - result: ', result);
+            this.homey.app.log(`[Device] ${this.getName()} - [image_condition] - result: `, result);
             return result;
         });
     }
@@ -182,7 +181,7 @@ export default class Whatsapp extends Homey.Device {
         const recipient = await this.getRecipient(params.recipient, isGroup);
 
         if (recipient) {
-            const data = await this.sendMessage(recipient, message, type, params, isGroup);
+            const data = await this.sendMessage(recipient, message, type, params, isGroup, params.recipient);
 
             this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage`, Object.keys(data).length);
 
@@ -236,7 +235,7 @@ export default class Whatsapp extends Homey.Device {
         return recipient;
     }
 
-    async sendMessage(recipient, message, msgType, params = null, isGroup = false) {
+    async sendMessage(recipient, message, msgType, params = null, isGroup = false, originalRecipient = null) {
         let data = {};
         const options = await this.getOptions(message);
 
@@ -245,6 +244,7 @@ export default class Whatsapp extends Homey.Device {
 
             this.sendToWidget({
                 jid: recipient,
+                originalRecipient,
                 from: '',
                 fromMe: true,
                 timeStamp: Date.now(),
@@ -270,6 +270,7 @@ export default class Whatsapp extends Homey.Device {
 
             this.sendToWidget({
                 jid: recipient,
+                originalRecipient: originalRecipient,
                 from: '',
                 fromMe: true,
                 timeStamp: Date.now(),
@@ -329,7 +330,8 @@ export default class Whatsapp extends Homey.Device {
             const mentions = [];
 
             for (const match of matches) {
-                if (/^\d+$/.test(match[1])) { // check if only numbers
+                if (/^\d+$/.test(match[1])) {
+                    // check if only numbers
 
                     this.homey.app.log(`[Device] ${this.getName()} - getOptions - found mention`, match[1]);
 
@@ -377,7 +379,6 @@ export default class Whatsapp extends Homey.Device {
     }
 
     // ------------- Triggers -------------
-
     async messageHelper(msg) {
         try {
             const settings = await this.getSettings();
@@ -393,15 +394,11 @@ export default class Whatsapp extends Homey.Device {
                 const group = m.key && m.key.participant ? true : false;
                 const groupCode = group && (await this.WhatsappClient.getGroupInviteById(jid));
 
-                console.log('Group code:', groupCode);
-
                 const from = m.pushName;
 
                 const fromJid = m.key.participant || jid;
                 const pn = await this.WhatsappClient.getPNForLID(fromJid);
-                console.log('Message from:', pn, fromJid);
-
-                const fromNumber = this.getParsedPhoneNumber(pn) || `+${fromJid.split('@')[0]}`;
+                const fromNumber = (pn && this.getParsedPhoneNumber(pn)) || `+${fromJid.split('@')[0]}`;
 
                 const fromMe = m.key && m.key.fromMe;
                 const triggerAllowed = (fromMe && settings.trigger_own_message) || !fromMe;
@@ -430,7 +427,7 @@ export default class Whatsapp extends Homey.Device {
 
                 triggerAllowed && this.new_message.trigger(this, tokens, state);
 
-                this.sendToWidget({ jid, from: from, fromMe, timeStamp: m.messageTimestamp * 1000, text, group, hasImage, imgUrl: null, base64Image: null, m });
+                this.sendToWidget({ jid, from: from, fromMe, timeStamp: m.messageTimestamp * 1000, text, group, hasImage, imgUrl: null, base64Image: null, m, originalRecipient: `https://chat.whatsapp.com/${groupCode}` || fromNumber });
             });
 
             return true;
@@ -484,25 +481,15 @@ export default class Whatsapp extends Homey.Device {
         }
     }
 
-    async setCapabilityListeners() {
-        if (this.hasCapability('widget_cache')) {
-            this.registerCapabilityListener('widget_cache', async (value) => {
-                if (value) {
-                    const clearAll = true;
-                    this.cleanupWidgetStore(clearAll);
-                    this.homey.app.log(`[Device] ${this.getName()} - CapabilityListener - widget_cache`, value);
-                }
-            });
-        }
-    }
-
     // Widgets
     async sendToWidget(data) {
-        const widgetJids = await this.getWidgetJids();
-        let chat = this.getStoreValue(`widget-chat-${data.jid}`);
-
+        const doesWidgetExist = await this.getWidgetInstance(data.originalRecipient, false, true);
+        if (!doesWidgetExist) {
+            this.homey.app.log(`[Device] ${this.getName()} - sendToWidget - no widget instance for originalRecipient`, data.originalRecipient);
+            return false;
+        }
         // When image is sent from Homey
-        if (data.imageUrl && (chat || widgetJids.includes(data.jid))) {
+        if (data.imageUrl) {
             const base64Image = await getBase64Image(data.imageUrl);
             data.base64Image = `data:image/jpeg;base64,${base64Image}`;
         }
@@ -512,80 +499,117 @@ export default class Whatsapp extends Homey.Device {
             const imageBuffer = await this.WhatsappClient.downloadMediaMsg(data.m);
             const base64Image = imageBuffer ? imageBuffer.toString('base64') : null;
             data.base64Image = base64Image ? `data:image/jpeg;base64,${base64Image}` : null;
-
-            // delete m in data
-            delete data.m;
         }
 
-        if (chat) {
-            const maxChats = 15;
-            let parsedChat = JSON.parse(chat);
-            if (parsedChat.length > maxChats) {
-                parsedChat = parsedChat.slice(parsedChat.length - maxChats);
-            }
+        const { text, from, fromMe, timeStamp, hasImage, base64Image } = data;
+        const saveData = {
+            text,
+            from,
+            ...(fromMe && { fromMe }),
+            timeStamp,
+            ...(hasImage && { hasImage }),
+            ...(base64Image && { base64Image }),
+            deviceId: this.getId()
+        };
 
-            this.setStoreValue(`widget-chat-${data.jid}`, JSON.stringify([...parsedChat, data]));
-            this.homey.api.realtime('chat', data);
-        } else if (widgetJids.includes(data.jid)) {
-            this.setStoreValue(`widget-chat-${data.jid}`, JSON.stringify([]));
-
-            this.homey.api.realtime('chat', data);
-        } else if (data.text.length === 4 && data.group && !data.hasImage) {
-            this.homey.api.realtime('chat', data);
-        }
+        this.homey.api.realtime(`${this.getId()}-chat`, saveData);
+        this.setWidgetInstance(null, data.originalRecipient, saveData);
     }
 
-    async getWidgetJids() {
-        const widgetJids = [];
-        const storeData = this.getStore();
+    async cleanupWidgetStore() {
+        this.homey.app.log(`[Device] ${this.getName()} - cleanupWidgetStore`);
 
-        for await (const [storeKey, storeValue] of Object.entries(storeData)) {
-            if (storeKey.startsWith('widget-instance-') && !widgetJids.includes(storeValue)) {
-                this.homey.app.log(`[Device] ${this.getName()} - getWidgetJids - found jid`, storeValue);
-                widgetJids.push(storeValue);
-            }
-        }
-
-        this.homey.app.log(`[Device] ${this.getName()} - getWidgetJids - found widgetJids`, widgetJids);
-
-        return widgetJids;
-    }
-
-    async cleanupWidgetStore(clearAll = false) {
-        this.homey.app.log(`[Device] ${this.getName()} - cleanupWidgetStore - clearAll: ${clearAll}`);
-
-        const widgetJids = await this.getWidgetJids();
         const storeData = await this.getStore();
+        const clientId = this.getData().id;
 
-        if (clearAll && this.getCapabilityValue('widget_cache')) {
-            await this.setCapabilityValue('widget_cache', false);
-        }
+        const latestPreKeyId = Math.max(...Object.keys(storeData).map((k) => (k.match(/pre-key-(\d+)/) ? parseInt(k.split('-').pop(), 10) : 0)));
 
         for await (const storeKey of Object.keys(storeData)) {
-            if (storeKey.startsWith('widget-chat-')) {
-                const jid = storeKey.replace('widget-chat-', '');
-                const found = widgetJids.find((w) => w === jid);
-
-                if (!found || clearAll) {
-                    this.homey.app.log(`[Device] ${this.getName()} - cleanupWidgetStore - clearAll: ${clearAll} - removing key: ${storeKey}`);
+            if (storeKey.startsWith(`${clientId}:pre-key-`)) {
+                const num = parseInt(storeKey.split('-').pop(), 10);
+                if (num < latestPreKeyId - 50) {
+                    this.homey.app.log(`[Device] ${this.getName()} - cleanupWidgetStore - removing old pre-key`, storeKey);
                     await this.unsetStoreValue(storeKey);
                 }
             }
 
-            if (storeKey.startsWith('widget-instance-') && clearAll) {
-                this.homey.app.log(`[Device] ${this.getName()} - cleanupWidgetStore - clearAll - removing key`, storeKey);
+            if (storeKey.startsWith('widget-chat-')) {
+                this.homey.app.log(`[Device] ${this.getName()} - cleanupWidgetStore - removing key: ${storeKey}`);
+                await this.unsetStoreValue(storeKey);
+            }
+
+            if (storeKey.startsWith('widget-instance-')) {
+                this.homey.app.log(`[Device] ${this.getName()} - cleanupWidgetStore - removing key`, storeKey);
                 await this.unsetStoreValue(storeKey);
             }
         }
     }
 
-    async cleanupWidgetInstanceDuplicates(key, value) {
-        const storeData = this.getStore();
-        for (const [storeKey, storeValue] of Object.entries(storeData)) {
-            if (storeKey.startsWith('widget-instance-') && storeValue === value && storeKey !== key) {
-                this.homey.app.log(`[Device] ${this.getName()} - cleanupWidgetDuplicates - removing key`, storeKey, storeValue);
-                this.unsetStoreValue(storeKey);
+    async getWidgetInstance(dataId, getData = true, convertJid = false) {
+        this.homey.app.log(`[Device] ${this.getName()} - getWidgetInstance`, dataId);
+
+        const storeKey = `widgetInstance-${toConsistentId(dataId)}`;
+        const instance = await this.getStoreValue(storeKey);
+
+        this.homey.app.log(`[Device] ${this.getName()} - getWidgetInstance instance exists:`, !!instance);
+
+        if (getData) {
+            return instance?.data || null;
+        }
+
+        return !!instance;
+    }
+
+    async setWidgetInstance(widgetId, dataId, dataOverride = null) {
+        try {
+            this.homey.app.log(`[Device] ${this.getName()} - setWidgetInstance`, widgetId, dataId, dataOverride);
+
+            const storeKey = `widgetInstance-${toConsistentId(dataId)}`;
+
+            // there can be multiple widgets for one dataId, but we want to make a list of widgets
+            // check if storeKey already exists
+            const instance = (await this.getStoreValue(storeKey)) || { data: [], widgets: [] };
+            let widgets = instance.widgets;
+            let data = instance.data;
+
+            if (!widgets.includes(`${widgetId}`) && widgetId && widgetId.length) {
+                widgets.push(`${widgetId}`);
+            }
+
+            if (dataOverride) {
+                data = [...data, dataOverride];
+            }
+
+            if (data.length > 15) {
+                data = data.slice(data.length - 15);
+            }
+
+            this.homey.app.log(`[Device] ${this.getName()} - setWidgetInstance - ${!!instance ? 'Updating' : 'Creating'} store item`, { storeKey, dataId, widgets, data: data.length });
+
+            await this.setStoreValue(storeKey, { dataId, lastSeen: Date.now(), data, widgets });
+
+            return true;
+        } catch (error) {
+            this.homey.app.log(`[Device] ${this.getName()} - setWidgetInstance - error`, error);
+            return false;
+        }
+    }
+
+    async widgetInstanceHeartbeats() {
+        const now = Date.now();
+        const timeout = 1; //120 * 60 * 1000; // 2 hours without heartbeat = removed/closed
+
+        const storeData = await this.getStore();
+        const widgetInstances = Object.entries(storeData).filter(([k]) => k.startsWith('widgetInstance-'));
+
+        for (const [dataId, { lastSeen }] of widgetInstances) {
+            if (now - lastSeen > timeout) {
+                this.homey.app.log(`[widgetInstanceHeartbeats] Widget ${dataId} is gone (last seen ${new Date(lastSeen)})`);
+                await this.unsetStoreValue(dataId);
             }
         }
+
+        // Run this function again in 30 minutes
+        this.homey.setTimeout(() => this.widgetInstanceHeartbeats(), 30 * 60 * 1000);
     }
 }

@@ -328,5 +328,8 @@
   },
   "1.34.0": {
     "en": "- NEW: update to SDK v7 | NEW: add flowcard to check group link | NEW: add Poll flow card"
+  },
+  "1.35.0": {
+    "en": "NEW: memory improvements | FIX: messages sometimes not handled | FIX: connection drops"
   }
 }

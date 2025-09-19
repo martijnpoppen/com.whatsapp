@@ -18,6 +18,7 @@ export default class App extends Homey.App {
     // -------------------- INIT ----------------------
 
     async onInit() {
+        this.widgetInstances = [];
         this.log(`${this.homey.manifest.id} - ${this.homey.manifest.version} started...`);
         this.log(`${this.homey.manifest.id} Running on Node.js version:`, process.version);
 
@@ -54,43 +55,33 @@ export default class App extends Homey.App {
         return address;
     }
 
-    async getWidgetChatInstance(widgetId) {
-        const driver = this.homey.drivers.getDriver('Whatsapp');
-        const devices = driver.getDevices();
-        const device = devices.find((device) => device.getStoreValue(`widget-instance-${widgetId}`));
-
-        if (device) {
-            const storeValue = device.getStoreValue(`widget-instance-${widgetId}`);
-            device.cleanupWidgetInstanceDuplicates(`widget-instance-${widgetId}`, storeValue);
-
-            return storeValue;
-        }
-
-        return null;
-    }
-
-    async setWidgetChatInstance(widgetId, jid) {
-        const driver = this.homey.drivers.getDriver('Whatsapp');
-        const devices = driver.getDevices();
-
-        devices.forEach((device) => {
-            device.setStoreValue(`widget-instance-${widgetId}`, jid);
-        });
-    }
-
-    async getWidgetChats(jid) {
-        const driver = this.homey.drivers.getDriver('Whatsapp');
-        const devices = driver.getDevices();
-        const device = devices.find((device) => device.getStoreValue(`widget-chat-${jid}`));
-
-        return device ? device.getStoreValue(`widget-chat-${jid}`) : null;
-    }
-
     getDataPath() {
         const dataPath = path.resolve(__dirname, '/userdata/');
 
         this.homey.app.log(`getDataPath`, dataPath);
 
         return dataPath;
+    }
+
+    getDeviceById(deviceId) {
+        const driver = this.homey.drivers.getDriver('Whatsapp');
+        if (!driver) {
+            this.error(`getDeviceById - Driver not found`);
+            throw new Error('Driver not found');
+        }
+
+        const devices = driver.getDevices();
+        if (!devices || devices.length === 0) {
+            this.error(`getDeviceById - No devices found for driver`);
+            throw new Error('No devices found for driver');
+        }
+
+        const device = devices.find((d) => d.getId() === deviceId);
+
+        if (device) {
+            return device;
+        }
+
+        return null;
     }
 }

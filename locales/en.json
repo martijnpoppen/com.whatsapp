@@ -5,6 +5,9 @@
         "loading": "Loading"
     },
     "widget": {
-        "setup": "To setup this widget. Send the code below inside the groupchat you want to connect to this widget."
+        "setup": "To setup this widget. Make sure to setup a device first. Then add the device to this widget.",
+        "no_device": "No device found. Please add a device to use this widget.",
+        "no_number": "No number/group found. Please add a mobile number or group invite link in the settings to see the chat here.",
+        "no_chat": "No chat found. Please send a message to the number/group you added in the settings to see the chat here. <br /><br />Note: Only 15 most recent messages are shown. If the widget is not opened for 2 days, the chat will be cleared. (To save memory)"
     }
 }

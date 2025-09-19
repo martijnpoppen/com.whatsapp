@@ -52,29 +52,23 @@
 <body id="chat" class="homey-widget-full">
     <span id="loading" class="loading loading-ring loading-lg"></span>
     <script type="text/javascript" src="./helpers.js"></script>
-    
+
     <script type="text/javascript">
         // globalVars
         let inviteCode = null;
         let widgetInitialized = false;
+        let clearInitialMessage = false;
 
         function onHomeyReady (Homey) {
             const settings = Homey.getSettings();
 
             Homey.ready({ height: settings.widgetHeight || 600 });
 
-            // cleanup old storage implementation
-            window.localStorage.clear();
-
-
             // NextTick to make sure the Homey object is ready
             setTimeout(() => {
-                // Get the widget Jid. This is the group Jid
-                getWidgetJid(Homey);
-
-                // Initialize the chat listener
+                checkRequirements(Homey);
                 initChatListener(Homey);
-            }, 3000);
+            }, 1000);
 
         }
 
@@ -91,36 +85,50 @@
             return `${shortDate} ${shortTime}`;
         }
 
-        function getWidgetJid (Homey) {
-            const settings = Homey.getSettings();
-            const widgetId = Homey.getWidgetInstanceId()
-            const widgetIdFour = widgetId.substring(widgetId.length - 4);
+        function checkRequirements (Homey) {
+            try {
+                const settings = Homey.getSettings();
+                const widgetId = Homey.getWidgetInstanceId()
+                const deviceId = getDeviceId(Homey);
+                const dataId = settings.dataId || "";
 
-            Homey.api('GET', `/getWidgetChatInstance?widgetId=${widgetId}`).then((response) => {
-                console.log('Received initial chat:', response);
-
-                if (response) {
-                    inviteCode = response;
-
-                    getWidgetChats(Homey, inviteCode);
-                } else {
+                if (!deviceId) {
                     console.log('No inviteCode set in store');
-                    parseMessage({ text: `${Homey.__('widget.setup')} <br /><br /><br /> <strong>${widgetIdFour}</strong>`, fromMe: false, timeStamp: Date.now(), from: 'Whatsapp Widget', hasImage: false, base64Image: null }, settings, true);
+                    parseMessage({ text: `${Homey.__('widget.no_device')} <br /><br /><br />`, fromMe: false, timeStamp: Date.now(), from: 'Whatsapp Widget', hasImage: false, base64Image: null }, settings, true);
                     hideLoader();
                 }
-            }).catch((error) => {
+
+                if (!dataId || dataId === "" || dataId.length < 1) {
+                    console.log('No dataId set in settings');
+                    parseMessage({ text: `${Homey.__('widget.no_number')} <br /><br /><br />`, fromMe: false, timeStamp: Date.now(), from: 'Whatsapp Widget', hasImage: false, base64Image: null }, settings, true);
+                    hideLoader();
+                }
+
+                if (deviceId && dataId && dataId.length > 1) {
+                    console.log('Device and dataId found, setting up widget chat instance', { deviceId, dataId, widgetId });
+                    Homey.api('POST', `/setWidgetInstance`, { widgetId: widgetId, dataId: dataId, deviceId: deviceId }).then((response) => {
+                        console.log('Set widget chat instance response:', response);
+
+                        getWidgetInstance(Homey);
+                    }).catch((error) => {
+                        console.error('Failed to set widget chat instance:', error);
+                    });
+                }
+            } catch (error) {
                 console.error('Failed to get initial chat:', error);
-            });
+            }
         }
 
-        function getWidgetChats (Homey, inviteCode) {
+        function getWidgetInstance (Homey) {
             const settings = Homey.getSettings();
+            const widgetId = Homey.getWidgetInstanceId()
+            const deviceId = getDeviceId(Homey);
+            const dataId = settings.dataId || "";
 
-            Homey.api('GET', `/getWidgetChats?jid=${inviteCode}`).then((response) => {
-                console.log('Received chats:', response);
+            Homey.api('POST', `/getWidgetInstance`, { widgetId: widgetId, dataId: dataId, deviceId: deviceId }).then((messages) => {
+                console.log('Received chats:', messages);
 
-                if (response) {
-                    const messages = JSON.parse(response);
+                if (messages && messages.length > 0) {
                     messages.forEach((msg) => {
                         parseMessage(msg, settings);
                     });
@@ -133,6 +141,9 @@
                     }, 1000);
                 } else {
                     console.log('No messages found');
+                    parseMessage({ text: `${Homey.__('widget.no_chat')} <br /><br /><br />`, fromMe: false, timeStamp: Date.now(), from: 'Whatsapp Widget', hasImage: false, base64Image: null }, settings, true);
+                    clearInitialMessage = true;
+                    hideLoader();
                 }
             }).catch((error) => {
                 console.error('Failed to get chat messages:', error);
@@ -145,32 +156,22 @@
             document.getElementById('loading').style.display = 'none';
         }
 
+        function getDeviceId (Homey) {
+            const deviceIds = Homey.getDeviceIds()
+            return deviceIds && deviceIds.length > 0 ? deviceIds[0] : null;
+        }
+
         function initChatListener (Homey) {
             const settings = Homey.getSettings();
             const widgetId = Homey.getWidgetInstanceId()
-            const widgetIdFour = widgetId.substring(widgetId.length - 4);
+            const deviceId = getDeviceId(Homey)
 
-            Homey.on('chat', (data) => {
+            Homey.on(`${deviceId}-chat`, (data) => {
                 console.log('Received data:', data);
-
-                // Check if the message contains the widgetId
-                // If so, set the inviteCode
-                // This is a one-time setup
-                if (data.text && data.text.includes(widgetIdFour) && data.group) {
-                    Homey.api('GET', `/setWidgetChatInstance?widgetId=${widgetId}&jid=${data.jid}`).then((response) => {
-                        inviteCode = data.jid;
-
-                        hideLoader();
-
-                        parseMessage({ text: `✅`, fromMe: false, timeStamp: Date.now(), from: 'Whatsapp Widget', hasImage: false, base64Image: null }, settings, true);
-                    }).catch((error) => {
-                        console.error('Failed to get chat:', error);
-                    });
-                }
-
                 // Check if the inviteCode is set and the message is from the group
                 // If so, parse the message
-                if (inviteCode && inviteCode === data.jid && widgetInitialized) {
+                console.log(`check validity`, { widgetDeviceId: deviceId, dataDeviceId: data.deviceId, isValid: data.deviceId === deviceId, widgetInitialized });
+                if (widgetInitialized && data.deviceId === deviceId) {
                     parseMessage(data, settings);
                 } else {
                     console.log('Skip message parse - No inviteCode set or message is not from group', inviteCode, data.group);
@@ -181,7 +182,19 @@
         function parseMessage (data, settings, isSetup = false) {
             const { invertChat, showFromMe, showFromOthers, fromMeName } = settings;
 
-            const { text, from, fromMe, timeStamp, hasImage, base64Image } = data;
+            if (clearInitialMessage) {
+                document.getElementById('chat').innerHTML = '';
+                clearInitialMessage = false;
+            }
+
+            const {
+                text,
+                from,
+                fromMe = false,
+                timeStamp,
+                hasImage = false,
+                base64Image = false
+            } = data;
             const isFromMe = invertChat ? !fromMe : fromMe;
             const image = base64Image;
             const chatClass = isFromMe ? 'chat-end' : 'chat-start';
@@ -189,13 +202,11 @@
 
             const hideMessageFromOthers = !fromMe && !showFromOthers;
             const hideMessageFromMe = fromMe && !showFromMe;
-            const hideEmptyMessage = !text || text === '' | text.length < 1;
+            const hideEmptyMessage = !text || text === '' | !!text.length < 1;
 
-            if (!isSetup && (hideMessageFromOthers || hideMessageFromMe || hideEmptyMessage)) {
+            if (hideMessageFromOthers || hideMessageFromMe || hideEmptyMessage) {
                 return;
             }
-
-            hideLoader();
 
             let chat = document.getElementById('chat');
             chat.innerHTML += `

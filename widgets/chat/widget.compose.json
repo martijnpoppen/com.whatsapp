@@ -1,142 +1,178 @@
 {
-  "name": {
-    "en": "WhatsApp Chat view ",
-    "nl": "WhatsApp Chatweergave",
-    "de": "WhatsApp Chat-Ansicht",
-    "fr": "WhatsApp Vue du chat",
-    "it": "WhatsApp Visualizzazione chat",
-    "sv": "WhatsApp Chattvy",
-    "no": "WhatsApp Chatvisning",
-    "es": "WhatsApp Vista de chat",
-    "da": "WhatsApp Chatvisning",
-    "ru": "WhatsApp Просмотр чата",
-    "pl": "WhatsApp Widok czatu",
-    "ko": "WhatsApp 채팅 보기"
-  },
-  "transparent": true,
-  "settings": [
-    {
-        "id": "widgetHeight",
-        "type": "number",
-        "value": 600,
-        "title": {
-            "en": "Widget height",
-            "nl": "Widgethoogte",
-            "de": "Widget-Höhe",
-            "fr": "Hauteur du widget",
-            "it": "Altezza del widget",
-            "sv": "Widgethöjd",
-            "no": "Widgethøyde",
-            "es": "Altura del widget",
-            "da": "Widgethøjde",
-            "ru": "Высота виджета",
-            "pl": "Wysokość widżetu",
-            "ko": "위젯 높이"
+    "id": "chat",
+    "name": {
+        "en": "WhatsApp Chat view ",
+        "nl": "WhatsApp Chatweergave",
+        "de": "WhatsApp Chat-Ansicht",
+        "fr": "WhatsApp Vue du chat",
+        "it": "WhatsApp Visualizzazione chat",
+        "sv": "WhatsApp Chattvy",
+        "no": "WhatsApp Chatvisning",
+        "es": "WhatsApp Vista de chat",
+        "da": "WhatsApp Chatvisning",
+        "ru": "WhatsApp Просмотр чата",
+        "pl": "WhatsApp Widok czatu",
+        "ko": "WhatsApp 채팅 보기"
+    },
+    "devices": {
+        "type": "app",
+        "singular": true,
+        "filter": {
+            "capabilities": "send_data"
+        }
+    },
+    "transparent": true,
+    "settings": [
+        {
+            "type": "text",
+            "id": "dataId",
+            "title": {
+                "en": "Mobile number / Group invite link",
+                "nl": "Mobiel nummer / Groepsuitnodigingslink",
+                "de": "Mobiltelefonnummer / Gruppeneinladungslink",
+                "fr": "Numéro de téléphone mobile / Lien d'invitation de groupe",
+                "it": "Numero di cellulare / Link invito al gruppo",
+                "sv": "Mobilnummer / Inbjudningslänk till grupp",
+                "no": "Mobilnummer / Gruppeinvitasjonslenke",
+                "es": "Número de teléfono móvil / Enlace de invitación de grupo",
+                "da": "Mobilnummer / Gruppeinvitation link",
+                "ru": "Мобильный номер / Ссылка для приглашения в группу",
+                "pl": "Numer telefonu komórkowego / Link do zaproszenia do grupy",
+                "ko": "휴대폰 번호 / 그룹 초대 링크"
+            },
+            "hint": {
+                "en": "Phone number: Use with country code! e.g. (+31 -> +31601020304) || Groups: Copy the invite link of your WhatsApp group and paste it here.",
+                "nl": "Telefoonnummer: Gebruik met landcode! bijv. (+31 -> +31601020304) || Groepen: Kopieer de uitnodigingslink van je WhatsApp-groep en plak deze hier.",
+                "de": "Telefonnummer: Mit Ländervorwahl verwenden! z.B. (+49 -> +491234567890) || Gruppen: Kopiere den Einladungslink deiner WhatsApp-Gruppe und füge ihn hier ein.",
+                "fr": "Numéro de téléphone : Utilisez-le avec le code pays ! Ex. (+33 -> +33601020304) || Groupes : Copiez le lien d'invitation de votre groupe WhatsApp et collez-le ici.",
+                "it": "Numero di telefono: Utilizzare con il codice del paese! Es. (+39 -> +393123456789) || Gruppi: Copia il link di invito del tuo gruppo WhatsApp e incollalo qui.",
+                "sv": "Telefonnummer: Använd med landskod! t.ex. (+46 -> +46701234567) || Grupper: Kopiera inbjudningslänken till din WhatsApp-grupp och klistra in den här.",
+                "no": "Telefonnummer: Bruk med landskode! f.eks. (+47 -> +4798765432) || Grupper: Kopier invitasjonslenken til WhatsApp-gruppen din og lim den inn her.",
+                "es": "Número de teléfono: ¡Usar con código de país! ej. (+34 -> +34601020304) || Grupos: Copia el enlace de invitación de tu grupo de WhatsApp y pégalo aquí.",
+                "da": "Telefonnummer: Brug med landekode! f.eks. (+45 -> +4512345678) || Grupper: Kopier linket til din WhatsApp-gruppeinvitation og indsæt det her.",
+                "ru": "Телефонный номер: Используйте с указанием кода страны! например (+7 -> +79123456789) || Группы: Скопируйте пригласительную ссылку на вашу группу WhatsApp и вставьте ее здесь.",
+                "pl": "Numer telefonu: Użyj z kodem kraju! np. (+31 -> +31601020304) || Grupy: Skopiuj link do zaproszenia do swojej grupy WhatsApp i wklej go tutaj.",
+                "ko": "전화번호: 국가 코드와 함께 사용하세요! 예: (+82 -> +821012345678) || 그룹: WhatsApp 그룹의 초대 링크를 복사하여 여기에 붙여넣으세요."
+            }
         },
-        "hint": {
-            "en": "Height of the widget in pixels",
-            "nl": "Hoogte van de widget in pixels",
-            "de": "Höhe des Widgets in Pixeln",
-            "fr": "Hauteur du widget en pixels",
-            "it": "Altezza del widget in pixel",
-            "sv": "Höjden på widgeten i pixlar",
-            "no": "Høyden på widgeten i piksler",
-            "es": "Altura del widget en píxeles",
-            "da": "Højden af widget i pixels",
-            "ru": "Высота виджета в пикселях",
-            "pl": "Wysokość widżetu w pikselach",
-            "ko": "위젯의 높이(픽셀)"
+        {
+            "id": "widgetHeight",
+            "type": "number",
+            "value": 600,
+            "title": {
+                "en": "Widget height",
+                "nl": "Widgethoogte",
+                "de": "Widget-Höhe",
+                "fr": "Hauteur du widget",
+                "it": "Altezza del widget",
+                "sv": "Widgethöjd",
+                "no": "Widgethøyde",
+                "es": "Altura del widget",
+                "da": "Widgethøjde",
+                "ru": "Высота виджета",
+                "pl": "Wysokość widżetu",
+                "ko": "위젯 높이"
+            },
+            "hint": {
+                "en": "Height of the widget in pixels",
+                "nl": "Hoogte van de widget in pixels",
+                "de": "Höhe des Widgets in Pixeln",
+                "fr": "Hauteur du widget en pixels",
+                "it": "Altezza del widget in pixel",
+                "sv": "Höjden på widgeten i pixlar",
+                "no": "Høyden på widgeten i piksler",
+                "es": "Altura del widget en píxeles",
+                "da": "Højden af widget i pixels",
+                "ru": "Высота виджета в пикселях",
+                "pl": "Wysokość widżetu w pikselach",
+                "ko": "위젯의 높이(픽셀)"
+            }
+        },
+        {
+            "id": "showFromMe",
+            "type": "checkbox",
+            "value": true,
+            "title": {
+                "en": "Show messages send by me",
+                "nl": "Toon berichten die ik heb verzonden",
+                "de": "Nachrichten anzeigen, die ich gesendet habe",
+                "fr": "Afficher les messages envoyés par moi",
+                "it": "Mostra i messaggi inviati da me",
+                "sv": "Visa meddelanden som jag skickat",
+                "no": "Vis meldinger sendt av meg",
+                "es": "Mostrar mensajes enviados por mí",
+                "da": "Vis beskeder sendt af mig",
+                "ru": "Показать сообщения, отправленные мной",
+                "pl": "Pokaż wiadomości wysłane przeze mnie",
+                "ko": "내가 보낸 메시지 표시"
+            }
+        },
+        {
+            "id": "showFromOthers",
+            "type": "checkbox",
+            "value": true,
+            "title": {
+                "en": "Show messages send by others",
+                "nl": "Toon berichten die anderen hebben verzonden",
+                "de": "Nachrichten anzeigen, die andere gesendet haben",
+                "fr": "Afficher les messages envoyés par d'autres",
+                "it": "Mostra i messaggi inviati da altri",
+                "sv": "Visa meddelanden som andra skickat",
+                "no": "Vis meldinger sendt av andre",
+                "es": "Mostrar mensajes enviados por otros",
+                "da": "Vis beskeder sendt af andre",
+                "ru": "Показать сообщения, отправленные другими",
+                "pl": "Pokaż wiadomości wysłane przez innych",
+                "ko": "다른 사람이 보낸 메시지 표시"
+            }
+        },
+        {
+            "id": "invertChat",
+            "type": "checkbox",
+            "value": true,
+            "title": {
+                "en": "Invert chat order (left/right)",
+                "nl": "Chatvolgorde omkeren (links/rechts)",
+                "de": "Chat-Reihenfolge umkehren (links/rechts)",
+                "fr": "Inverser l'ordre du chat (gauche/droite)",
+                "it": "Inverti l'ordine della chat (sinistra/destra)",
+                "sv": "Invertera chattordning (vänster/höger)",
+                "no": "Inverter chatrekkefølge (venstre/høyre)",
+                "es": "Invertir el orden del chat (izquierda/derecha)",
+                "da": "Omvend chatrækkefølge (venstre/højre)",
+                "ru": "Инвертировать порядок чата (слева/справа)",
+                "pl": "Odwróć kolejność czatu (lewo/prawo)",
+                "ko": "채팅 순서 반전 (왼쪽/오른쪽)"
+            }
+        },
+        {
+            "id": "fromMeName",
+            "type": "text",
+            "value": "Homey",
+            "title": {
+                "en": "Name for messages send by me",
+                "nl": "Naam voor berichten die ik heb verzonden",
+                "de": "Name für Nachrichten, die ich gesendet habe",
+                "fr": "Nom pour les messages envoyés par moi",
+                "it": "Nome per i messaggi inviati da me",
+                "sv": "Namn för meddelanden som jag skickat",
+                "no": "Navn for meldinger sendt av meg",
+                "es": "Nombre para mensajes enviados por mí",
+                "da": "Navn for beskeder sendt af mig",
+                "ru": "Имя для сообщений, отправленных мной",
+                "pl": "Nazwa dla wiadomości wysłanych przeze mnie",
+                "ko": "내가 보낸 메시지에 대한 이름"
+            }
         }
-    },
-    {
-      "id": "showFromMe",
-      "type": "checkbox",
-      "value": true,
-      "title": {
-        "en": "Show messages send by me",
-        "nl": "Toon berichten die ik heb verzonden",
-        "de": "Nachrichten anzeigen, die ich gesendet habe",
-        "fr": "Afficher les messages envoyés par moi",
-        "it": "Mostra i messaggi inviati da me",
-        "sv": "Visa meddelanden som jag skickat",
-        "no": "Vis meldinger sendt av meg",
-        "es": "Mostrar mensajes enviados por mí",
-        "da": "Vis beskeder sendt af mig",
-        "ru": "Показать сообщения, отправленные мной",
-        "pl": "Pokaż wiadomości wysłane przeze mnie",
-        "ko": "내가 보낸 메시지 표시"
-      }
-    },
-    {
-        "id": "showFromOthers",
-        "type": "checkbox",
-        "value": true,
-        "title": {
-            "en": "Show messages send by others",
-            "nl": "Toon berichten die anderen hebben verzonden",
-            "de": "Nachrichten anzeigen, die andere gesendet haben",
-            "fr": "Afficher les messages envoyés par d'autres",
-            "it": "Mostra i messaggi inviati da altri",
-            "sv": "Visa meddelanden som andra skickat",
-            "no": "Vis meldinger sendt av andre",
-            "es": "Mostrar mensajes enviados por otros",
-            "da": "Vis beskeder sendt af andre",
-            "ru": "Показать сообщения, отправленные другими",
-            "pl": "Pokaż wiadomości wysłane przez innych",
-            "ko": "다른 사람이 보낸 메시지 표시"
+    ],
+    "api": {
+        "setWidgetInstance": {
+            "method": "POST",
+            "path": "/setWidgetInstance"
+        },
+        "getWidgetInstance": {
+            "method": "POST",
+            "path": "/getWidgetInstance"
         }
-    },
-    {
-      "id": "invertChat",
-      "type": "checkbox",
-      "value": true,
-      "title": {
-        "en": "Invert chat order (left/right)",
-        "nl": "Chatvolgorde omkeren (links/rechts)",
-        "de": "Chat-Reihenfolge umkehren (links/rechts)",
-        "fr": "Inverser l'ordre du chat (gauche/droite)",
-        "it": "Inverti l'ordine della chat (sinistra/destra)",
-        "sv": "Invertera chattordning (vänster/höger)",
-        "no": "Inverter chatrekkefølge (venstre/høyre)",
-        "es": "Invertir el orden del chat (izquierda/derecha)",
-        "da": "Omvend chatrækkefølge (venstre/højre)",
-        "ru": "Инвертировать порядок чата (слева/справа)",
-        "pl": "Odwróć kolejność czatu (lewo/prawo)",
-        "ko": "채팅 순서 반전 (왼쪽/오른쪽)"
-      }
-    },
-    {
-      "id": "fromMeName",
-      "type": "text",
-      "value": "Homey",
-      "title": {
-        "en": "Name for messages send by me",
-        "nl": "Naam voor berichten die ik heb verzonden",
-        "de": "Name für Nachrichten, die ich gesendet habe",
-        "fr": "Nom pour les messages envoyés par moi",
-        "it": "Nome per i messaggi inviati da me",
-        "sv": "Namn för meddelanden som jag skickat",
-        "no": "Navn for meldinger sendt av meg",
-        "es": "Nombre para mensajes enviados por mí",
-        "da": "Navn for beskeder sendt af mig",
-        "ru": "Имя для сообщений, отправленных мной",
-        "pl": "Nazwa dla wiadomości wysłanych przeze mnie",
-        "ko": "내가 보낸 메시지에 대한 이름"
-      }
     }
-  ],
-  "api": {
-    "getWidgetChatInstance": {
-      "method": "GET",
-      "path": "/getWidgetChatInstance"
-    },
-    "setWidgetChatInstance": {
-        "method": "GET",
-        "path": "/setWidgetChatInstance"
-    },
-    "getWidgetChats": {
-      "method": "GET",
-      "path": "/getWidgetChats"
-    }
-  }
 }
