@@ -170,11 +170,13 @@
                 console.log('Received data:', data);
                 // Check if the inviteCode is set and the message is from the group
                 // If so, parse the message
-                console.log(`check validity`, { widgetDeviceId: deviceId, dataDeviceId: data.deviceId, isValid: data.deviceId === deviceId, widgetInitialized });
-                if (widgetInitialized && data.deviceId === deviceId) {
+                const samedeviceId = data.deviceId === deviceId;
+                const sameDataId = data.dataId === settings.dataId;
+                console.log(`check validity`, { widgetDeviceId: deviceId, dataDeviceId: data.deviceId, widgetInitialized, samedeviceId, widgetDataId: settings.dataId, dataDataId: data.dataId, sameDataId });
+                if (widgetInitialized && samedeviceId && sameDataId) {
                     parseMessage(data, settings);
                 } else {
-                    console.log('Skip message parse - No inviteCode set or message is not from group', inviteCode, data.group);
+                    console.log('Skip message parse, not for this device/widget or not initialized yet');
                 }
             });
         }

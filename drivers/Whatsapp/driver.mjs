@@ -20,7 +20,7 @@ export default class mainDriver extends Homey.Driver {
     }
 
     async setWhatsappClient(deviceId, device = null) {
-        if( this.WhatsappClients[deviceId]) {
+        if (this.WhatsappClients[deviceId]) {
             delete this.WhatsappClients[deviceId];
         }
 
@@ -29,47 +29,36 @@ export default class mainDriver extends Homey.Driver {
             homeyData: {
                 driver: this,
                 device,
-                app: this.homey.app,
+                app: this.homey.app
             }
         });
-
-        return this.WhatsappClients[deviceId];
     }
 
-    async setCheckInterval(session, guid) {
+    async setCheckInterval(ctx, session, guid, skipCode = false) {
         try {
-            this.onReadyInterval = this.homey.setInterval(async () => {
-                const data = await this.WhatsappClients[guid].getData();
+            ctx.homey.app.log(`[Driver] ${ctx.id} - setCheckInterval - start`, { guid, skipCode });
+            const data = await ctx.WhatsappClients[guid].getData();
 
-                this.homey.app.log(`[Driver] ${this.id} - setCheckInterval - ${data.type}`);
+            ctx.homey.app.log(`[Driver] ${ctx.id} - setCheckInterval - ${data.type}`, data);
 
-                if (data.type === 'READY' && data.clientID === guid) {
-                    if (session) session.showView('loading2');
-                }
+            if (data.type === 'READY' && data.clientID === guid) {
+                if (session) return session.showView('loading2');
+            }
 
-                if (data.type === 'CODE' && data.clientID === guid) {
-                    this.code = data.msg;
-                    if (session) await session.emit('code', data.msg);
-                }
+            if (!skipCode && data.type === 'CODE' && data.clientID === guid) {
+                ctx.code = data.msg;
+                if (session) return await session.emit('code', data.msg);
+            }
 
-                if (data.type === 'CLOSED' && data.clientID === guid) {
-                    if (session) session.showView('done');
-                }
-            }, 4000);
+            if (data.type === 'CLOSED' && data.clientID === guid) {
+                if (session) return session.showView('done');
+            }
 
-            setTimeout(() => {
-                this.homey.app.log(`[Driver] ${this.id} - Disabling interval`);
-                this.homey.clearInterval(this.onReadyInterval);
-            }, 120000);
+            await sleep(4000);
+            ctx.setCheckInterval(ctx, session, guid, skipCode);
         } catch (error) {
-            this.homey.clearInterval(this.onReadyInterval);
-            this.homey.app.error(`[Driver] ${this.id} error`, error);
+            ctx.homey.app.error(`[Driver] ${ctx.id} error`, error);
         }
-    }
-
-    async resetInterval() {
-        this.homey.app.log(`[Driver] ${this.id} - ResetInterval - Disabling interval`);
-        this.homey.clearInterval(this.onReadyInterval);
     }
 
     async onPair(session) {
@@ -113,31 +102,19 @@ export default class mainDriver extends Homey.Driver {
 
             if (view === 'whatsapp_pairing_code') {
                 if (session) await session.emit('code', this.code);
+                await this.setCheckInterval(this, session, this.guid, true);
             }
 
             if (view === 'loading') {
-                if(this.type === 'repair') {
-                    await this.setWhatsappClient(this.guid, this.device);
-                } else {
-                    await this.setWhatsappClient(this.guid);
-                }
+                await this.setWhatsappClient(this.guid, this.device); // don't send device during repair. we need a fresh client
 
                 await this.WhatsappClients[this.guid].addDevice(this.phonenumber);
+                await this.setCheckInterval(this, session, this.guid);
 
-                this.setCheckInterval(session, this.guid);
-
-                await sleep(5000);
-                if (this.code.length) {
-                    if (session) session.showView('whatsapp_pairing_code');
-                }
-
-                await sleep(3000);
-                if (session) session.showView('whatsapp_pairing_code');
+                session.showView('whatsapp_pairing_code');
             }
 
             if (view === 'loading2') {
-                this.resetInterval();
-
                 this.results = [
                     {
                         name: `Whatsapp`,
@@ -186,4 +163,4 @@ export default class mainDriver extends Homey.Driver {
             return true;
         });
     }
-};
+}

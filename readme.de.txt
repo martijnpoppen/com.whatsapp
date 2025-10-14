@@ -1,10 +1,5 @@
 WhatsApp für Homey ist eine vollständige Integration ohne die Intervention eines Bots. Mit dieser Homey-App kannst du Nachrichten, Videos, Fotos, Dokumente und Sprachnachrichten unter deinem eigenen Namen an eine Mobilnummer oder eine WhatsApp-Gruppe senden.
 
-Verwendung:
-
-    - Installiere diese App auf deinem Homey.
-    - Gehe zu "Geräte hinzufügen".
-    - Scanne den QR-Code mit WhatsApp von deiner Mobilnummer.
 
 Aktuelle Funktionen:
 

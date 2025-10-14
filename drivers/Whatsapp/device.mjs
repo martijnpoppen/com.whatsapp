@@ -154,6 +154,7 @@ export default class Whatsapp extends Homey.Device {
             const result = await this.WhatsappClient.startup();
 
             if (result) {
+                await sleep(2000);
                 this.setAvailable();
             } else {
                 await this.new_pairing_code.trigger(this);
@@ -166,10 +167,22 @@ export default class Whatsapp extends Homey.Device {
     }
 
     async removeWhatsappClient() {
+        this.setUnavailable(`Repairing...`);
         if (this.WhatsappClient) {
             this.WhatsappClient.deleteDevice();
             this.WhatsappClient = null;
         }
+
+        // loop trough store and remove everything
+        const storeKeys = await this.getStoreKeys();
+        for (const storeKey of storeKeys) {
+            this.homey.app.log(`[Device] ${this.getName()} - removeWhatsappClient - removing key`, storeKey);
+            this.unsetStoreValue(storeKey);
+        }
+
+        await sleep(3000);
+
+        this.homey.app.log(`[Device] ${this.getName()} - removeWhatsappClient - all store data removed`);
     }
 
     async onCapability_SendMessage(params, type) {
@@ -381,6 +394,8 @@ export default class Whatsapp extends Homey.Device {
     // ------------- Triggers -------------
     async messageHelper(msg) {
         try {
+            if(!this.getAvailable()) return false; // Device not available, ignore incoming messages
+
             const settings = await this.getSettings();
 
             msg.messages.forEach(async (m) => {
@@ -427,7 +442,7 @@ export default class Whatsapp extends Homey.Device {
 
                 triggerAllowed && this.new_message.trigger(this, tokens, state);
 
-                this.sendToWidget({ jid, from: from, fromMe, timeStamp: m.messageTimestamp * 1000, text, group, hasImage, imgUrl: null, base64Image: null, m, originalRecipient: `https://chat.whatsapp.com/${groupCode}` || fromNumber });
+                this.sendToWidget({ jid, from: from, fromMe, timeStamp: m.messageTimestamp * 1000, text, group, hasImage, imgUrl: null, base64Image: null, m, originalRecipient: groupCode ? `https://chat.whatsapp.com/${groupCode}` : fromNumber });
             });
 
             return true;
@@ -509,7 +524,8 @@ export default class Whatsapp extends Homey.Device {
             timeStamp,
             ...(hasImage && { hasImage }),
             ...(base64Image && { base64Image }),
-            deviceId: this.getId()
+            deviceId: this.getId(),
+            dataId: data.originalRecipient
         };
 
         this.homey.api.realtime(`${this.getId()}-chat`, saveData);
@@ -597,7 +613,7 @@ export default class Whatsapp extends Homey.Device {
 
     async widgetInstanceHeartbeats() {
         const now = Date.now();
-        const timeout = 1; //120 * 60 * 1000; // 2 hours without heartbeat = removed/closed
+        const timeout = 36 * 60 * 60 * 1000; // 36 hours without heartbeat = removed/closed
 
         const storeData = await this.getStore();
         const widgetInstances = Object.entries(storeData).filter(([k]) => k.startsWith('widgetInstance-'));

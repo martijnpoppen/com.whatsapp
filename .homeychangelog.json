@@ -331,5 +331,11 @@
   },
   "1.35.0": {
     "en": "NEW: memory improvements | FIX: messages sometimes not handled | FIX: connection drops"
+  },
+  "1.36.0": {
+    "en": "NEW: different way of handling widgets."
+  },
+  "1.36.1": {
+    "en": "FIX: update app store readme"
   }
 }
