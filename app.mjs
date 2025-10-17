@@ -18,6 +18,9 @@ export default class App extends Homey.App {
     // -------------------- INIT ----------------------
 
     async onInit() {
+        this.cleanGC();
+        this.cleanGCInterval();
+
         this.widgetInstances = [];
         this.log(`${this.homey.manifest.id} - ${this.homey.manifest.version} started...`);
         this.log(`${this.homey.manifest.id} Running on Node.js version:`, process.version);
@@ -25,6 +28,25 @@ export default class App extends Homey.App {
         await flowActions.init(this.homey);
 
         this.sendNotifications();
+    }
+
+    cleanGC() {
+        try {
+            if (global.gc) {
+                global.gc();
+                console.log('[cleanGC] Manual GC triggered');
+            } else {
+                console.warn('[cleanGC] GC not exposed. Run with --expose-gc');
+            }
+        } catch (error) {
+            console.error('[cleanGC] Error during manual GC:', error);
+        }
+    }
+
+    cleanGCInterval() {
+        this.homey.setInterval(() => {
+            this.cleanGC();
+        }, 120000);
     }
 
     async sendNotifications() {

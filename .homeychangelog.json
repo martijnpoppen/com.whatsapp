@@ -337,5 +337,17 @@
   },
   "1.36.1": {
     "en": "FIX: update app store readme"
+  },
+  "1.37.0": {
+    "en": "FIX: memory issue causing crashes | FIX: Repair | NEW: SDK updatr"
+  },
+  "1.37.1": {
+    "en": "FIX: cleanup leftover memory before starting app"
+  },
+  "1.37.2": {
+    "en": "FIX: memory | FIX: button not showing in pairing view"
+  },
+  "1.37.3": {
+    "en": "FIX: memory | FIX: button not showing in pairing view"
   }
 }

@@ -72,8 +72,14 @@
                 if (options.title) Homey.setTitle(Homey.__(options.title));
                 if (options.text) $text.innerHTML = Homey.__(options.text);
 
-                $next.classList += ' hidden';
+                $next.classList += ' hy-button-primary hy-button-fill button is-loading is-disabled no-click';
             }, 0);
+
+            setTimeout(() => {
+                $next.classList.remove("is-loading");
+                $next.classList.remove("is-disabled");
+                $next.classList.remove("no-click");
+            }, 25000);
         });
     })();
 </script>
