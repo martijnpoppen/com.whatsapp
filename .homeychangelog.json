@@ -355,5 +355,8 @@
   },
   "1.38.0": {
     "en": "NEW: CPU and Memory improvements (up to 30MB RAM improvement)"
+  },
+  "1.38.1": {
+    "en": "FIX: add fetch fallback for media"
   }
 }
