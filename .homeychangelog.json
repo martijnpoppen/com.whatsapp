@@ -352,5 +352,8 @@
   },
   "1.37.4": {
     "en": "FIX: memory issues"
+  },
+  "1.38.0": {
+    "en": "NEW: CPU and Memory improvements (up to 30MB RAM improvement)"
   }
 }
