@@ -349,5 +349,8 @@
   },
   "1.37.3": {
     "en": "FIX: memory | FIX: button not showing in pairing view"
+  },
+  "1.37.4": {
+    "en": "FIX: memory issues"
   }
 }
