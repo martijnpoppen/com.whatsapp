@@ -412,7 +412,7 @@ export default class Whatsapp extends Homey.Device {
                 const from = m.pushName;
 
                 const fromJid = m.key.participant || jid;
-                const pn = await this.WhatsappClient.getPNForLID(fromJid);
+                const pn = await this.WhatsappClient.getPNForLID(fromJid) || m.key.participantPn; // try to get PN from LID mapping, fallback to participantPn
                 const fromNumber = (pn && this.getParsedPhoneNumber(pn)) || `+${fromJid.split('@')[0]}`;
 
                 const fromMe = m.key && m.key.fromMe;

@@ -376,5 +376,8 @@
   },
   "1.38.7": {
     "en": "FIX: image sending "
+  },
+  "1.39.0": {
+    "en": "FIX: rollback WhatsApp SDK to stable version. Prevent app crashing"
   }
 }

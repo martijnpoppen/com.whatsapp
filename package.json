@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "axios": "^1.4.0",
-    "baileys": "https://github.com/martijnpoppen/baileys/tarball/homey-integration",
+    "baileys": "https://github.com/martijnpoppen/baileys/tarball/homey-integration-stable",
     "fs-extra": "^11.1.1",
     "libphonenumber-js": "^1.12.8",
     "perfect-debounce": "^1.0.0"
