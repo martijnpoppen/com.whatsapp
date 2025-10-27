@@ -358,5 +358,23 @@
   },
   "1.38.1": {
     "en": "FIX: add fetch fallback for media"
+  },
+  "1.38.2": {
+    "en": "FIX: add fetch fallback for media"
+  },
+  "1.38.3": {
+    "en": "FIX: SDK introduce fetch, while this is not natively supported on HP16/HP19. Added unidici as fallback"
+  },
+  "1.38.4": {
+    "en": "FIX: issue in SDK"
+  },
+  "1.38.5": {
+    "en": "HOTFIX: sdk issue"
+  },
+  "1.38.6": {
+    "en": "HOTFIX: add fallbacks due to nodejs upgrade in SDK"
+  },
+  "1.38.7": {
+    "en": "FIX: image sending "
   }
 }
