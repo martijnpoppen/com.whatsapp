@@ -1,7 +1,7 @@
 {
   "id": "com.whatsapp",
-  "version": "1.39.0",
-  "compatibility": ">=12.3.0",
+  "version": "1.39.2",
+  "compatibility": ">= v12.9.0",
   "sdk": 3,
   "platforms": [
     "local"

@@ -379,5 +379,11 @@
   },
   "1.39.0": {
     "en": "FIX: rollback WhatsApp SDK to stable version. Prevent app crashing"
+  },
+  "1.39.1": {
+    "en": "FIX: SDK revert needed separate fixes for HP16 and HP19"
+  },
+  "1.39.2": {
+    "en": "FIX: minor SDK fix. Fixes pairing issues"
   }
 }
