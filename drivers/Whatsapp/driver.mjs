@@ -1,7 +1,7 @@
 import Homey from 'homey';
 import { GetGUID, sleep } from '../../lib/helpers/index.mjs';
 import whatsappClient from '../../lib/com.whatsapp.api/index.mjs';
-import { parsePhoneNumber } from 'libphonenumber-js';
+import { parsePhoneNumberWithError } from 'libphonenumber-js';
 
 export default class mainDriver extends Homey.Driver {
     async onInit() {
@@ -149,8 +149,8 @@ export default class mainDriver extends Homey.Driver {
         });
 
         session.setHandler('set_phone', async ({ number }) => {
-            const phoneNumber = parsePhoneNumber(number);
-            console.log(parsePhoneNumber(number));
+            const phoneNumber = parsePhoneNumberWithError(number);
+            console.log(parsePhoneNumberWithError(number));
             if (!phoneNumber.isValid()) {
                 return false;
             }

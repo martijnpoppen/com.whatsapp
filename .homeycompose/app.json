@@ -1,6 +1,6 @@
 {
   "id": "com.whatsapp",
-  "version": "1.39.2",
+  "version": "2.0.0",
   "compatibility": ">= v12.9.0",
   "sdk": 3,
   "platforms": [
@@ -164,10 +164,6 @@
       {
         "name": "Martijn Poppen",
         "email": "whatsapp@martijnpoppen.nl"
-      },
-      {
-        "name": "Léon van der Linden",
-        "email": "homey@vdlinden.xyz"
       }
     ],
     "translators": [

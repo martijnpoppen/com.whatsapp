@@ -1,5 +1,5 @@
 import Homey from 'homey';
-import { parsePhoneNumber } from 'libphonenumber-js';
+import { parsePhoneNumberWithError } from 'libphonenumber-js';
 import { validateUrl, sleep, getBase64Image, toConsistentId } from '../../lib/helpers/index.mjs';
 
 export default class Whatsapp extends Homey.Device {
@@ -212,7 +212,7 @@ export default class Whatsapp extends Homey.Device {
 
         if (!isGroup) {
             this.homey.app.log(`[Device] ${this.getName()} - getRecipient - not a group`, recipient);
-            const phoneNumber = parsePhoneNumber(recipient);
+            const phoneNumber = parsePhoneNumberWithError(recipient);
             if (!phoneNumber.isValid()) {
                 throw new Error('Invalid mobile number (Make sure to include the country code (e.g. +31))');
             }
@@ -350,7 +350,7 @@ export default class Whatsapp extends Homey.Device {
 
                     const pn = await this.WhatsappClient.getPNForLID(`${match[1]}@lid`);
                     const parsedPn = pn ? this.getParsedPhoneNumber(pn) : undefined;
-                    const phoneNumber = parsedPn ? parsePhoneNumber(parsedPn) : parsePhoneNumber(`+${match[1]}`);
+                    const phoneNumber = parsedPn ? parsePhoneNumberWithError(parsedPn) : parsePhoneNumberWithError(`+${match[1]}`);
 
                     if (phoneNumber.isValid() && parsedPn) {
                         mentions.push(`${match[1]}@lid`);

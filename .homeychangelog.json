@@ -385,5 +385,8 @@
   },
   "1.39.2": {
     "en": "FIX: minor SDK fix. Fixes pairing issues"
+  },
+  "2.0.0": {
+    "en": "NEW: Update whatsapp SDK to version 7.0.0. | BREAK: Update app to NodeJS 22 (requires Homey v12.9.0+)"
   }
 }
