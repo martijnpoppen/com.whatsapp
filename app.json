@@ -1,7 +1,7 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "com.whatsapp",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "compatibility": ">= v12.9.0",
   "sdk": 3,
   "platforms": [
@@ -192,6 +192,7 @@
   "source": "https://github.com/martijnpoppen/com.whatsapp",
   "homeyCommunityTopicId": 90749,
   "support": "https://community.homey.app/t/app-pro-whatsapp/90749",
+  "esm": true,
   "flow": {
     "triggers": [
       {
@@ -1660,7 +1661,7 @@
           {
             "type": "text",
             "name": "option3",
-            "required": true,
+            "required": false,
             "title": {
               "en": "Question/Option 3",
               "nl": "Vraag/Optie 3",
@@ -1679,7 +1680,7 @@
           {
             "type": "text",
             "name": "option4",
-            "required": true,
+            "required": false,
             "title": {
               "en": "Question/Option 4",
               "nl": "Vraag/Optie 4",
@@ -1698,7 +1699,7 @@
           {
             "type": "text",
             "name": "option5",
-            "required": true,
+            "required": false,
             "title": {
               "en": "Question/Option 5",
               "nl": "Vraag/Optie 5",
@@ -1717,7 +1718,7 @@
           {
             "type": "text",
             "name": "option6",
-            "required": true,
+            "required": false,
             "title": {
               "en": "Question/Option 6",
               "nl": "Vraag/Optie 6",
@@ -1736,7 +1737,7 @@
           {
             "type": "text",
             "name": "option7",
-            "required": true,
+            "required": false,
             "title": {
               "en": "Question/Option 7",
               "nl": "Vraag/Optie 7",
@@ -1755,7 +1756,7 @@
           {
             "type": "text",
             "name": "option8",
-            "required": true,
+            "required": false,
             "title": {
               "en": "Question/Option 8",
               "nl": "Vraag/Optie 8",

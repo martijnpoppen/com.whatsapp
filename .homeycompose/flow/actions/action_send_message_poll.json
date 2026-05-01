@@ -130,7 +130,7 @@
     {
       "type": "text",
       "name": "option3",
-      "required": true,
+      "required": false,
       "title": {
         "en": "Question/Option 3",
         "nl": "Vraag/Optie 3",
@@ -149,7 +149,7 @@
     {
       "type": "text",
       "name": "option4",
-      "required": true,
+      "required": false,
       "title": {
         "en": "Question/Option 4",
         "nl": "Vraag/Optie 4",
@@ -168,7 +168,7 @@
         {
       "type": "text",
       "name": "option5",
-      "required": true,
+      "required": false,
       "title": {
         "en": "Question/Option 5",
         "nl": "Vraag/Optie 5",
@@ -187,7 +187,7 @@
     {
       "type": "text",
       "name": "option6",
-      "required": true,
+      "required": false,
       "title": {
         "en": "Question/Option 6",
         "nl": "Vraag/Optie 6",
@@ -206,7 +206,7 @@
     {
       "type": "text",
       "name": "option7",
-      "required": true,
+      "required": false,
       "title": {
         "en": "Question/Option 7",
         "nl": "Vraag/Optie 7",
@@ -225,7 +225,7 @@
     {
       "type": "text",
       "name": "option8",
-      "required": true,
+      "required": false,
       "title": {
         "en": "Question/Option 8",
         "nl": "Vraag/Optie 8",

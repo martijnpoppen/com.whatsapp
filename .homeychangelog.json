@@ -388,5 +388,11 @@
   },
   "2.0.0": {
     "en": "NEW: Update whatsapp SDK to version 7.0.0. | BREAK: Update app to NodeJS 22 (requires Homey v12.9.0+)"
+  },
+  "2.0.1": {
+    "en": "NEW: SDK update (beta version)"
+  },
+  "2.1.0": {
+    "en": "NEW: SDK update (BETA) | FIX: poll card. only 2 items required"
   }
 }

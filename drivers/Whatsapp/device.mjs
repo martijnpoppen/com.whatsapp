@@ -168,6 +168,13 @@ export default class Whatsapp extends Homey.Device {
 
     async removeWhatsappClient() {
         this.setUnavailable(`Repairing...`);
+
+        // Clear the heartbeat timeout to prevent duplicate timers after re-init
+        if (this._heartbeatTimeout) {
+            this.homey.clearTimeout(this._heartbeatTimeout);
+            this._heartbeatTimeout = null;
+        }
+
         if (this.WhatsappClient) {
             this.WhatsappClient.deleteDevice();
             this.WhatsappClient = null;
@@ -626,6 +633,6 @@ export default class Whatsapp extends Homey.Device {
         }
 
         // Run this function again in 30 minutes
-        this.homey.setTimeout(() => this.widgetInstanceHeartbeats(), 30 * 60 * 1000);
+        this._heartbeatTimeout = this.homey.setTimeout(() => this.widgetInstanceHeartbeats(), 30 * 60 * 1000);
     }
 }

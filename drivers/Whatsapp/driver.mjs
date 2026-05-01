@@ -35,30 +35,51 @@ export default class mainDriver extends Homey.Driver {
     }
 
     async setCheckInterval(ctx, session, guid, skipCode = false) {
-        try {
-            ctx.homey.app.log(`[Driver] ${ctx.id} - setCheckInterval - start`, { guid, skipCode });
-            const data = await ctx.WhatsappClients[guid].getData();
-
-            ctx.homey.app.log(`[Driver] ${ctx.id} - setCheckInterval - ${data.type}`, data);
-
-            if (data.type === 'READY' && data.clientID === guid) {
-                if (session) return session.showView('loading2');
-            }
-
-            if (!skipCode && data.type === 'CODE' && data.clientID === guid) {
-                ctx.code = data.msg;
-                if (session) return await session.emit('code', data.msg);
-            }
-
-            if (data.type === 'CLOSED' && data.clientID === guid) {
-                if (session) return session.showView('done');
-            }
-
-            await sleep(4000);
-            ctx.setCheckInterval(ctx, session, guid, skipCode);
-        } catch (error) {
-            ctx.homey.app.error(`[Driver] ${ctx.id} error`, error);
+        // Clear any previous polling interval
+        if (ctx._checkInterval) {
+            ctx.homey.clearInterval(ctx._checkInterval);
+            ctx._checkInterval = null;
         }
+
+        ctx._checkInterval = ctx.homey.setInterval(async () => {
+            try {
+                ctx.homey.app.log(`[Driver] ${ctx.id} - setCheckInterval - poll`, { guid, skipCode });
+
+                if (!ctx.WhatsappClients[guid]) {
+                    ctx.homey.app.log(`[Driver] ${ctx.id} - setCheckInterval - client gone, stopping`);
+                    ctx.homey.clearInterval(ctx._checkInterval);
+                    ctx._checkInterval = null;
+                    return;
+                }
+
+                const data = await ctx.WhatsappClients[guid].getData();
+
+                ctx.homey.app.log(`[Driver] ${ctx.id} - setCheckInterval - ${data.type}`, data);
+
+                if (data.type === 'READY' && data.clientID === guid) {
+                    ctx.homey.clearInterval(ctx._checkInterval);
+                    ctx._checkInterval = null;
+                    if (session) return session.showView('loading2');
+                }
+
+                if (!skipCode && data.type === 'CODE' && data.clientID === guid) {
+                    ctx.code = data.msg;
+                    ctx.homey.clearInterval(ctx._checkInterval);
+                    ctx._checkInterval = null;
+                    if (session) return await session.emit('code', data.msg);
+                }
+
+                if (data.type === 'CLOSED' && data.clientID === guid) {
+                    ctx.homey.clearInterval(ctx._checkInterval);
+                    ctx._checkInterval = null;
+                    if (session) return session.showView('done');
+                }
+            } catch (error) {
+                ctx.homey.app.error(`[Driver] ${ctx.id} setCheckInterval error`, error);
+                ctx.homey.clearInterval(ctx._checkInterval);
+                ctx._checkInterval = null;
+            }
+        }, 4000);
     }
 
     async onPair(session) {
@@ -77,6 +98,12 @@ export default class mainDriver extends Homey.Driver {
         this.phonenumber = settings.phonenumber;
         this.tempDB = {};
         this.code = null;
+
+        // Clear any running check interval from a previous pairing/repair
+        if (this._checkInterval) {
+            this.homey.clearInterval(this._checkInterval);
+            this._checkInterval = null;
+        }
 
         await device.removeWhatsappClient();
 
