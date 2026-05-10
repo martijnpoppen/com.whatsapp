@@ -66,7 +66,15 @@ export default class mainDriver extends Homey.Driver {
                     ctx.code = data.msg;
                     ctx.homey.clearInterval(ctx._checkInterval);
                     ctx._checkInterval = null;
-                    if (session) return await session.emit('code', data.msg);
+                    if (session) {
+                        await session.showView('whatsapp_pairing_code');
+                        setTimeout(() => {
+                            session.emit('code', data.msg);
+                            session.emit('code', data.msg);
+                            ctx.homey.clearInterval(ctx._checkInterval);
+                            ctx._checkInterval = null;
+                        }, 500);
+                    }
                 }
 
                 if (data.type === 'CLOSED' && data.clientID === guid) {
@@ -129,7 +137,6 @@ export default class mainDriver extends Homey.Driver {
 
             if (view === 'whatsapp_pairing_code') {
                 console.log('show pairing code view', { guid: this.guid, code: this.code });
-                if (session) await session.emit('code', this.code);
                 await this.setCheckInterval(this, session, this.guid);
             }
 
@@ -138,8 +145,6 @@ export default class mainDriver extends Homey.Driver {
 
                 await this.WhatsappClients[this.guid].addDevice(this.phonenumber);
                 await this.setCheckInterval(this, session, this.guid);
-
-                session.showView('whatsapp_pairing_code');
             }
 
             if (view === 'loading2') {
