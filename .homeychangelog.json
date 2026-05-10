@@ -394,5 +394,8 @@
   },
   "2.1.0": {
     "en": "NEW: SDK update (BETA) | FIX: poll card. only 2 items required"
+  },
+  "2.2.0": {
+    "en": "FIX: high CPU and 'future messages' crashes | NEW: WhatsApp SDK update to rc10 (final RC) | FIX: reconnect storms, store size, send delays, LID parsing, group invite links, mentions"
   }
 }
