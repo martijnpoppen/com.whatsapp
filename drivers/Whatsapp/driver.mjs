@@ -34,7 +34,7 @@ export default class mainDriver extends Homey.Driver {
         });
     }
 
-    async setCheckInterval(ctx, session, guid, skipCode = false) {
+    async setCheckInterval(ctx, session, guid) {
         // Clear any previous polling interval
         if (ctx._checkInterval) {
             ctx.homey.clearInterval(ctx._checkInterval);
@@ -43,7 +43,7 @@ export default class mainDriver extends Homey.Driver {
 
         ctx._checkInterval = ctx.homey.setInterval(async () => {
             try {
-                ctx.homey.app.log(`[Driver] ${ctx.id} - setCheckInterval - poll`, { guid, skipCode });
+                ctx.homey.app.log(`[Driver] ${ctx.id} - setCheckInterval - poll`, { guid });
 
                 if (!ctx.WhatsappClients[guid]) {
                     ctx.homey.app.log(`[Driver] ${ctx.id} - setCheckInterval - client gone, stopping`);
@@ -62,7 +62,7 @@ export default class mainDriver extends Homey.Driver {
                     if (session) return session.showView('loading2');
                 }
 
-                if (!skipCode && data.type === 'CODE' && data.clientID === guid) {
+                if (data.type === 'CODE' && data.clientID === guid) {
                     ctx.code = data.msg;
                     ctx.homey.clearInterval(ctx._checkInterval);
                     ctx._checkInterval = null;
@@ -128,8 +128,9 @@ export default class mainDriver extends Homey.Driver {
             }
 
             if (view === 'whatsapp_pairing_code') {
+                console.log('show pairing code view', { guid: this.guid, code: this.code });
                 if (session) await session.emit('code', this.code);
-                await this.setCheckInterval(this, session, this.guid, true);
+                await this.setCheckInterval(this, session, this.guid);
             }
 
             if (view === 'loading') {

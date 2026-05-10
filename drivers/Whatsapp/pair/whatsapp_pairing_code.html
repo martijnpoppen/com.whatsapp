@@ -1,5 +1,5 @@
 <style>
-    @import "/manager/drivers/assets/css/deprecated-pincode.css";
+    @import "/css/deprecated-pincode.css";
 
     .__private__homey-pincode {
         display: flex;
@@ -55,6 +55,7 @@
         var $next = document.querySelector('#hy-nav-continue');
 
         Homey.on("code", function (data) {
+            console.log(data)
             const code = data.split('');
             document.querySelector('#homey-pincode-input-group').innerHTML = '';
             for(let i = 0; i < code.length; i++) {
