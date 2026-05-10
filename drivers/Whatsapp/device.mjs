@@ -31,6 +31,7 @@ export default class Whatsapp extends Homey.Device {
     }
 
     async onDeleted() {
+        await this.cleanupWidgetStore();
         await this.removeWhatsappClient();
     }
 
@@ -542,25 +543,48 @@ export default class Whatsapp extends Homey.Device {
     async cleanupWidgetStore() {
         this.homey.app.log(`[Device] ${this.getName()} - cleanupWidgetStore`);
 
+                this.homey.app.log(`[Device] ${this.getName()} - cleanupWidgetStore`);
+
         const storeData = await this.getStore();
         const clientId = this.getData().id;
 
-        const latestPreKeyId = Math.max(...Object.keys(storeData).map((k) => (k.match(/pre-key-(\d+)/) ? parseInt(k.split('-').pop(), 10) : 0)));
+        // ONE-TIME MIGRATION BACKSTOP for users updating from a version that
+        // accumulated thousands of pre-keys. The new auth store (make-homey-store.mjs)
+        // prunes pre-keys incrementally on every keys.set, so future installs
+        // won't need this. But existing installs may have so many pre-keys
+        // that the old Math.max(...arr) version threw RangeError on startup.
+        //
+        // Walk in a single pass to find the highest pre-key id (no spread,
+        // so no stack overflow on large stores), then prune anything older
+        // than highest - 100. Per-client namespace (so multi-device installs
+        // are scoped correctly).
+        const preKeyPrefix = `${clientId}:pre-key-`;
+        let latestPreKeyId = 0;
+        for (const k of Object.keys(storeData)) {
+            if (!k.startsWith(preKeyPrefix)) continue;
+            const num = parseInt(k.slice(preKeyPrefix.length), 10);
+            if (Number.isFinite(num) && num > latestPreKeyId) latestPreKeyId = num;
+        }
 
-        for await (const storeKey of Object.keys(storeData)) {
-            if (storeKey.startsWith(`${clientId}:pre-key-`)) {
-                const num = parseInt(storeKey.split('-').pop(), 10);
-                if (num < latestPreKeyId - 50) {
+        for (const storeKey of Object.keys(storeData)) {
+            // Pre-key migration prune (only if we actually found pre-keys)
+            if (latestPreKeyId > 0 && storeKey.startsWith(preKeyPrefix)) {
+                const num = parseInt(storeKey.slice(preKeyPrefix.length), 10);
+                if (Number.isFinite(num) && num < latestPreKeyId - 100) {
                     this.homey.app.log(`[Device] ${this.getName()} - cleanupWidgetStore - removing old pre-key`, storeKey);
                     await this.unsetStoreValue(storeKey);
                 }
+                continue;
             }
 
+            // Widget chat history (ephemeral, wiped on every onInit)
             if (storeKey.startsWith('widget-chat-')) {
                 this.homey.app.log(`[Device] ${this.getName()} - cleanupWidgetStore - removing key: ${storeKey}`);
                 await this.unsetStoreValue(storeKey);
+                continue;
             }
 
+            // Widget instance bookkeeping (ephemeral, wiped on every onInit)
             if (storeKey.startsWith('widget-instance-')) {
                 this.homey.app.log(`[Device] ${this.getName()} - cleanupWidgetStore - removing key`, storeKey);
                 await this.unsetStoreValue(storeKey);
