@@ -9,7 +9,6 @@ export default class mainDriver extends Homey.Driver {
         this.homey.app.log(`[Driver] - version`, Homey.manifest.version);
         this.WhatsappClients = [];
         this.homeyCloudId = await this.homey.cloud.getHomeyId();
-        this.tempDB = {};
 
         const devices = this.getDevices();
 
@@ -93,7 +92,6 @@ export default class mainDriver extends Homey.Driver {
     async onPair(session) {
         this.type = 'pair';
         this.device = null;
-        this.tempDB = {};
         this.code = null;
 
         this.setPairingSession(session);
@@ -104,7 +102,6 @@ export default class mainDriver extends Homey.Driver {
         this.type = 'repair';
         this.device = device;
         this.phonenumber = settings.phonenumber;
-        this.tempDB = {};
         this.code = null;
 
         // Clear any running check interval from a previous pairing/repair

@@ -1,6 +1,8 @@
 import Homey from 'homey';
 import { parsePhoneNumberWithError } from 'libphonenumber-js';
 import { validateUrl, sleep, getBase64Image, toConsistentId } from '../../lib/helpers/index.mjs';
+import path from 'path';
+import fs from 'fs/promises';
 
 export default class Whatsapp extends Homey.Device {
     async onInit() {
@@ -8,8 +10,10 @@ export default class Whatsapp extends Homey.Device {
             this.homey.app.log('[Device] - init =>', this.getName());
             this.setUnavailable(`Connecting to WhatsApp`);
 
-            this.cleanupWidgetStore();
-            this.widgetInstanceHeartbeats();
+            await this.copyFromStoreToFileSystem();
+            await this.cleanupWidgetStore();
+            await this.widgetInstanceHeartbeats();
+            await this.logStoreKeys();
 
             await this.synchronousStart();
 
@@ -19,14 +23,6 @@ export default class Whatsapp extends Homey.Device {
             await this.setWhatsappClient();
         } catch (error) {
             this.homey.app.log(`[Device] ${this.getName()} - OnInit Error`, error);
-        }
-    }
-
-    async onAdded() {
-        await this.syncTempDbToStore();
-
-        if (this.driver.onReadyInterval) {
-            this.homey.clearInterval(this.driver.onReadyInterval);
         }
     }
 
@@ -126,23 +122,6 @@ export default class Whatsapp extends Homey.Device {
         this.homey.app.log('[Device] - init - after sleep =>', sleepIndex, this.getName());
     }
 
-    async syncTempDbToStore() {
-        const deviceObject = this.getData();
-        const clientId = deviceObject.id.split('_')[1];
-        if (this.driver.tempDB[clientId]) {
-            this.homey.app.log(`[Device] - ${this.getName()} => syncTempDbToStore - found tempDB - syncing with store`);
-            for (let i = 0; i < Object.keys(this.driver.tempDB[clientId]).length; i++) {
-                const key = Object.keys(this.driver.tempDB[clientId])[i];
-                const value = this.driver.tempDB[clientId][key];
-
-                await this.setStoreValue(key, value);
-            }
-
-            this.driver.tempDB = {};
-            this.homey.app.log(`[Device] - ${this.getName()} => syncTempDbToStore - tempDB cleared`, this.driver.tempDB);
-        }
-    }
-
     // ------------- API -------------
     async setWhatsappClient() {
         try {
@@ -185,7 +164,7 @@ export default class Whatsapp extends Homey.Device {
         const storeKeys = await this.getStoreKeys();
         for (const storeKey of storeKeys) {
             this.homey.app.log(`[Device] ${this.getName()} - removeWhatsappClient - removing key`, storeKey);
-            this.unsetStoreValue(storeKey);
+            await this.unsetStoreValue(storeKey);
         }
 
         await sleep(3000);
@@ -316,7 +295,7 @@ export default class Whatsapp extends Homey.Device {
                 const splittedParam = lat.split(',');
 
                 if (splittedParam.length > 1) {
-                    (data = await this.WhatsappClient.sendLocation(recipient, splittedParam[0], splittedParam[1], message)), options;
+                    ((data = await this.WhatsappClient.sendLocation(recipient, splittedParam[0], splittedParam[1], message)), options);
                 } else {
                     throw new Error('Invalid location, use comma separated Latitude,Longitude');
                 }
@@ -402,7 +381,7 @@ export default class Whatsapp extends Homey.Device {
     // ------------- Triggers -------------
     async messageHelper(msg) {
         try {
-            if(!this.getAvailable()) return false; // Device not available, ignore incoming messages
+            if (!this.getAvailable()) return false; // Device not available, ignore incoming messages
 
             const settings = await this.getSettings();
 
@@ -420,7 +399,7 @@ export default class Whatsapp extends Homey.Device {
                 const from = m.pushName;
 
                 const fromJid = m.key.participant || jid;
-                const pn = await this.WhatsappClient.getPNForLID(fromJid) || m.key.participantPn; // try to get PN from LID mapping, fallback to participantPn
+                const pn = (await this.WhatsappClient.getPNForLID(fromJid)) || m.key.participantPn; // try to get PN from LID mapping, fallback to participantPn
                 const fromNumber = (pn && this.getParsedPhoneNumber(pn)) || `+${fromJid.split('@')[0]}`;
 
                 const fromMe = m.key && m.key.fromMe;
@@ -540,58 +519,6 @@ export default class Whatsapp extends Homey.Device {
         this.setWidgetInstance(null, data.originalRecipient, saveData);
     }
 
-    async cleanupWidgetStore() {
-        this.homey.app.log(`[Device] ${this.getName()} - cleanupWidgetStore`);
-
-                this.homey.app.log(`[Device] ${this.getName()} - cleanupWidgetStore`);
-
-        const storeData = await this.getStore();
-        const clientId = this.getData().id;
-
-        // ONE-TIME MIGRATION BACKSTOP for users updating from a version that
-        // accumulated thousands of pre-keys. The new auth store (make-homey-store.mjs)
-        // prunes pre-keys incrementally on every keys.set, so future installs
-        // won't need this. But existing installs may have so many pre-keys
-        // that the old Math.max(...arr) version threw RangeError on startup.
-        //
-        // Walk in a single pass to find the highest pre-key id (no spread,
-        // so no stack overflow on large stores), then prune anything older
-        // than highest - 100. Per-client namespace (so multi-device installs
-        // are scoped correctly).
-        const preKeyPrefix = `${clientId}:pre-key-`;
-        let latestPreKeyId = 0;
-        for (const k of Object.keys(storeData)) {
-            if (!k.startsWith(preKeyPrefix)) continue;
-            const num = parseInt(k.slice(preKeyPrefix.length), 10);
-            if (Number.isFinite(num) && num > latestPreKeyId) latestPreKeyId = num;
-        }
-
-        for (const storeKey of Object.keys(storeData)) {
-            // Pre-key migration prune (only if we actually found pre-keys)
-            if (latestPreKeyId > 0 && storeKey.startsWith(preKeyPrefix)) {
-                const num = parseInt(storeKey.slice(preKeyPrefix.length), 10);
-                if (Number.isFinite(num) && num < latestPreKeyId - 100) {
-                    this.homey.app.log(`[Device] ${this.getName()} - cleanupWidgetStore - removing old pre-key`, storeKey);
-                    await this.unsetStoreValue(storeKey);
-                }
-                continue;
-            }
-
-            // Widget chat history (ephemeral, wiped on every onInit)
-            if (storeKey.startsWith('widget-chat-')) {
-                this.homey.app.log(`[Device] ${this.getName()} - cleanupWidgetStore - removing key: ${storeKey}`);
-                await this.unsetStoreValue(storeKey);
-                continue;
-            }
-
-            // Widget instance bookkeeping (ephemeral, wiped on every onInit)
-            if (storeKey.startsWith('widget-instance-')) {
-                this.homey.app.log(`[Device] ${this.getName()} - cleanupWidgetStore - removing key`, storeKey);
-                await this.unsetStoreValue(storeKey);
-            }
-        }
-    }
-
     async getWidgetInstance(dataId, getData = true, convertJid = false) {
         this.homey.app.log(`[Device] ${this.getName()} - getWidgetInstance`, dataId);
 
@@ -646,11 +573,14 @@ export default class Whatsapp extends Homey.Device {
         const now = Date.now();
         const timeout = 36 * 60 * 60 * 1000; // 36 hours without heartbeat = removed/closed
 
-        const storeData = await this.getStore();
-        const widgetInstances = Object.entries(storeData).filter(([k]) => k.startsWith('widgetInstance-'));
+        const storeKeys = await this.getStoreKeys();
+        const filteredKeys = storeKeys.filter((key) => key.startsWith('widgetInstance-'));
 
-        for (const [dataId, { lastSeen }] of widgetInstances) {
-            if (now - lastSeen > timeout) {
+        for (const dataId of filteredKeys) {
+            const instance = await this.getStoreValue(dataId);
+            const lastSeen = instance?.lastSeen;
+
+            if (lastSeen && now - lastSeen > timeout) {
                 this.homey.app.log(`[widgetInstanceHeartbeats] Widget ${dataId} is gone (last seen ${new Date(lastSeen)})`);
                 await this.unsetStoreValue(dataId);
             }
@@ -658,5 +588,159 @@ export default class Whatsapp extends Homey.Device {
 
         // Run this function again in 30 minutes
         this._heartbeatTimeout = this.homey.setTimeout(() => this.widgetInstanceHeartbeats(), 30 * 60 * 1000);
+    }
+
+    async cleanupWidgetStore() {
+        this.homey.app.log(`[Device] ${this.getName()} - cleanupWidgetStore`);
+
+        const storeKeys = await this.getStoreKeys();
+        const filteredKeys = storeKeys.filter((key) => key.startsWith('widget-chat-') || key.startsWith('widget-instance-'));
+
+        for (const storeKey of filteredKeys) {
+            this.homey.app.log(`[Device] ${this.getName()} - cleanupWidgetStore - removing key: ${storeKey}`);
+            await this.unsetStoreValue(storeKey);
+        }
+    }
+
+    async copyFromStoreToFileSystem() {
+        const clientId = this.getData().id;
+        const migrationMarkerKey = '_migrated_to_fs_v1';
+
+        // Already done?
+        if (await this.getStoreValue(migrationMarkerKey)) {
+            this.homey.app.log(`[Device] ${this.getName()} - copyFromStoreToFileSystem - migration already completed, skipping`);
+            return;
+        }
+
+        this.homey.app.log(`[Device] ${this.getName()} - copyFromStoreToFileSystem - starting migration`);
+
+        const authFolder = path.join(this.homey.app.getDataPath(), 'auth', clientId);
+
+        // Make sure the destination exists
+        try {
+            await fs.mkdir(authFolder, { recursive: true });
+        } catch (e) {
+            this.homey.app.error(`[Device] ${this.getName()} - copyFromStoreToFileSystem - mkdir failed`, e);
+            return; // Bail; we'll retry next start
+        }
+
+        const sessionPrefix = `${clientId}:`;
+        const preKeyPrefix = `${clientId}:pre-key-`;
+
+        let storeKeys;
+        try {
+            storeKeys = await this.getStoreKeys();
+        } catch (e) {
+            this.homey.app.error(`[Device] ${this.getName()} - copyFromStoreToFileSystem - getStoreKeys failed`, e);
+            return;
+        }
+
+        // Migrate everything for this session EXCEPT pre-keys. Baileys
+        // regenerates pre-keys on next connect — no point copying potentially
+        // hundreds of thousands of them. Other categories (creds, session,
+        // sender-key, app-state-sync-*) are small and important.
+        const keysToMigrate = storeKeys.filter((k) => k.startsWith(sessionPrefix) && !k.startsWith(preKeyPrefix));
+
+        this.homey.app.log(`[Device] ${this.getName()} - copyFromStoreToFileSystem - ${keysToMigrate.length} keys to migrate ` + `(pre-keys skipped)`);
+
+        let copied = 0;
+        let failed = 0;
+
+        for (const storeKey of keysToMigrate) {
+            try {
+                const raw = await this.getStoreValue(storeKey);
+                if (!raw) {
+                    continue;
+                }
+
+                // Strip the `${sessionKey}:` prefix to get the file name
+                // useMultiFileAuthState expects.
+                let fileName = storeKey.slice(sessionPrefix.length);
+
+                // Match useMultiFileAuthState's sanitization: WhatsApp's key
+                // identifiers are base64 and can contain '/' which filesystems
+                // interpret as path separators. Baileys' built-in auth state
+                // replaces '/' with '__' and ':' with '-'.
+                fileName = fileName.replace(/\//g, '__').replace(/:/g, '-');
+
+                const filePath = path.join(authFolder, `${fileName}.json`);
+
+                // Write atomically: write to .tmp then rename.
+                const tmp = `${filePath}.tmp`;
+                await fs.writeFile(tmp, raw);
+                await fs.rename(tmp, filePath);
+
+                copied++;
+            } catch (e) {
+                this.homey.app.error(`[Device] ${this.getName()} - copyFromStoreToFileSystem - failed to migrate ${storeKey}`, e);
+                failed++;
+            }
+
+            // Yield between writes so the CPU watchdog stays happy.
+            // Each store read is ~470ms, so we're already paced; a small extra
+            // sleep just keeps things smooth.
+            await new Promise((r) => setTimeout(r, 20));
+        }
+
+        if (failed > 0) {
+            this.homey.app.error(`[Device] ${this.getName()} - copyFromStoreToFileSystem - ${failed} keys failed; ` + `not marking migration complete, will retry next start`);
+            return;
+        }
+
+        // All good — mark migration done so we never run it again.
+        await this.setStoreValue(migrationMarkerKey, true);
+
+        this.homey.app.log(`[Device] ${this.getName()} - copyFromStoreToFileSystem - done: ${copied} keys migrated to ${authFolder}`);
+
+        // Fire-and-forget background cleanup of the old store data.
+        // App is fully functional during this; user doesn't see it.
+        this.cleanupOldStoreData().catch((e) => this.homey.app.error(`[Device] ${this.getName()} - cleanupOldStoreData failed`, e));
+    }
+
+    async cleanupOldStoreData() {
+        const clientId = this.getData().id;
+        const migrationMarkerKey = '_migrated_to_fs_v1';
+
+        // Give Baileys time to fully start up before we compete for store IO
+        await new Promise((r) => setTimeout(r, 30000));
+
+        const storeKeys = await this.getStoreKeys();
+        const sessionPrefix = `${clientId}:`;
+        const toDelete = storeKeys.filter((k) => k.startsWith(sessionPrefix));
+
+        if (toDelete.length === 0) {
+            this.homey.app.log(`[Device] ${this.getName()} - cleanupOldStoreData - nothing to clean`);
+            return;
+        }
+
+        this.homey.app.log(`[Device] ${this.getName()} - cleanupOldStoreData - removing ${toDelete.length} old store entries in background`);
+
+        const PAUSE_MS = 50;
+        let deleted = 0;
+        const start = Date.now();
+
+        for (const k of toDelete) {
+            try {
+                await this.unsetStoreValue(k);
+                deleted++;
+            } catch (_) {
+                /* ignore individual failures */
+            }
+
+            await new Promise((r) => setTimeout(r, PAUSE_MS));
+
+            if (deleted % 200 === 0) {
+                const elapsedMin = ((Date.now() - start) / 60000).toFixed(1);
+                this.homey.app.log(`[Device] ${this.getName()} - cleanupOldStoreData - ${deleted}/${toDelete.length} in ${elapsedMin}min`);
+            }
+        }
+
+        const elapsedMin = ((Date.now() - start) / 60000).toFixed(1);
+        this.homey.app.log(`[Device] ${this.getName()} - cleanupOldStoreData - done: ${deleted}/${toDelete.length} in ${elapsedMin}min`);
+    }
+
+    async logStoreKeys() {
+        const storeKeys = await this.getStoreKeys();
+        this.homey.app.log(`[Device] ${this.getName()} - logStoreKeys =>`, JSON.stringify(storeKeys, null, 2));
     }
 }
