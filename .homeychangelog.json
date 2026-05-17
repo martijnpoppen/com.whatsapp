@@ -403,5 +403,8 @@
   },
   "3.0.0": {
     "en": "BREAK: Memory improvements, prevent app to crash on load. Cache became to big and caused CPU/RAM issues"
+  },
+  "3.0.1": {
+    "en": "FIX: text condition"
   }
 }

@@ -38,11 +38,13 @@ export default class Whatsapp extends Homey.Device {
     }
 
     async setConditions() {
+        const normalize = str => str?.trim().toLowerCase();
+
         const text_condition = this.homey.flow.getConditionCard('text_condition');
         text_condition.registerRunListener(async (args, state) => {
             this.homey.app.log(`[Device] ${this.getName()} - [text_condition]`, { ...args, device: 'LOG' });
 
-            const result = state.text && state.text.toLowerCase() === args.text_input.toLowerCase();
+            const result = state.text && normalize(state.text) === normalize(args.text_input);
 
             this.homey.app.log(`[Device] ${this.getName()} - [text_condition] - result: `, result);
             return result;
@@ -52,7 +54,7 @@ export default class Whatsapp extends Homey.Device {
         text_contains_condition.registerRunListener(async (args, state) => {
             this.homey.app.log(`[Device] ${this.getName()} - [text_contains_condition]`, { ...args, device: 'LOG' });
 
-            const result = state.text && state.text.toLowerCase().includes(args.text_input.toLowerCase());
+            const result = state.text && normalize(state.text).includes(normalize(args.text_input));
 
             this.homey.app.log(`[Device] ${this.getName()} - [text_contains_condition] - result: `, result);
             return result;
@@ -61,7 +63,7 @@ export default class Whatsapp extends Homey.Device {
         const from_condition = this.homey.flow.getConditionCard('from_condition');
         from_condition.registerRunListener(async (args, state) => {
             this.homey.app.log(`[Device] ${this.getName()} - [from_condition]`, { ...args, device: 'LOG' });
-            const result = state.from && state.from.toLowerCase() === args.from_input.toLowerCase();
+            const result = state.from && normalize(state.from) === normalize(args.from_input);
 
             this.homey.app.log(`[Device] ${this.getName()} - [from_condition] - result: `, result);
             return result;
@@ -70,7 +72,7 @@ export default class Whatsapp extends Homey.Device {
         const from_number_condition = this.homey.flow.getConditionCard('from_number_condition');
         from_number_condition.registerRunListener(async (args, state) => {
             this.homey.app.log(`[Device] ${this.getName()} - [from_number_condition]`, { ...args, device: 'LOG' });
-            const result = state.fromNumber && state.fromNumber.toLowerCase() === args.from_input.toLowerCase();
+            const result = state.fromNumber && normalize(state.fromNumber) === normalize(args.from_input);
 
             this.homey.app.log(`[Device] ${this.getName()} - [from_number_condition] - result: `, result);
             return result;
