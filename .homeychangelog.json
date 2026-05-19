@@ -406,5 +406,11 @@
   },
   "3.0.1": {
     "en": "FIX: text condition"
+  },
+  "3.0.2": {
+    "en": "FIX: replycode"
+  },
+  "3.0.3": {
+    "en": "NEW: add \"starts with\" condotion card"
   }
 }

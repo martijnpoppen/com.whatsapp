@@ -1,0 +1,56 @@
+{
+  "id": "text_starts_with_condition",
+  "title": {
+      "en": "Text starts with",
+      "nl": "Tekst begint met",
+      "de": "Text beginnt mit",
+      "fr": "Le texte commence par",
+      "it": "Il testo inizia con",
+      "sv": "Texten börjar med",
+      "no": "Teksten begynner med",
+      "es": "El texto comienza con",
+      "da": "Teksten starter med",
+      "ru": "Текст начинается с",
+      "pl": "Tekst zaczyna się od",
+      "ko": "텍스트 시작"
+    },
+    "titleFormatted": {
+      "en": "Text !{{starts with|does not start with}} [[text_input]]",
+      "nl": "Tekst !{{begint met|begint niet met}} [[text_input]]",
+      "de": "Text !{{beginnt mit|beginnt nicht mit}} [[text_input]]",
+      "fr": "Texte !{{commence par|ne commence pas par}} [[text_input]]",
+      "it": "Testo !{{inizia con|non inizia con}} [[text_input]]",
+      "sv": "Text !{{börjar med|börjar inte med}} [[text_input]]",
+      "no": "Tekst !{{begynner med|begynner ikke med}} [[text_input]]",
+      "es": "Texto !{{comienza con|no comienza con}} [[text_input]]",
+      "da": "Tekst !{{starter med|starter ikke med}} [[text_input]]",
+      "ru": "Текст !{{начинается с|не начинается с}} [[text_input]]",
+      "pl": "Tekst !{{zaczyna się od|nie zaczyna się od}} [[text_input]]",
+      "ko": "텍스트 !{{시작|시작하지 않음}} [[text_input]]"
+    },
+    "args": [
+      {
+        "type": "device",
+        "name": "device",
+        "filter": "driver_id=Whatsapp"
+      },
+      {
+        "name": "text_input",
+        "type": "text",
+        "title": {
+          "en": "Text",
+          "nl": "Tekst",
+          "de": "Text",
+          "fr": "Texte",
+          "it": "Testo",
+          "sv": "Text",
+          "no": "Tekst",
+          "es": "Texto",
+          "da": "Tekst",
+          "ru": "текст",
+          "pl": "Tekst",
+          "ko": "텍스트"
+        }
+      }
+    ]
+}

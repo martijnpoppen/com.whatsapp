@@ -60,6 +60,16 @@ export default class Whatsapp extends Homey.Device {
             return result;
         });
 
+        const text_starts_with_condition = this.homey.flow.getConditionCard('text_starts_with_condition');
+        text_starts_with_condition.registerRunListener(async (args, state) => {
+            this.homey.app.log(`[Device] ${this.getName()} - [text_starts_with_condition]`, { ...args, device: 'LOG' });
+
+            const result = state.text && normalize(state.text).startsWith(normalize(args.text_input));
+
+            this.homey.app.log(`[Device] ${this.getName()} - [text_starts_with_condition] - result: `, result);
+            return result;
+        });
+
         const from_condition = this.homey.flow.getConditionCard('from_condition');
         from_condition.registerRunListener(async (args, state) => {
             this.homey.app.log(`[Device] ${this.getName()} - [from_condition]`, { ...args, device: 'LOG' });
@@ -424,7 +434,7 @@ export default class Whatsapp extends Homey.Device {
                     text = (m.message && m.message.imageMessage && m.message.imageMessage.caption) || '';
                 }
 
-                const tokens = { replyTo: jid, fromNumber, groupCode, from: from ? from : '', text, time: dateString, group, hasImage };
+                const tokens = { replyTo: pn, fromNumber, groupCode, from: from ? from : '', text, time: dateString, group, hasImage };
                 const state = tokens;
 
                 console.log('tokens', tokens);
