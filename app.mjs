@@ -18,7 +18,6 @@ export default class App extends Homey.App {
     // -------------------- INIT ----------------------
 
     async onInit() {
-        this.widgetInstances = [];
         this.log(`${this.homey.manifest.id} - ${this.homey.manifest.version} started...`);
         this.log(`${this.homey.manifest.id} Running on Node.js version:`, process.version);
 

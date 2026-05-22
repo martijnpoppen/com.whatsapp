@@ -38,7 +38,7 @@ export default class Whatsapp extends Homey.Device {
     }
 
     async setConditions() {
-        const normalize = str => str?.trim().toLowerCase();
+        const normalize = (str) => str?.trim().toLowerCase();
 
         const text_condition = this.homey.flow.getConditionCard('text_condition');
         text_condition.registerRunListener(async (args, state) => {
@@ -391,62 +391,122 @@ export default class Whatsapp extends Homey.Device {
     }
 
     // ------------- Triggers -------------
+    // Replace lines 394-451 (messageHelper) in drivers/Whatsapp/device.mjs
+
+    // ------------- Triggers -------------
     async messageHelper(msg) {
         try {
-            if (!this.getAvailable()) return false; // Device not available, ignore incoming messages
+            if (!this.getAvailable()) return false;
 
             const settings = await this.getSettings();
 
-            msg.messages.forEach(async (m) => {
-                console.log(m);
-
-                let newDate = new Date();
-                newDate.setTime(m.messageTimestamp * 1000);
-                let dateString = newDate.toUTCString();
-
-                const jid = m.key && m.key.remoteJid;
-                const group = m.key && m.key.participant ? true : false;
-                const groupCode = group && (await this.WhatsappClient.getGroupInviteById(jid));
-
-                const from = m.pushName;
-
-                const fromJid = m.key.participant || jid;
-                const pn = (await this.WhatsappClient.getPNForLID(fromJid)) || m.key.participantPn; // try to get PN from LID mapping, fallback to participantPn
-                const fromNumber = (pn && this.getParsedPhoneNumber(pn)) || `+${fromJid.split('@')[0]}`;
-
-                const fromMe = m.key && m.key.fromMe;
-                const triggerAllowed = (fromMe && settings.trigger_own_message) || !fromMe;
-                const hasImage = m.message && m.message.imageMessage ? true : false;
-                const isPollUpdate = m.message && m.message.pollUpdateMessage ? true : false;
-
-                if (isPollUpdate) {
-                    console.log('Ignoring poll update message', m.message.pollUpdateMessage);
-                    return false;
+            // Sequential instead of forEach(async) — prevents fanout of unhandled
+            // rejections that have caused OOMs in the past.
+            for (const m of msg.messages) {
+                try {
+                    await this.processMessage(m, settings);
+                } catch (e) {
+                    this.homey.app.error(`[messageHelper] processMessage failed`, e);
                 }
-
-                let text = m.message && m.message.conversation;
-
-                if (!text) {
-                    text = (m.message && m.message.extendedTextMessage && m.message.extendedTextMessage.text) || '';
-                }
-
-                if (hasImage) {
-                    text = (m.message && m.message.imageMessage && m.message.imageMessage.caption) || '';
-                }
-
-                const tokens = { replyTo: pn, fromNumber, groupCode, from: from ? from : '', text, time: dateString, group, hasImage };
-                const state = tokens;
-
-                console.log('tokens', tokens);
-
-                triggerAllowed && this.new_message.trigger(this, tokens, state);
-
-                this.sendToWidget({ jid, from: from, fromMe, timeStamp: m.messageTimestamp * 1000, text, group, hasImage, imgUrl: null, base64Image: null, m, originalRecipient: groupCode ? `https://chat.whatsapp.com/${groupCode}` : fromNumber });
-            });
+            }
 
             return true;
         } catch (error) {
-            console.log('Error in message', error);
+            this.homey.app.error(`[messageHelper] error`, error);
+        }
+    }
+
+    async processMessage(m, settings) {
+        // Skip envelopes with no usable content. Failed decryptions and
+        // protocol messages (receipts, status updates, etc.) have either
+        // m.message === null or a stub type. Flow cards can't do anything
+        // useful with them and triggering on them caused the OOM-via-
+        // unhandled-rejection storm.
+        if (!m?.message || m.messageStubType) {
+            this.homey.app.log(`[messageHelper] skipping envelope (no message body or stub type)`, { stubType: m?.messageStubType, fromMe: m?.key?.fromMe });
+            return;
+        }
+
+        // remoteJid is the chat (group JID or 1:1 JID). This is the correct
+        // value for "replyTo" — i.e. where to send a reply.
+        const jid = m.key && m.key.remoteJid;
+        if (!jid || typeof jid !== 'string') {
+            this.homey.app.log(`[messageHelper] skipping message with no remoteJid`);
+            return;
+        }
+
+        const newDate = new Date();
+        newDate.setTime(m.messageTimestamp * 1000);
+        const dateString = newDate.toUTCString();
+
+        const group = !!(m.key && m.key.participant);
+        const groupCode = group ? await this.WhatsappClient.getGroupInviteById(jid).catch(() => null) : null;
+
+        const from = m.pushName;
+        const fromJid = m.key.participant || jid;
+
+        // Resolve the sender's phone number. May be unavailable (LID without
+        // mapping yet). That's fine — fromNumber falls back to the raw JID
+        // identifier.
+        const pn = (await this.WhatsappClient.getPNForLID(fromJid).catch(() => null)) || m.key.participantPn;
+        const fromNumber = (pn && this.getParsedPhoneNumber(pn)) || `+${fromJid.split('@')[0]}`;
+
+        const fromMe = m.key && m.key.fromMe;
+        const triggerAllowed = (fromMe && settings.trigger_own_message) || !fromMe;
+        const hasImage = !!(m.message && m.message.imageMessage);
+        const isPollUpdate = !!(m.message && m.message.pollUpdateMessage);
+
+        if (isPollUpdate) {
+            this.homey.app.log(`[messageHelper] ignoring poll update`);
+            return;
+        }
+
+        let text = (m.message && m.message.conversation) || '';
+        if (!text) {
+            text = (m.message && m.message.extendedTextMessage && m.message.extendedTextMessage.text) || '';
+        }
+        if (hasImage) {
+            text = (m.message && m.message.imageMessage && m.message.imageMessage.caption) || '';
+        }
+
+        const tokens = {
+            replyTo: jid,
+            fromNumber,
+            groupCode: groupCode || '',
+            from: from || '',
+            text,
+            time: dateString,
+            group,
+            hasImage
+        };
+        const state = tokens;
+
+        if (triggerAllowed) {
+            // AWAIT and CATCH — was fire-and-forget which caused unhandled
+            // rejection accumulation → OOM.
+            try {
+                await this.new_message.trigger(this, tokens, state);
+            } catch (e) {
+                this.homey.app.error(`[messageHelper] new_message.trigger failed`, e, { tokens });
+            }
+        }
+
+        try {
+            await this.sendToWidget({
+                jid,
+                from,
+                fromMe,
+                timeStamp: m.messageTimestamp * 1000,
+                text,
+                group,
+                hasImage,
+                imgUrl: null,
+                base64Image: null,
+                m,
+                originalRecipient: groupCode ? `https://chat.whatsapp.com/${groupCode}` : fromNumber
+            });
+        } catch (e) {
+            this.homey.app.error(`[messageHelper] sendToWidget failed`, e);
         }
     }
 

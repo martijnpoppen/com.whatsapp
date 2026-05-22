@@ -412,5 +412,11 @@
   },
   "3.0.3": {
     "en": "NEW: add \"starts with\" condotion card"
+  },
+  "3.0.4": {
+    "en": "FIX: issue where loaded state was too old and instance tries to load 2000+ messages which are no longer relevant"
+  },
+  "3.0.5": {
+    "en": "FIX: small error"
   }
 }
