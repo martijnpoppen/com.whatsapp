@@ -418,5 +418,17 @@
   },
   "3.0.5": {
     "en": "FIX: small error"
+  },
+  "3.0.6": {
+    "en": "FIX: waiting for this message"
+  },
+  "3.0.7": {
+    "en": "Update SDK"
+  },
+  "3.0.8": {
+    "en": "FIX: pairing code not showing"
+  },
+  "3.0.9": {
+    "en": "FIX: update SDK"
   }
 }

@@ -7,7 +7,7 @@
     "url": "https://github.com/martijnpoppen/com.whatsapp"
   },
   "dependencies": {
-    "baileys": "^7.0.0-rc10",
+    "baileys": "^7.0.0-rc14",
     "libphonenumber-js": "^1.12.8",
     "mime-types": "^3.0.2",
     "perfect-debounce": "^1.0.0"

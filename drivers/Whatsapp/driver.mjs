@@ -134,6 +134,9 @@ export default class mainDriver extends Homey.Driver {
 
             if (view === 'whatsapp_pairing_code') {
                 console.log('show pairing code view', { guid: this.guid, code: this.code });
+                if(this.code) {
+                    session.emit('code', this.code);
+                }
                 await this.setCheckInterval(this, session, this.guid);
             }
 
