@@ -81,6 +81,21 @@ export default class Whatsapp extends Homey.Device {
         this.new_pairing_code = this.homey.flow.getDeviceTriggerCard('new_pairing_code');
     }
 
+    async synchronousStart() {
+        const driverData = this.driver;
+        const driverDevices = driverData.getDevices();
+        const deviceObject = this.getData();
+
+        const sleepIndex = driverDevices.findIndex((device) => {
+            const driverDeviceObject = device.getData();
+            return deviceObject.id === driverDeviceObject.id;
+        });
+
+        await sleep(sleepIndex * 7500);
+
+        this.homey.app.log('[Device] - init - after sleep =>', sleepIndex, this.getName());
+    }
+
     // ------------- API -------------
     async setWhatsappClient() {
         try {
