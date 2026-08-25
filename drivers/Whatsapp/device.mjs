@@ -4,6 +4,25 @@ import { validateUrl, sleep, getBase64Image, toConsistentId } from '../../lib/he
 import path from 'path';
 import fs from 'fs/promises';
 
+// v1/v2 kept the whole Baileys auth state in the Homey device store, keyed
+// `<clientId>:...`. v3 keeps it on the filesystem, so after copyFromStoreToFileSystem
+// those entries are dead weight — but a long-running v1 install carries tens of
+// thousands of them (pre-keys were never pruned back then), and every
+// unsetStoreValue rewrites and persists the device's entire store record. Wiping
+// them in one pass is O(n^2) work that pins the app until Homey kills it, and
+// since nothing recorded progress the next boot started over from zero: a
+// permanent crash loop with no way out for the user.
+//
+// So drain a bounded slice per app start and remember when we're finished. A
+// store that takes a few days to fully drain costs some memory; one that takes
+// the app down costs the user their WhatsApp connection.
+const MIGRATION_MARKER_KEY = '_migrated_to_fs_v1';
+const STORE_CLEANUP_DONE_KEY = '_store_cleanup_done_v1';
+const STORE_CLEANUP_START_DELAY_MS = 60 * 1000;
+const STORE_CLEANUP_BUDGET_MS = 5 * 60 * 1000;
+const STORE_CLEANUP_RETRY_MS = 30 * 60 * 1000;
+const STORE_CLEANUP_PAUSE_MS = 60;
+
 export default class Whatsapp extends Homey.Device {
     async onInit() {
         try {
@@ -11,9 +30,19 @@ export default class Whatsapp extends Homey.Device {
             this.setUnavailable(`Connecting to WhatsApp`);
 
             await this.copyFromStoreToFileSystem();
-            await this.cleanupWidgetStore();
-            await this.widgetInstanceHeartbeats();
-            await this.logStoreKeys();
+
+            // One snapshot for all three. getStoreKeys() materialises the full
+            // key list, which on a store migrated from v1.39 is a very large
+            // array — taking it four separate times during boot is four times
+            // the peak allocation for no benefit.
+            const storeKeys = await this.getStoreKeys();
+            await this.cleanupWidgetStore(storeKeys);
+            await this.widgetInstanceHeartbeats(storeKeys);
+            await this.logStoreKeys(storeKeys);
+
+            // Deliberately not awaited: draining the legacy store must never
+            // sit between the user and a working connection.
+            this.scheduleLegacyStoreCleanup();
 
             await this.synchronousStart();
 
@@ -27,8 +56,24 @@ export default class Whatsapp extends Homey.Device {
     }
 
     async onDeleted() {
+        this.clearBackgroundTimers();
         await this.cleanupWidgetStore();
         await this.removeWhatsappClient();
+    }
+
+    async onUninit() {
+        this.clearBackgroundTimers();
+    }
+
+    clearBackgroundTimers() {
+        if (this._heartbeatTimeout) {
+            this.homey.clearTimeout(this._heartbeatTimeout);
+            this._heartbeatTimeout = null;
+        }
+        if (this._cleanupTimeout) {
+            this.homey.clearTimeout(this._cleanupTimeout);
+            this._cleanupTimeout = null;
+        }
     }
 
     async setTriggers() {
@@ -161,27 +206,31 @@ export default class Whatsapp extends Homey.Device {
     async removeWhatsappClient() {
         this.setUnavailable(`Repairing...`);
 
-        // Clear the heartbeat timeout to prevent duplicate timers after re-init
-        if (this._heartbeatTimeout) {
-            this.homey.clearTimeout(this._heartbeatTimeout);
-            this._heartbeatTimeout = null;
-        }
+        // Stop the background timers so they don't compete with the repair for
+        // store IO (and don't get duplicated when onInit runs again).
+        this.clearBackgroundTimers();
 
         if (this.WhatsappClient) {
-            this.WhatsappClient.deleteDevice();
+            await this.WhatsappClient.deleteDevice();
             this.WhatsappClient = null;
         }
 
-        // loop trough store and remove everything
-        const storeKeys = await this.getStoreKeys();
-        for (const storeKey of storeKeys) {
-            this.homey.app.log(`[Device] ${this.getName()} - removeWhatsappClient - removing key`, storeKey);
-            await this.unsetStoreValue(storeKey);
-        }
+        // No store wipe here any more. This used to walk the ENTIRE device store
+        // and unset every key one by one, unpaced and with a log line each. On an
+        // install migrated from v1.39 that store still holds tens of thousands of
+        // legacy auth entries, so hitting "Repair" — exactly what a user does when
+        // the migration left them broken — took the app down before the pairing
+        // view ever appeared.
+        //
+        // It also wasn't doing what it was meant to any more: since v3 the auth
+        // state lives in /userdata/auth/<clientId> and the store holds nothing the
+        // repair needs to reset. The client wipes that folder itself on the next
+        // pair attempt (forceNewSession), and the leftover legacy keys are drained
+        // in the background by scheduleLegacyStoreCleanup().
 
         await sleep(3000);
 
-        this.homey.app.log(`[Device] ${this.getName()} - removeWhatsappClient - all store data removed`);
+        this.homey.app.log(`[Device] ${this.getName()} - removeWhatsappClient - done`);
     }
 
     async onCapability_SendMessage(params, type) {
@@ -641,11 +690,11 @@ export default class Whatsapp extends Homey.Device {
         }
     }
 
-    async widgetInstanceHeartbeats() {
+    async widgetInstanceHeartbeats(knownStoreKeys = null) {
         const now = Date.now();
         const timeout = 36 * 60 * 60 * 1000; // 36 hours without heartbeat = removed/closed
 
-        const storeKeys = await this.getStoreKeys();
+        const storeKeys = knownStoreKeys || (await this.getStoreKeys());
         const filteredKeys = storeKeys.filter((key) => key.startsWith('widgetInstance-'));
 
         for (const dataId of filteredKeys) {
@@ -662,10 +711,10 @@ export default class Whatsapp extends Homey.Device {
         this._heartbeatTimeout = this.homey.setTimeout(() => this.widgetInstanceHeartbeats(), 30 * 60 * 1000);
     }
 
-    async cleanupWidgetStore() {
+    async cleanupWidgetStore(knownStoreKeys = null) {
         this.homey.app.log(`[Device] ${this.getName()} - cleanupWidgetStore`);
 
-        const storeKeys = await this.getStoreKeys();
+        const storeKeys = knownStoreKeys || (await this.getStoreKeys());
         const filteredKeys = storeKeys.filter((key) => key.startsWith('widget-chat-') || key.startsWith('widget-instance-'));
 
         for (const storeKey of filteredKeys) {
@@ -676,7 +725,7 @@ export default class Whatsapp extends Homey.Device {
 
     async copyFromStoreToFileSystem() {
         const clientId = this.getData().id;
-        const migrationMarkerKey = '_migrated_to_fs_v1';
+        const migrationMarkerKey = MIGRATION_MARKER_KEY;
 
         // Already done?
         if (await this.getStoreValue(migrationMarkerKey)) {
@@ -764,55 +813,141 @@ export default class Whatsapp extends Homey.Device {
 
         this.homey.app.log(`[Device] ${this.getName()} - copyFromStoreToFileSystem - done: ${copied} keys migrated to ${authFolder}`);
 
-        // Fire-and-forget background cleanup of the old store data.
-        // App is fully functional during this; user doesn't see it.
-        this.cleanupOldStoreData().catch((e) => this.homey.app.error(`[Device] ${this.getName()} - cleanupOldStoreData failed`, e));
+        // The old store data is drained by scheduleLegacyStoreCleanup(), which
+        // runs on every boot until it reports zero remaining. It used to be
+        // kicked off from here instead, which meant a cleanup interrupted by a
+        // restart was never resumed: this branch only runs on the one boot that
+        // completes the migration.
     }
 
-    async cleanupOldStoreData() {
+    // Delete legacy `<clientId>:` store entries within a hard time budget.
+    // Returns how many were removed and how many are still there, so callers
+    // can decide whether to mark the job finished.
+    async pruneLegacyStoreKeys({ budgetMs, pauseMs, reason }) {
         const clientId = this.getData().id;
-        const migrationMarkerKey = '_migrated_to_fs_v1';
-
-        // Give Baileys time to fully start up before we compete for store IO
-        await new Promise((r) => setTimeout(r, 30000));
-
-        const storeKeys = await this.getStoreKeys();
         const sessionPrefix = `${clientId}:`;
-        const toDelete = storeKeys.filter((k) => k.startsWith(sessionPrefix));
+        const preKeyPrefix = `${sessionPrefix}pre-key-`;
+        const start = Date.now();
 
-        if (toDelete.length === 0) {
-            this.homey.app.log(`[Device] ${this.getName()} - cleanupOldStoreData - nothing to clean`);
+        let storeKeys;
+        try {
+            storeKeys = await this.getStoreKeys();
+        } catch (e) {
+            this.homey.app.error(`[Device] ${this.getName()} - pruneLegacyStoreKeys (${reason}) - getStoreKeys failed`, e);
+            return { deleted: 0, remaining: -1 };
+        }
+
+        const legacy = storeKeys.filter((k) => k.startsWith(sessionPrefix));
+        storeKeys = null;
+
+        if (!legacy.length) return { deleted: 0, remaining: 0 };
+
+        // Pre-keys first: they are the overwhelming bulk of a v1 store and
+        // Baileys regenerates them anyway, so they're the cheapest to lose if
+        // we run out of budget mid-pass.
+        legacy.sort((a, b) => (b.startsWith(preKeyPrefix) ? 1 : 0) - (a.startsWith(preKeyPrefix) ? 1 : 0));
+
+        let deleted = 0;
+        for (const storeKey of legacy) {
+            if (Date.now() - start > budgetMs) break;
+
+            try {
+                await this.unsetStoreValue(storeKey);
+                deleted++;
+            } catch (_) {
+                /* individual failures are retried on the next pass */
+            }
+
+            // Paced on purpose: each unset persists the whole store record, so
+            // a tight loop starves the rest of the app.
+            await sleep(pauseMs);
+        }
+
+        const remaining = legacy.length - deleted;
+
+        this.homey.app.log(
+            `[Device] ${this.getName()} - pruneLegacyStoreKeys (${reason}) - removed ${deleted}, ` +
+                `${remaining} remaining, ${((Date.now() - start) / 1000).toFixed(1)}s`
+        );
+
+        return { deleted, remaining };
+    }
+
+    async scheduleLegacyStoreCleanup(delayMs = STORE_CLEANUP_START_DELAY_MS) {
+        try {
+            // Nothing to clean until the auth state actually made it to disk.
+            if (!(await this.getStoreValue(MIGRATION_MARKER_KEY))) return;
+            if (await this.getStoreValue(STORE_CLEANUP_DONE_KEY)) return;
+        } catch (e) {
+            this.homey.app.error(`[Device] ${this.getName()} - scheduleLegacyStoreCleanup - marker read failed`, e);
             return;
         }
 
-        this.homey.app.log(`[Device] ${this.getName()} - cleanupOldStoreData - removing ${toDelete.length} old store entries in background`);
+        if (this._cleanupTimeout) return;
 
-        const PAUSE_MS = 50;
-        let deleted = 0;
-        const start = Date.now();
+        // Let the connection settle before competing for store IO, then work in
+        // short bursts with long gaps: ~5 minutes of deletes per half hour.
+        // Slow on purpose — a store that takes a day to drain is fine, one that
+        // is drained fast enough to trip Homey's watchdog is not.
+        this._cleanupTimeout = this.homey.setTimeout(async () => {
+            this._cleanupTimeout = null;
 
-        for (const k of toDelete) {
             try {
-                await this.unsetStoreValue(k);
-                deleted++;
-            } catch (_) {
-                /* ignore individual failures */
+                const { remaining } = await this.pruneLegacyStoreKeys({
+                    budgetMs: STORE_CLEANUP_BUDGET_MS,
+                    pauseMs: STORE_CLEANUP_PAUSE_MS,
+                    reason: 'background'
+                });
+
+                if (remaining === 0) {
+                    await this.setStoreValue(STORE_CLEANUP_DONE_KEY, true);
+                    this.homey.app.log(`[Device] ${this.getName()} - legacy store cleanup complete`);
+                    return;
+                }
+
+                if (remaining > 0) {
+                    this.homey.app.log(
+                        `[Device] ${this.getName()} - legacy store cleanup paused, ${remaining} keys left`
+                    );
+                }
+
+                // remaining < 0 means getStoreKeys() failed; retry on the same
+                // schedule rather than giving up for this whole app run.
+                await this.scheduleLegacyStoreCleanup(STORE_CLEANUP_RETRY_MS);
+            } catch (e) {
+                this.homey.app.error(`[Device] ${this.getName()} - legacy store cleanup failed`, e);
             }
-
-            await new Promise((r) => setTimeout(r, PAUSE_MS));
-
-            if (deleted % 200 === 0) {
-                const elapsedMin = ((Date.now() - start) / 60000).toFixed(1);
-                this.homey.app.log(`[Device] ${this.getName()} - cleanupOldStoreData - ${deleted}/${toDelete.length} in ${elapsedMin}min`);
-            }
-        }
-
-        const elapsedMin = ((Date.now() - start) / 60000).toFixed(1);
-        this.homey.app.log(`[Device] ${this.getName()} - cleanupOldStoreData - done: ${deleted}/${toDelete.length} in ${elapsedMin}min`);
+        }, delayMs);
     }
 
-    async logStoreKeys() {
-        const storeKeys = await this.getStoreKeys();
-        this.homey.app.log(`[Device] ${this.getName()} - logStoreKeys =>`, JSON.stringify(storeKeys, null, 2));
+    async logStoreKeys(knownStoreKeys = null) {
+        // Never dump the raw key list. A store migrated from v1.39 can hold
+        // >100k `pre-key-` entries; JSON.stringify(keys, null, 2) on that is a
+        // multi-megabyte string which the log pipeline then copies again — on
+        // its own enough to push the app over its memory limit at boot, every
+        // boot, before anything else even gets a chance to run.
+        const clientId = this.getData().id;
+        const sessionPrefix = `${clientId}:`;
+        const preKeyPrefix = `${sessionPrefix}pre-key-`;
+
+        const storeKeys = knownStoreKeys || (await this.getStoreKeys());
+
+        let legacyPreKeys = 0;
+        let legacyOther = 0;
+        let widget = 0;
+
+        for (const k of storeKeys) {
+            if (k.startsWith(preKeyPrefix)) legacyPreKeys++;
+            else if (k.startsWith(sessionPrefix)) legacyOther++;
+            else if (k.startsWith('widget')) widget++;
+        }
+
+        this.homey.app.log(`[Device] ${this.getName()} - store summary =>`, {
+            total: storeKeys.length,
+            legacyPreKeys,
+            legacyOther,
+            widget,
+            other: storeKeys.length - legacyPreKeys - legacyOther - widget
+        });
     }
 }
