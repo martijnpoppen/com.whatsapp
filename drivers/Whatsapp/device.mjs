@@ -1,6 +1,6 @@
 import Homey from 'homey';
 import { parsePhoneNumberWithError } from 'libphonenumber-js';
-import { validateUrl, sleep, getBase64Image, toConsistentId } from '../../lib/helpers/index.mjs';
+import { validateUrl, sleep, getBase64Image, toConsistentId, parseGroupInvite } from '../../lib/helpers/index.mjs';
 import path from 'path';
 import fs from 'fs/promises';
 
@@ -48,7 +48,6 @@ export default class Whatsapp extends Homey.Device {
 
             await this.checkCapabilities();
             await this.setTriggers();
-            await this.setConditions();
             await this.setWhatsappClient();
         } catch (error) {
             this.homey.app.log(`[Device] ${this.getName()} - OnInit Error`, error);
@@ -80,103 +79,6 @@ export default class Whatsapp extends Homey.Device {
         this.new_message = this.homey.flow.getDeviceTriggerCard('new_message');
         this.new_image = this.homey.flow.getDeviceTriggerCard('new_image');
         this.new_pairing_code = this.homey.flow.getDeviceTriggerCard('new_pairing_code');
-    }
-
-    async setConditions() {
-        const normalize = (str) => str?.trim().toLowerCase();
-
-        const text_condition = this.homey.flow.getConditionCard('text_condition');
-        text_condition.registerRunListener(async (args, state) => {
-            this.homey.app.log(`[Device] ${this.getName()} - [text_condition]`, { ...args, device: 'LOG' });
-
-            const result = state.text && normalize(state.text) === normalize(args.text_input);
-
-            this.homey.app.log(`[Device] ${this.getName()} - [text_condition] - result: `, result);
-            return result;
-        });
-
-        const text_contains_condition = this.homey.flow.getConditionCard('text_contains_condition');
-        text_contains_condition.registerRunListener(async (args, state) => {
-            this.homey.app.log(`[Device] ${this.getName()} - [text_contains_condition]`, { ...args, device: 'LOG' });
-
-            const result = state.text && normalize(state.text).includes(normalize(args.text_input));
-
-            this.homey.app.log(`[Device] ${this.getName()} - [text_contains_condition] - result: `, result);
-            return result;
-        });
-
-        const text_starts_with_condition = this.homey.flow.getConditionCard('text_starts_with_condition');
-        text_starts_with_condition.registerRunListener(async (args, state) => {
-            this.homey.app.log(`[Device] ${this.getName()} - [text_starts_with_condition]`, { ...args, device: 'LOG' });
-
-            const result = state.text && normalize(state.text).startsWith(normalize(args.text_input));
-
-            this.homey.app.log(`[Device] ${this.getName()} - [text_starts_with_condition] - result: `, result);
-            return result;
-        });
-
-        const from_condition = this.homey.flow.getConditionCard('from_condition');
-        from_condition.registerRunListener(async (args, state) => {
-            this.homey.app.log(`[Device] ${this.getName()} - [from_condition]`, { ...args, device: 'LOG' });
-            const result = state.from && normalize(state.from) === normalize(args.from_input);
-
-            this.homey.app.log(`[Device] ${this.getName()} - [from_condition] - result: `, result);
-            return result;
-        });
-
-        const from_number_condition = this.homey.flow.getConditionCard('from_number_condition');
-        from_number_condition.registerRunListener(async (args, state) => {
-            this.homey.app.log(`[Device] ${this.getName()} - [from_number_condition]`, { ...args, device: 'LOG' });
-            const result = state.fromNumber && normalize(state.fromNumber) === normalize(args.from_input);
-
-            this.homey.app.log(`[Device] ${this.getName()} - [from_number_condition] - result: `, result);
-            return result;
-        });
-
-        const group_condition = this.homey.flow.getConditionCard('group_condition');
-        group_condition.registerRunListener(async (args, state) => {
-            this.homey.app.log(`[Device] ${this.getName()} - [group_condition]`, { ...args, device: 'LOG' });
-            const result = state.group === true;
-
-            this.homey.app.log(`[Device] ${this.getName()} - [group_condition] - result: `, result);
-            return result;
-        });
-
-        const group_code_condition = this.homey.flow.getConditionCard('group_code_condition');
-        group_code_condition.registerRunListener(async (args, state) => {
-            this.homey.app.log(`[Device] ${this.getName()} - [group_code_condition]`, { ...args, device: 'LOG' });
-            const parsedInput = this.parseGroupInvite(args.group_code_input);
-            this.homey.app.log(`[Device] ${this.getName()} - [group_code_condition] - parsedInput: `, parsedInput);
-            this.homey.app.log(`[Device] ${this.getName()} - [group_code_condition] - state.groupCode: `, state.groupCode);
-            const result = state.groupCode === parsedInput;
-
-            this.homey.app.log(`[Device] ${this.getName()} - [group_code_condition] - result: `, result);
-            return result;
-        });
-
-        const image_condition = this.homey.flow.getConditionCard('image_condition');
-        image_condition.registerRunListener(async (args, state) => {
-            this.homey.app.log(`[Device] ${this.getName()} - [image_condition]`, { ...args, device: 'LOG' });
-            const result = state.hasImage === true;
-
-            this.homey.app.log(`[Device] ${this.getName()} - [image_condition] - result: `, result);
-            return result;
-        });
-    }
-
-    async synchronousStart() {
-        const driverData = this.driver;
-        const driverDevices = driverData.getDevices();
-        const deviceObject = this.getData();
-
-        const sleepIndex = driverDevices.findIndex((device) => {
-            const driverDeviceObject = device.getData();
-            return deviceObject.id === driverDeviceObject.id;
-        });
-
-        await sleep(sleepIndex * 7500);
-
-        this.homey.app.log('[Device] - init - after sleep =>', sleepIndex, this.getName());
     }
 
     // ------------- API -------------
@@ -270,7 +172,7 @@ export default class Whatsapp extends Homey.Device {
             recipient = recipient.replace(' ', '');
             recipient = `${recipient}@s.whatsapp.net`;
         } else if (isGroup) {
-            const inviteCode = this.parseGroupInvite(recipient);
+            const inviteCode = parseGroupInvite(recipient);
             this.homey.app.log(`[Device] ${this.getName()} - getRecipient - fetching group JID`, inviteCode);
 
             recipient = (await this.getStoreValue(inviteCode)) || null;
@@ -425,14 +327,6 @@ export default class Whatsapp extends Homey.Device {
         } else {
             return `+${pn}`;
         }
-    }
-
-    parseGroupInvite(inviteLink) {
-        let inviteCode = inviteLink.replace(/\s+/g, '');
-        inviteCode = inviteCode.split('/').pop();
-        inviteCode = inviteCode.includes('?') ? inviteCode.split('?')[0] : inviteCode;
-
-        return inviteCode;
     }
 
     async coolDown() {

@@ -1,5 +1,6 @@
 import Homey from 'homey';
 import flowActions from './lib/flows/actions.mjs';
+import flowConditions from './lib/flows/conditions.mjs';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -22,6 +23,7 @@ export default class App extends Homey.App {
         this.log(`${this.homey.manifest.id} Running on Node.js version:`, process.version);
 
         await flowActions.init(this.homey);
+        await flowConditions.init(this.homey);
 
         this.sendNotifications();
     }
