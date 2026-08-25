@@ -37,6 +37,7 @@
     }
 </style>
 <div id="text"></div>
+<div id="pairing_error" class="hidden homey-text-small-light"></div>
 <div class=__private__homey-pincode id="pairing_code">
     
     <form id=homey-pincode-form class="__private__homey-pincode__form homey-form">
@@ -52,18 +53,90 @@
 <script>
     (function () {
         var $text = document.querySelector('#text');
+        var $error = document.querySelector('#pairing_error');
+        var $group = document.querySelector('#homey-pincode-input-group');
         var $next = document.querySelector('#hy-nav-continue');
 
-        Homey.on("code", function (data) {
-            const code = data.split('');
-            document.querySelector('#homey-pincode-input-group').innerHTML = '';
-            for(let i = 0; i < code.length; i++) {
-                if(i === 4) {
-                    document.querySelector('#homey-pincode-input-group').innerHTML += '&nbsp; &nbsp; &nbsp;' 
-                }
-                document.querySelector('#homey-pincode-input-group').innerHTML += '<input disabled class="homey-form-input" type="text" value="' + code[i] + '">';
+        var rendered = false;
+        var pollTimer = null;
+
+        function stopPolling() {
+            if (pollTimer) {
+                clearInterval(pollTimer);
+                pollTimer = null;
             }
-        });
+        }
+
+        function renderCode(code) {
+            if (rendered || !code) return;
+            rendered = true;
+            stopPolling();
+
+            $group.innerHTML = '';
+
+            var chars = String(code).split('');
+            for (var i = 0; i < chars.length; i++) {
+                if (i === 4) {
+                    $group.appendChild(document.createTextNode('\u00a0\u00a0\u00a0'));
+                }
+                var input = document.createElement('input');
+                input.disabled = true;
+                input.className = 'homey-form-input';
+                input.type = 'text';
+                input.value = chars[i];
+                $group.appendChild(input);
+            }
+
+            // The code is live now — let the user move on without waiting out
+            // the 25s fallback timer.
+            enableContinue();
+        }
+
+        function showError(message) {
+            stopPolling();
+            $group.innerHTML = '';
+            if ($error) {
+                $error.textContent = message || 'Pairing failed. Please close this screen and try again.';
+                $error.classList.remove('hidden');
+            }
+            enableContinue();
+        }
+
+        var continueEnabled = false;
+
+        function enableContinue() {
+            continueEnabled = true;
+            if (!$next) return;
+            $next.classList.remove('is-loading');
+            $next.classList.remove('is-disabled');
+            $next.classList.remove('no-click');
+        }
+
+        function disableContinue() {
+            // The code can arrive before this runs (the pull below fires
+            // immediately). Never re-disable a button we already unlocked.
+            if (continueEnabled || !$next) return;
+            $next.classList += ' hy-button-primary hy-button-fill button is-loading is-disabled no-click';
+        }
+
+        // Push path: only lands if this view was already mounted when the code
+        // arrived.
+        Homey.on('code', renderCode);
+        Homey.on('pair_error', showError);
+
+        // Pull path: this is the reliable one. session.emit() on the driver is
+        // fire-and-forget with no buffering, so a code produced while this view
+        // was still loading is lost. Ask for it ourselves until we have it.
+        function poll() {
+            Homey.emit('get_pairing_code', null, function (err, result) {
+                if (err || !result) return;
+                if (result.code) return renderCode(result.code);
+                if (result.error) return showError(result.error);
+            });
+        }
+
+        poll();
+        pollTimer = setInterval(poll, 1000);
 
         Homey.getOptions(function (err, options) {
             if (err) return Homey.error(err);
@@ -72,14 +145,11 @@
                 if (options.title) Homey.setTitle(Homey.__(options.title));
                 if (options.text) $text.innerHTML = Homey.__(options.text);
 
-                $next.classList += ' hy-button-primary hy-button-fill button is-loading is-disabled no-click';
+                disableContinue();
             }, 0);
 
-            setTimeout(() => {
-                $next.classList.remove("is-loading");
-                $next.classList.remove("is-disabled");
-                $next.classList.remove("no-click");
-            }, 25000);
+            // Fallback: never leave the user stuck behind a disabled button.
+            setTimeout(enableContinue, 25000);
         });
     })();
 </script>
@@ -87,6 +157,12 @@
     #pairingcode {
         font-size: 20px;
         text-align: center;
+    }
+
+    #pairing_error {
+        color: var(--homey-color-red, #e5484d);
+        text-align: center;
+        margin-top: var(--homey-su-2, 8px);
     }
 
     .no-click {

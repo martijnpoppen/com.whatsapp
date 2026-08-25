@@ -430,5 +430,8 @@
   },
   "3.0.9": {
     "en": "FIX: update SDK"
+  },
+  "3.0.10": {
+    "en": "FIX: crash after updating from v1.39 | FIX: pairing code not reaching the pairing screen"
   }
 }
