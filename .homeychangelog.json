@@ -433,5 +433,8 @@
   },
   "3.0.10": {
     "en": "FIX: app crashing after the update from v1.39 | FIX: pairing code not showing when repairing | FIX: error when adding a second device"
+  },
+  "3.0.11": {
+    "en": "FIX: memory crashes during normal use | FIX: leftover connections after a cancelled pairing"
   }
 }

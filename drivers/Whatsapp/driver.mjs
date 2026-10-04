@@ -3,6 +3,11 @@ import { GetGUID, sleep } from '../../lib/helpers/index.mjs';
 import whatsappClient from '../../lib/com.whatsapp.api/index.mjs';
 import { parsePhoneNumberWithError } from 'libphonenumber-js';
 
+// How long to wait after a pair session closes before deciding its client is
+// an orphan. On a successful pair the device is created as the session ends,
+// and it has to be registered before we can tell "abandoned" from "just paired".
+const ORPHAN_SWEEP_DELAY_MS = 15000;
+
 export default class mainDriver extends Homey.Driver {
     async onInit() {
         this.homey.app.log('[Driver] - init', this.id);
@@ -31,6 +36,33 @@ export default class mainDriver extends Homey.Driver {
                 app: this.homey.app
             }
         });
+    }
+
+    // Every *pair* attempt mints a fresh guid, so abandoning the dialog used to
+    // leave its client behind for the lifetime of the app: a live socket,
+    // reconnect timers and event listeners under a guid that will never become
+    // a device. Repeat attempts for one number stacked up several of them, each
+    // still asking WhatsApp for pairing codes for that number.
+    async destroyOrphanedClient(guid) {
+        if (!guid) return;
+
+        // A guid that became a real device is not an orphan. Repair also reuses
+        // the device's own id, so this covers repair sessions too.
+        const isDevice = this.getDevices().some((device) => device.getData().id === guid);
+        if (isDevice) return;
+
+        const client = this.WhatsappClients[guid];
+        if (!client) return;
+
+        this.homey.app.log(`[Driver] ${this.id} - destroying orphaned pairing client`, { guid });
+
+        try {
+            await client.deleteDevice();
+        } catch (error) {
+            this.homey.app.error(`[Driver] ${this.id} - orphaned client teardown error`, error);
+        }
+
+        delete this.WhatsappClients[guid];
     }
 
     stopCheckInterval(ctx) {
@@ -226,6 +258,16 @@ export default class mainDriver extends Homey.Driver {
         session.setHandler('disconnect', async () => {
             this.homey.app.log(`[Driver] ${this.id} - pair session disconnected`);
             this.stopCheckInterval(this);
+
+            // Capture the guid now: another pair session may reassign this.guid
+            // before the sweep runs.
+            const guid = this.guid;
+
+            this.homey.setTimeout(() => {
+                this.destroyOrphanedClient(guid).catch((error) =>
+                    this.homey.app.error(`[Driver] ${this.id} - destroyOrphanedClient failed`, error)
+                );
+            }, ORPHAN_SWEEP_DELAY_MS);
         });
 
         session.setHandler('list_devices', async () => {
