@@ -106,3 +106,4 @@ lib/mock/
 lib/com.whatsapp.api
 lib/com.whatsapp.lib
 api.js
+lib/build-info.json

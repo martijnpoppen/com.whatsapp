@@ -1,0 +1,178 @@
+# Publish to the Homey App Store.
+#
+# Manual on purpose: publishing is not something a push should do.
+#
+# This app is assembled from THREE repositories. `lib/com.whatsapp.lib` and
+# `lib/com.whatsapp.api` are vendored directories built from sibling checkouts, and both are
+# gitignored here — so nothing in this repository records which version of either one a given
+# build carries. Publishing from a machine that never pulled the siblings ships a stale library
+# alongside a fresh app, silently and with no way to tell from the outside: build 180 went out
+# with the app half of v3.0.11 and a com.whatsapp.lib predating its message-cache fix, and the
+# only way to establish that was to download the published bundle and grep it.
+#
+# So this workflow owns the assembly. It takes an explicit ref per sibling, builds both into this
+# checkout, fails if either did not land, and records both commit SHAs in the run summary — so
+# every publish states exactly what went into it.
+#
+# Layout matters: both siblings' build scripts write to `../com.whatsapp/lib/...`, so this
+# checkout has to sit in a directory named exactly `com.whatsapp` with the siblings beside it.
+# $GITHUB_WORKSPACE already ends in the repository name, so the app stays at the workspace root
+# and the siblings are cloned one level up. That is also why they are cloned with `git` rather
+# than actions/checkout, whose `path` input may not escape the workspace.
+name: Publish Homey App
+
+on:
+  workflow_dispatch:
+    inputs:
+      lib_ref:
+        type: string
+        description: com.whatsapp.lib branch, tag or SHA to build against
+        required: true
+        default: master
+      api_ref:
+        type: string
+        description: com.whatsapp.api branch, tag or SHA to build against
+        required: true
+        default: main
+      cli_version:
+        type: string
+        description: Homey CLI semver range to publish with
+        required: true
+        default: ^4
+
+# Nothing here writes to the repository; the release goes to Athom.
+permissions:
+  contents: read
+
+# Two publishes racing each other would fight over the same App Store version.
+concurrency:
+  group: homey-app-publish
+  cancel-in-progress: false
+
+jobs:
+  main:
+    name: Publish Homey App
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Homey runs Node 22 on all platforms as of v12.9.0.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # The siblings' build scripts hardcode `../com.whatsapp/...`. If this checkout is not in a
+      # directory of that name they write nowhere useful, so fail here with the reason rather
+      # than at a confusing `cp` error later.
+      - name: Workspace is named com.whatsapp
+        run: |
+          name=$(basename "$GITHUB_WORKSPACE")
+          if [ "$name" != "com.whatsapp" ]; then
+            echo "::error::workspace directory is '$name'; the sibling build scripts write to ../com.whatsapp"
+            exit 1
+          fi
+
+      # Both siblings are private, so GITHUB_TOKEN cannot read them — this needs a PAT with repo
+      # scope stored as the GH_PAT secret. Passed through the environment so it is not rendered
+      # into the logged command line.
+      - name: Clone the siblings
+        env:
+          TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          git clone --depth 1 --branch '${{ inputs.lib_ref }}' \
+            "https://x-access-token:${TOKEN}@github.com/martijnpoppen/com.whatsapp.lib.git" \
+            ../com.whatsapp.lib
+          git clone --depth 1 --branch '${{ inputs.api_ref }}' \
+            "https://x-access-token:${TOKEN}@github.com/martijnpoppen/com.whatsapp.api.git" \
+            ../com.whatsapp.api
+
+      # com.whatsapp.lib is TypeScript; `npm run build` is tsc with outDir pointed at this
+      # checkout. `npm install` rather than `npm ci` because that repo carries only a yarn.lock.
+      - name: Build com.whatsapp.lib into lib/com.whatsapp.lib
+        run: |
+          cd ../com.whatsapp.lib
+          npm install --no-audit --no-fund
+          npm run build
+
+      # com.whatsapp.api's build script is two `cp` commands, and `cp` will not create the
+      # destination — without this mkdir it fails with "Not a directory".
+      - name: Build com.whatsapp.api into lib/com.whatsapp.api
+        run: |
+          mkdir -p lib/com.whatsapp.api
+          cd ../com.whatsapp.api
+          npm run build
+
+      # The whole point of this workflow. Everything below ships whatever is in these directories,
+      # so prove both landed before anything is uploaded.
+      - name: Vendored libraries are present
+        env:
+          LIB_REF: ${{ inputs.lib_ref }}
+          API_REF: ${{ inputs.api_ref }}
+        run: |
+          missing=0
+          for f in \
+            lib/com.whatsapp.lib/baileys.mjs \
+            lib/com.whatsapp.lib/utils.mjs \
+            lib/com.whatsapp.api/index.mjs \
+            lib/com.whatsapp.api/api.mjs
+          do
+            if [ ! -s "$f" ]; then
+              echo "::error::$f is missing or empty — the sibling build did not land"
+              missing=1
+            fi
+          done
+          [ "$missing" -eq 0 ] || exit 1
+
+          lib_sha=$(git -C ../com.whatsapp.lib rev-parse HEAD)
+          api_sha=$(git -C ../com.whatsapp.api rev-parse HEAD)
+
+          # Carried into the bundle so a running app can report which libraries it was built
+          # from. Without it, "is fix X in this build?" is only answerable by downloading the
+          # published bundle.
+          cat > lib/build-info.json <<EOF
+          {
+            "app": "$(git rev-parse HEAD)",
+            "lib": "$lib_sha",
+            "libRef": "$LIB_REF",
+            "api": "$api_sha",
+            "apiRef": "$API_REF",
+            "builtAt": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          }
+          EOF
+
+          {
+            echo "### Assembled from"
+            echo ""
+            echo "| component | ref | commit |"
+            echo "| --- | --- | --- |"
+            echo "| com.whatsapp | \`${GITHUB_REF_NAME}\` | \`$(git rev-parse --short HEAD)\` |"
+            echo "| com.whatsapp.lib | \`$LIB_REF\` | \`${lib_sha:0:7}\` |"
+            echo "| com.whatsapp.api | \`$API_REF\` | \`${api_sha:0:7}\` |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Install
+        run: npm ci --no-audit --no-fund
+
+      # The Homey CLI is not a dependency of this app, so install it for this run only.
+      # --no-save keeps it out of package.json, and the CLI bundles production dependencies, so
+      # it cannot end up in the published app either way.
+      - name: Install the Homey CLI
+        run: npm install --no-save --no-audit --no-fund 'homey@${{ inputs.cli_version }}'
+
+      - name: Validate
+        run: ./node_modules/.bin/homey app validate --level=publish
+
+      # HOMEY_HEADLESS skips the interactive version and changelog prompts, which the separate
+      # Update Homey App Version workflow has already answered in .homeychangelog.json.
+      - name: Publish
+        env:
+          HOMEY_HEADLESS: '1'
+          HOMEY_PAT: ${{ secrets.HOMEY_PAT }}
+        run: ./node_modules/.bin/homey app publish
+
+      - name: URL
+        run: |
+          id=$(node -p "require('./app.json').id")
+          version=$(node -p "require('./app.json').version")
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "Published $id v$version — manage it at https://tools.developer.homey.app/apps/app/$id." >> "$GITHUB_STEP_SUMMARY"
