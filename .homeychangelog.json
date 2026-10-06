@@ -436,5 +436,8 @@
   },
   "3.0.11": {
     "en": "FIX: memory crashes during normal use | FIX: leftover connections after a cancelled pairing"
+  },
+  "3.0.12": {
+    "en": "FIX: app not starting on 3.0.11"
   }
 }
