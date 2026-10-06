@@ -7,19 +7,6 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// libsignal logs whole SessionEntry objects through raw console.*, bypassing
-// Baileys' pino logger entirely (node_modules/libsignal/src/session_record.js).
-// Each one is ~1.3-1.8KB of util.inspect output and they fire on every session
-// open, close and eviction — continuous on an account with many correspondents.
-// Keep the event, drop the payload.
-const LIBSIGNAL_OBJECT_DUMPS = [
-    'Removing old closed session:',
-    'Closing session:',
-    'Opening session:',
-    'Session already closed',
-    'Session already open'
-];
-
 export default class App extends Homey.App {
     log() {
         console.log.bind(this, '[log]').apply(this, arguments);
@@ -32,8 +19,6 @@ export default class App extends Homey.App {
     // -------------------- INIT ----------------------
 
     async onInit() {
-        this.filterLibsignalNoise();
-
         this.log(`${this.homey.manifest.id} - ${this.homey.manifest.version} started...`);
         this.log(`${this.homey.manifest.id} Running on Node.js version:`, process.version);
 
@@ -41,27 +26,6 @@ export default class App extends Homey.App {
         await flowConditions.init(this.homey);
 
         this.sendNotifications();
-    }
-
-    // Replace libsignal's object dumps with a one-line marker. We keep the
-    // message so session churn is still visible in a diagnostics report, and
-    // drop the SessionEntry argument that makes it expensive.
-    filterLibsignalNoise() {
-        if (globalThis.__whatsappConsoleFiltered) return;
-        globalThis.__whatsappConsoleFiltered = true;
-
-        for (const level of ['info', 'warn', 'log']) {
-            const passthrough = console[level].bind(console);
-
-            console[level] = (...args) => {
-                if (typeof args[0] === 'string') {
-                    const match = LIBSIGNAL_OBJECT_DUMPS.find((prefix) => args[0].startsWith(prefix));
-                    if (match) return passthrough(`[libsignal] ${match}`);
-                }
-
-                return passthrough(...args);
-            };
-        }
     }
 
     async sendNotifications() {

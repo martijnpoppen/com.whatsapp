@@ -540,12 +540,19 @@ export default class Whatsapp extends Homey.Device {
             ...(fromMe && { fromMe }),
             timeStamp,
             ...(hasImage && { hasImage }),
-            ...(base64Image && { base64Image }),
             deviceId: this.getId(),
             dataId: data.originalRecipient
         };
 
-        this.homey.api.realtime(`${this.getId()}-chat`, saveData);
+        // The live payload carries the image so the widget renders it straight away.
+        this.homey.api.realtime(`${this.getId()}-chat`, { ...saveData, ...(base64Image && { base64Image }) });
+
+        // The persisted history deliberately does not. A data: URL of a JPEG is
+        // ~1.33x the file size, setWidgetInstance keeps the last 15 entries, and
+        // the whole store value is re-serialised on every single message — so an
+        // image-heavy chat could hold megabytes of base64 in the device store and
+        // rewrite all of it on each new message. The widget already handles a
+        // falsy base64Image and renders text only.
         this.setWidgetInstance(null, data.originalRecipient, saveData);
     }
 

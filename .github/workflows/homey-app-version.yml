@@ -1,0 +1,47 @@
+# Bump the app version and write the changelog entry, using Athom's own action.
+#
+# Run this from the Actions tab; it commits the bump and tags a release. Publishing is a separate,
+# manual workflow so a version bump never publishes by itself.
+#
+# The action edits .homeycompose/app.json and regenerates app.json, which is why both are expected
+# in the commit it produces.
+name: Update Homey App Version
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        type: choice
+        description: Version
+        required: true
+        default: patch
+        options: [major, minor, patch]
+      changelog:
+        type: string
+        description: Changelog
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  main:
+    name: Update Homey App Version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: athombv/github-action-homey-app-version@master
+        id: update_app_version
+        with:
+          version: ${{ inputs.version }}
+          changelog: ${{ inputs.changelog }}
+
+      - name: Commit & Push
+        run: |
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "chore(release): v${{ steps.update_app_version.outputs.version }}"
+          git tag "v${{ steps.update_app_version.outputs.version }}"
+          git push --follow-tags
