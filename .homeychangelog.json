@@ -438,6 +438,6 @@
     "en": "FIX: memory crashes during normal use | FIX: leftover connections after a cancelled pairing"
   },
   "3.0.12": {
-    "en": "FIX: memory crashes during normal use"
+    "en": "FIX: memory usage when images are sent or received"
   }
 }
