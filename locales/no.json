@@ -5,6 +5,7 @@
         "loading": "Laster"
     },
     "widget": {
+        "image_expired": "bildet er ikke lenger tilgjengelig",
         "setup": "For å sette opp denne widgeten, send koden nedenfor i gruppechatten du vil koble til denne widgeten."
     }
 }

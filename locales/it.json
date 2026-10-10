@@ -5,6 +5,7 @@
         "loading": "Caricamento"
     },
     "widget": {
+        "image_expired": "immagine non più disponibile",
         "setup": "Per configurare questo widget, invia il codice qui sotto nella chat di gruppo a cui desideri connettere questo widget."
     }
 }

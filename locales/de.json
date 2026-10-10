@@ -5,6 +5,7 @@
         "loading": "Wird geladen"
     },
     "widget": {
+        "image_expired": "Bild nicht mehr verfügbar",
         "setup": "Um dieses Widget einzurichten, senden Sie den unten stehenden Code in den Gruppenchat, den Sie mit diesem Widget verbinden möchten."
     }
 }

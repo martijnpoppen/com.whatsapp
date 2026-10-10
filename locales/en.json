@@ -5,6 +5,7 @@
         "loading": "Loading"
     },
     "widget": {
+        "image_expired": "image no longer available",
         "setup": "To setup this widget. Make sure to setup a device first. Then add the device to this widget.",
         "no_device": "No device found. Please add a device to use this widget.",
         "no_number": "No number/group found. Please add a mobile number or group invite link in the settings to see the chat here.",

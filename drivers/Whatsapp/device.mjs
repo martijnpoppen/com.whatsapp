@@ -560,8 +560,11 @@ export default class Whatsapp extends Homey.Device {
         // ~1.33x the file size, setWidgetInstance keeps the last 15 entries, and
         // the whole store value is re-serialised on every single message — so an
         // image-heavy chat could hold megabytes of base64 in the device store and
-        // rewrite all of it on each new message. The widget already handles a
-        // falsy base64Image and renders text only.
+        // rewrite all of it on each new message.
+        //
+        // hasImage IS kept, so the widget can say an image was here rather than
+        // silently dropping it. The widget gates its <img> on the image itself;
+        // gating on hasImage is what produced broken-image icons in 3.0.12.
         this.setWidgetInstance(null, data.originalRecipient, saveData);
     }
 

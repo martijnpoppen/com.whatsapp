@@ -5,6 +5,7 @@
         "loading": "Laden"
     },
     "widget": {
+        "image_expired": "afbeelding niet meer beschikbaar",
         "setup": "Om deze widget in te stellen, stuurt u de onderstaande code in de groepschat die u met deze widget wilt verbinden."
     }
 }

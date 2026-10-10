@@ -222,7 +222,7 @@
                     <time class="text-xs opacity-50">${renderDate(timeStamp)}</time>
                     </div>
                     <div class="chat-bubble">
-                        ${hasImage ? `<img alt="${fromMe ? fromMeName : from}" src="${image}" />` : ''}
+                        ${image ? `<img alt="${fromMe ? fromMeName : from}" src="${image}" />` : hasImage ? `<span class="opacity-50 text-xs italic">${Homey.__('widget.image_expired')}</span><br />` : ''}
                         
                         ${formatText(text)}</div>
                 </div>

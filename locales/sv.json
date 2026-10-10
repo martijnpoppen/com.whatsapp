@@ -5,6 +5,7 @@
         "loading": "Laddar"
     },
     "widget": {
+        "image_expired": "bilden är inte längre tillgänglig",
         "setup": "För att ställa in denna widget, skicka koden nedan i gruppchatten du vill ansluta till denna widget."
     }
 }
