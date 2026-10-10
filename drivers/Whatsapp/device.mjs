@@ -161,7 +161,7 @@ export default class Whatsapp extends Homey.Device {
         if (recipient) {
             const data = await this.sendMessage(recipient, message, type, params, isGroup, params.recipient);
 
-            this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage`, Object.keys(data).length);
+            this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage`, Object.keys(data).length, this.homey.app.memorySnapshot());
 
             return !!Object.keys(data).length;
         }
@@ -259,7 +259,16 @@ export default class Whatsapp extends Homey.Device {
                 base64Image: null
             });
 
-            this.homey.app.log(`[Device] ${this.getName()} - sendMessage - send${msgType}`, { ...params, recipient, message, fileUrl, msgType, device: 'LOG' });
+            // Compact on purpose. This used to spread `params`, which dragged the Homey Image
+            // object — and through it ManagerImages and Homey itself — into the log: ~18
+            // rendered lines per image send, none of them useful. The memory reading rides
+            // along on the line that was already here, and the matching reading after the
+            // send rides on the existing onCapability_SendMessage line, so a send now costs
+            // fewer log lines than before while also reporting what memory did across it.
+            this.homey.app.log(
+                `[Device] ${this.getName()} - sendMessage - send${msgType}`,
+                `to=${recipient} chars=${message ? message.length : 0} url=${fileUrl} ${this.homey.app.memorySnapshot()}`
+            );
 
             if (msgType === 'video' || msgType === 'image') {
                 data = await this.WhatsappClient.sendMedia(recipient, fileUrl, message, msgType, options);

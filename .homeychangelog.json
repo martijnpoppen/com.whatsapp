@@ -442,5 +442,8 @@
   },
   "3.0.13": {
     "en": "FIX: memory usage when images are sent or received"
+  },
+  "3.0.14": {
+    "en": "FIX: less logging when sending images"
   }
 }

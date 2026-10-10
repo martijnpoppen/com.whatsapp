@@ -42,6 +42,13 @@ export default class App extends Homey.App {
         await flowActions.init(this.homey);
         await flowConditions.init(this.homey);
 
+        // Every crash report so far has been a snapshot taken after the fact, with no idea
+        // what memory was doing beforehand — which is why "steady leak or spike on send?" has
+        // stayed unanswerable. One line every five minutes makes the climb visible in the
+        // next report, and logMemory() around a media send makes the cost of one send a number.
+        this.logMemory('startup');
+        this._memoryInterval = this.homey.setInterval(() => this.logMemory('periodic'), 5 * 60 * 1000);
+
         this.sendNotifications();
     }
 
@@ -86,6 +93,36 @@ export default class App extends Homey.App {
             globalThis.__whatsappConsoleFiltered = true;
         } catch (error) {
             this.error('[libsignal] log filter not installed', error);
+        }
+    }
+
+    // rss and arrayBuffers matter as much as heapUsed here: Buffers live outside the JS heap,
+    // so an image being downloaded and encrypted shows up in arrayBuffers/external, not in
+    // heapUsed. Never allowed to throw — this is diagnostics, not function.
+    memorySnapshot() {
+        try {
+            const m = process.memoryUsage();
+            const mb = (bytes) => Math.round(bytes / 1048576);
+
+            return `rss=${mb(m.rss)}MB heap=${mb(m.heapUsed)}/${mb(m.heapTotal)}MB ` +
+                `ext=${mb(m.external)}MB ab=${mb(m.arrayBuffers)}MB`;
+        } catch (error) {
+            return 'rss=?';
+        }
+    }
+
+    logMemory(label) {
+        try {
+            this.log(`[memory] ${label} ${this.memorySnapshot()}`);
+        } catch (error) {
+            /* diagnostics only */
+        }
+    }
+
+    async onUninit() {
+        if (this._memoryInterval) {
+            this.homey.clearInterval(this._memoryInterval);
+            this._memoryInterval = null;
         }
     }
 
