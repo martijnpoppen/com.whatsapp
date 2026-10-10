@@ -42,12 +42,10 @@ export default class App extends Homey.App {
         await flowActions.init(this.homey);
         await flowConditions.init(this.homey);
 
-        // Every crash report so far has been a snapshot taken after the fact, with no idea
-        // what memory was doing beforehand — which is why "steady leak or spike on send?" has
-        // stayed unanswerable. One line every five minutes makes the climb visible in the
-        // next report, and logMemory() around a media send makes the cost of one send a number.
+        // One baseline per boot. The readings that matter ride on the existing send logs;
+        // a periodic line was dropped as not worth its standing cost, since the installs
+        // that crash are image-heavy ones that get a reading on every send anyway.
         this.logMemory('startup');
-        this._memoryInterval = this.homey.setInterval(() => this.logMemory('periodic'), 5 * 60 * 1000);
 
         this.sendNotifications();
     }
@@ -116,13 +114,6 @@ export default class App extends Homey.App {
             this.log(`[memory] ${label} ${this.memorySnapshot()}`);
         } catch (error) {
             /* diagnostics only */
-        }
-    }
-
-    async onUninit() {
-        if (this._memoryInterval) {
-            this.homey.clearInterval(this._memoryInterval);
-            this._memoryInterval = null;
         }
     }
 
