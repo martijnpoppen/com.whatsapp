@@ -1,6 +1,6 @@
 import Homey from 'homey';
 import { parsePhoneNumberWithError } from 'libphonenumber-js';
-import { validateUrl, sleep, getBase64Image, toConsistentId, parseGroupInvite } from '../../lib/helpers/index.mjs';
+import { validateUrl, sleep, getBase64Image, toConsistentId, parseGroupInvite, probeImageUrl } from '../../lib/helpers/index.mjs';
 import path from 'path';
 import fs from 'fs/promises';
 
@@ -161,7 +161,7 @@ export default class Whatsapp extends Homey.Device {
         if (recipient) {
             const data = await this.sendMessage(recipient, message, type, params, isGroup, params.recipient);
 
-            this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage`, Object.keys(data).length);
+            this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage`, Object.keys(data).length, this.homey.app.memorySnapshot());
 
             return !!Object.keys(data).length;
         }
@@ -259,9 +259,37 @@ export default class Whatsapp extends Homey.Device {
                 base64Image: null
             });
 
-            this.homey.app.log(`[Device] ${this.getName()} - sendMessage - send${msgType}`, { ...params, recipient, message, fileUrl, msgType, device: 'LOG' });
+            // Compact on purpose. This used to spread `params`, which dragged the Homey Image
+            // object — and through it ManagerImages and Homey itself — into the log: ~18
+            // rendered lines per image send, none of them useful. The memory reading rides
+            // along on the line that was already here, and the matching reading after the
+            // send rides on the existing onCapability_SendMessage line, so a send now costs
+            // fewer log lines than before while also reporting what memory did across it.
+            this.homey.app.log(
+                `[Device] ${this.getName()} - sendMessage - send${msgType}`,
+                `to=${recipient} chars=${message ? message.length : 0} url=${fileUrl} ${this.homey.app.memorySnapshot()}`
+            );
 
             if (msgType === 'video' || msgType === 'image') {
+                // Report what the URL actually serves. If it answers with an error page,
+                // an empty body, or bytes that are not an image, Baileys uploads it anyway
+                // and WhatsApp shows a broken image — and the same bytes reach the widget
+                // as `data:image/jpeg;base64,<garbage>`, so one bad URL breaks both places
+                // with nothing in the log to explain it.
+                //
+                // Deliberately does NOT block the send. The mechanism is still a hypothesis
+                // and a false negative here would break working flows for everyone; once a
+                // report confirms it, this should become a hard failure instead of a note.
+                if (msgType === 'image') {
+                    const probe = await probeImageUrl(fileUrl);
+                    this.homey.app.log(
+                        `[Device] ${this.getName()} - image source ${probe.ok ? 'ok' : 'SUSPECT'}`,
+                        probe.ok
+                            ? `format=${probe.format} type=${probe.contentType} bytes=${probe.contentLength}`
+                            : `reason=${probe.reason} type=${probe.contentType} bytes=${probe.contentLength}`
+                    );
+                }
+
                 data = await this.WhatsappClient.sendMedia(recipient, fileUrl, message, msgType, options);
             } else if (msgType === 'audio') {
                 throw new Error('Audio is not supported yet');
@@ -551,8 +579,11 @@ export default class Whatsapp extends Homey.Device {
         // ~1.33x the file size, setWidgetInstance keeps the last 15 entries, and
         // the whole store value is re-serialised on every single message — so an
         // image-heavy chat could hold megabytes of base64 in the device store and
-        // rewrite all of it on each new message. The widget already handles a
-        // falsy base64Image and renders text only.
+        // rewrite all of it on each new message.
+        //
+        // hasImage IS kept, so the widget can say an image was here rather than
+        // silently dropping it. The widget gates its <img> on the image itself;
+        // gating on hasImage is what produced broken-image icons in 3.0.12.
         this.setWidgetInstance(null, data.originalRecipient, saveData);
     }
 

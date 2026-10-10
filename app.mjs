@@ -42,6 +42,11 @@ export default class App extends Homey.App {
         await flowActions.init(this.homey);
         await flowConditions.init(this.homey);
 
+        // One baseline per boot. The readings that matter ride on the existing send logs;
+        // a periodic line was dropped as not worth its standing cost, since the installs
+        // that crash are image-heavy ones that get a reading on every send anyway.
+        this.logMemory('startup');
+
         this.sendNotifications();
     }
 
@@ -86,6 +91,29 @@ export default class App extends Homey.App {
             globalThis.__whatsappConsoleFiltered = true;
         } catch (error) {
             this.error('[libsignal] log filter not installed', error);
+        }
+    }
+
+    // rss and arrayBuffers matter as much as heapUsed here: Buffers live outside the JS heap,
+    // so an image being downloaded and encrypted shows up in arrayBuffers/external, not in
+    // heapUsed. Never allowed to throw — this is diagnostics, not function.
+    memorySnapshot() {
+        try {
+            const m = process.memoryUsage();
+            const mb = (bytes) => Math.round(bytes / 1048576);
+
+            return `rss=${mb(m.rss)}MB heap=${mb(m.heapUsed)}/${mb(m.heapTotal)}MB ` +
+                `ext=${mb(m.external)}MB ab=${mb(m.arrayBuffers)}MB`;
+        } catch (error) {
+            return 'rss=?';
+        }
+    }
+
+    logMemory(label) {
+        try {
+            this.log(`[memory] ${label} ${this.memorySnapshot()}`);
+        } catch (error) {
+            /* diagnostics only */
         }
     }
 

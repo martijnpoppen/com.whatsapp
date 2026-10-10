@@ -5,6 +5,7 @@
         "loading": "Ładowanie"
     },
     "widget": {
+        "image_expired": "obraz nie jest już dostępny",
         "setup": "Aby skonfigurować ten widżet, wyślij poniższy kod w czacie grupowym, do którego chcesz podłączyć ten widżet."
     }
 }

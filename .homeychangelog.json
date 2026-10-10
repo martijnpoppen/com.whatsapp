@@ -442,5 +442,14 @@
   },
   "3.0.13": {
     "en": "FIX: memory usage when images are sent or received"
+  },
+  "3.0.14": {
+    "en": "FIX: less logging when sending images"
+  },
+  "3.0.15": {
+    "en": "FIX: broken image icon in the chat widget"
+  },
+  "3.0.16": {
+    "en": "Added a check on images that fail to send correctly"
   }
 }

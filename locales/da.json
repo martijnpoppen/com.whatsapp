@@ -5,6 +5,7 @@
         "loading": "Indlæser"
     },
     "widget": {
+        "image_expired": "billedet er ikke længere tilgængeligt",
         "setup": "For at opsætte denne widget skal du sende koden nedenfor i gruppechatten, du vil forbinde til denne widget."
     }
 }
