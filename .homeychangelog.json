@@ -448,5 +448,8 @@
   },
   "3.0.15": {
     "en": "FIX: broken image icon in the chat widget"
+  },
+  "3.0.16": {
+    "en": "Added a check on images that fail to send correctly"
   }
 }

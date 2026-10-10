@@ -1,6 +1,6 @@
 import Homey from 'homey';
 import { parsePhoneNumberWithError } from 'libphonenumber-js';
-import { validateUrl, sleep, getBase64Image, toConsistentId, parseGroupInvite } from '../../lib/helpers/index.mjs';
+import { validateUrl, sleep, getBase64Image, toConsistentId, parseGroupInvite, probeImageUrl } from '../../lib/helpers/index.mjs';
 import path from 'path';
 import fs from 'fs/promises';
 
@@ -271,6 +271,25 @@ export default class Whatsapp extends Homey.Device {
             );
 
             if (msgType === 'video' || msgType === 'image') {
+                // Report what the URL actually serves. If it answers with an error page,
+                // an empty body, or bytes that are not an image, Baileys uploads it anyway
+                // and WhatsApp shows a broken image — and the same bytes reach the widget
+                // as `data:image/jpeg;base64,<garbage>`, so one bad URL breaks both places
+                // with nothing in the log to explain it.
+                //
+                // Deliberately does NOT block the send. The mechanism is still a hypothesis
+                // and a false negative here would break working flows for everyone; once a
+                // report confirms it, this should become a hard failure instead of a note.
+                if (msgType === 'image') {
+                    const probe = await probeImageUrl(fileUrl);
+                    this.homey.app.log(
+                        `[Device] ${this.getName()} - image source ${probe.ok ? 'ok' : 'SUSPECT'}`,
+                        probe.ok
+                            ? `format=${probe.format} type=${probe.contentType} bytes=${probe.contentLength}`
+                            : `reason=${probe.reason} type=${probe.contentType} bytes=${probe.contentLength}`
+                    );
+                }
+
                 data = await this.WhatsappClient.sendMedia(recipient, fileUrl, message, msgType, options);
             } else if (msgType === 'audio') {
                 throw new Error('Audio is not supported yet');
