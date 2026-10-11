@@ -453,6 +453,6 @@
     "en": "FIX: app crashing when sending images | FIX: broken image icon in the chat widget"
   },
   "3.0.17": {
-    "en": "FIX: images in the chat widget stay visible after reopening the dashboard"
+    "en": "FIX: images in the chat widget stay visible after reopening the dashboard | FIX: less logging"
   }
 }

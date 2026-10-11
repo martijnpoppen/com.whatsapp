@@ -167,11 +167,9 @@ export default class App extends Homey.App {
     }
 
     getDataPath() {
-        const dataPath = path.resolve(__dirname, '/userdata/');
-
-        this.homey.app.log(`getDataPath`, dataPath);
-
-        return dataPath;
+        // No logging: this returns a constant and is now called for every widget
+        // image written or read, which filled the log with `getDataPath /userdata`.
+        return path.resolve(__dirname, '/userdata/');
     }
 
     getDeviceById(deviceId) {

@@ -31,6 +31,14 @@ const STORE_CLEANUP_PAUSE_MS = 60;
 // was reopened. They now go to /userdata and are re-attached on read.
 const WIDGET_IMAGE_DIR = 'widget-images';
 
+// The per-chat directory is keyed on a random per-device salt, not on the phone
+// number alone. sha256 of a phone number is not privacy: the keyspace is tiny,
+// and a single core here brute-forces the whole +316######## range in about two
+// minutes. With the salt — which lives in the device store, not in /userdata —
+// the directory name cannot be walked back to a number by someone who can only
+// read the folder.
+const WIDGET_IMAGE_SALT_KEY = '_widget_image_salt';
+
 export default class Whatsapp extends Homey.Device {
     async onInit() {
         try {
@@ -51,6 +59,11 @@ export default class Whatsapp extends Homey.Device {
             // Deliberately not awaited: draining the legacy store must never
             // sit between the user and a working connection.
             this.scheduleLegacyStoreCleanup();
+
+            // Same: tidying orphaned widget images is not worth delaying startup.
+            this.sweepWidgetImages().catch((error) =>
+                this.homey.app.error(`[Device] ${this.getName()} - sweepWidgetImages`, error)
+            );
 
             await this.synchronousStart();
 
@@ -600,11 +613,27 @@ export default class Whatsapp extends Homey.Device {
         return path.join(this.homey.app.getDataPath(), WIDGET_IMAGE_DIR);
     }
 
-    // /userdata/widget-images/<sha256(dataId)>/<sha256(bytes)>.<ext>
+    // Random per-device, created once and kept in the device store so it is never
+    // written to /userdata alongside the files it protects.
+    async widgetImageSalt() {
+        let salt = await this.getStoreValue(WIDGET_IMAGE_SALT_KEY);
+
+        if (!salt) {
+            salt = sha256(`${this.getId()}:${Date.now()}:${Math.random()}`);
+            await this.setStoreValue(WIDGET_IMAGE_SALT_KEY, salt);
+        }
+
+        return salt;
+    }
+
+    async widgetImageDirectory(dataId) {
+        return sha256(`${await this.widgetImageSalt()}:${dataId}`);
+    }
+
+    // /userdata/widget-images/<sha256(salt + dataId)>/<sha256(bytes)>.<ext>
     //
-    // The directory is hashed so a phone number or group invite link never lands
-    // on disk as a readable path. The file is hashed on its contents, so the same
-    // image sent twice is stored once and a rewrite is a no-op.
+    // The file is hashed on its contents, so the same image sent twice is stored
+    // once and a rewrite is a no-op.
     async storeWidgetImage(dataId, buffer) {
         try {
             const type = imageTypeFromBuffer(buffer);
@@ -613,7 +642,7 @@ export default class Whatsapp extends Homey.Device {
                 return null;
             }
 
-            const file = `${toConsistentId(dataId)}/${sha256(buffer)}.${type.ext}`;
+            const file = `${await this.widgetImageDirectory(dataId)}/${sha256(buffer)}.${type.ext}`;
             const absolute = path.join(this.widgetImageRoot(), file);
 
             await fs.mkdir(path.dirname(absolute), { recursive: true });
@@ -640,7 +669,7 @@ export default class Whatsapp extends Homey.Device {
     // continuously and would otherwise accumulate on disk for ever. Called after
     // the store write, with the entries that survived the trim.
     async pruneWidgetImages(dataId, entries) {
-        const directory = path.join(this.widgetImageRoot(), toConsistentId(dataId));
+        const directory = path.join(this.widgetImageRoot(), await this.widgetImageDirectory(dataId));
 
         let names;
         try {
@@ -666,6 +695,78 @@ export default class Whatsapp extends Homey.Device {
 
         if (removed) {
             this.homey.app.log(`[Device] ${this.getName()} - pruneWidgetImages - removed ${removed}`);
+        }
+    }
+
+    // Delete anything under widget-images that no stored entry references.
+    //
+    // pruneWidgetImages only looks inside one chat's directory, so it cannot see
+    // orphans: a chat whose widget was removed, or — because the directory name is
+    // now salted — the directories written under the earlier unsalted scheme.
+    // Runs once per boot, after the store is settled.
+    async sweepWidgetImages() {
+        try {
+            const root = this.widgetImageRoot();
+
+            let directories;
+            try {
+                directories = await fs.readdir(root);
+            } catch (error) {
+                return; // nothing written yet
+            }
+
+            const keys = (await this.getStoreKeys()).filter((key) => key.startsWith('widgetInstance-'));
+            const expected = new Map();
+
+            for (const key of keys) {
+                const instance = await this.getStoreValue(key);
+                if (!instance || !instance.dataId) continue;
+
+                const directory = await this.widgetImageDirectory(instance.dataId);
+                const files = new Set(
+                    (instance.data || [])
+                        .map((entry) => entry && entry.imageFile)
+                        .filter(Boolean)
+                        .map((file) => file.split('/').pop())
+                );
+
+                expected.set(directory, files);
+            }
+
+            let removedFiles = 0;
+            let removedDirectories = 0;
+
+            for (const directory of directories) {
+                const absolute = path.join(root, directory);
+
+                if (!expected.has(directory)) {
+                    await fs.rm(absolute, { recursive: true, force: true }).catch(() => {});
+                    removedDirectories++;
+                    continue;
+                }
+
+                const keep = expected.get(directory);
+                let names;
+                try {
+                    names = await fs.readdir(absolute);
+                } catch (error) {
+                    continue;
+                }
+
+                for (const name of names) {
+                    if (keep.has(name)) continue;
+                    await fs.unlink(path.join(absolute, name)).catch(() => {});
+                    removedFiles++;
+                }
+            }
+
+            if (removedDirectories || removedFiles) {
+                this.homey.app.log(
+                    `[Device] ${this.getName()} - sweepWidgetImages - removed ${removedDirectories} directories, ${removedFiles} files`
+                );
+            }
+        } catch (error) {
+            this.homey.app.error(`[Device] ${this.getName()} - sweepWidgetImages failed`, error);
         }
     }
 
