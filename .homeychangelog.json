@@ -454,5 +454,8 @@
   },
   "3.0.17": {
     "en": "FIX: images in the chat widget stay visible after reopening the dashboard | FIX: less logging"
+  },
+  "3.0.18": {
+    "en": "FIX: app crashing and high memory usage in chats with images | FIX: images in the chat widget stay visible after reopening the dashboard"
   }
 }
