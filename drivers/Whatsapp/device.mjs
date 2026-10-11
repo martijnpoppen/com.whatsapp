@@ -1085,11 +1085,23 @@ export default class Whatsapp extends Homey.Device {
         let legacyPreKeys = 0;
         let legacyOther = 0;
         let widget = 0;
+        const markers = [];
+        let groupCache = 0;
 
         for (const k of storeKeys) {
             if (k.startsWith(preKeyPrefix)) legacyPreKeys++;
             else if (k.startsWith(sessionPrefix)) legacyOther++;
             else if (k.startsWith('widget')) widget++;
+            // Our own bookkeeping is `_`-prefixed and there are only a handful,
+            // so name them — "other: 4" says nothing about whether it is fine.
+            else if (k.startsWith('_')) markers.push(k);
+            // Everything left is getRecipient's `<inviteCode> -> group JID`
+            // cache. Counted, never named: an invite code is a working join
+            // link for that group, and this line ends up in diagnostics
+            // reports. One entry per distinct group link ever used, and they
+            // are never pruned — so this is the number to watch if the store
+            // starts growing on its own.
+            else groupCache++;
         }
 
         this.homey.app.log(`[Device] ${this.getName()} - store summary =>`, {
@@ -1097,7 +1109,8 @@ export default class Whatsapp extends Homey.Device {
             legacyPreKeys,
             legacyOther,
             widget,
-            other: storeKeys.length - legacyPreKeys - legacyOther - widget
+            groupCache,
+            markers
         });
     }
 }
