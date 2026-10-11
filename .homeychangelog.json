@@ -450,6 +450,6 @@
     "en": "FIX: broken image icon in the chat widget"
   },
   "3.0.16": {
-    "en": "FIX: broken image icon in the chat widget | FIX: less logging when sending images"
+    "en": "FIX: app crashing when sending images | FIX: broken image icon in the chat widget"
   }
 }
