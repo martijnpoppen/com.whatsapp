@@ -1,6 +1,6 @@
 import Homey from 'homey';
 import { parsePhoneNumberWithError } from 'libphonenumber-js';
-import { validateUrl, sleep, getBase64Image, toConsistentId, parseGroupInvite, probeImageUrl } from '../../lib/helpers/index.mjs';
+import { validateUrl, sleep, toConsistentId, parseGroupInvite, probeImageUrl, imageTypeFromBuffer, sha256, fetchImageBuffer } from '../../lib/helpers/index.mjs';
 import path from 'path';
 import fs from 'fs/promises';
 
@@ -22,6 +22,14 @@ const STORE_CLEANUP_START_DELAY_MS = 60 * 1000;
 const STORE_CLEANUP_BUDGET_MS = 5 * 60 * 1000;
 const STORE_CLEANUP_RETRY_MS = 30 * 60 * 1000;
 const STORE_CLEANUP_PAUSE_MS = 60;
+
+// Widget chat images live on disk, not in the device store. A data: URL of a
+// JPEG is ~1.33x the file, the history keeps the last 15 messages, and the whole
+// store value is re-serialised on every single message — so an image-heavy chat
+// held megabytes in the device store and rewrote all of it per message. 3.0.12
+// fixed that by dropping the images, which lost them as soon as the dashboard
+// was reopened. They now go to /userdata and are re-attached on read.
+const WIDGET_IMAGE_DIR = 'widget-images';
 
 export default class Whatsapp extends Homey.Device {
     async onInit() {
@@ -548,43 +556,117 @@ export default class Whatsapp extends Homey.Device {
             this.homey.app.log(`[Device] ${this.getName()} - sendToWidget - no widget instance for originalRecipient`, data.originalRecipient);
             return false;
         }
+        // Work in Buffers, not base64 strings: the bytes go to disk, and base64 is
+        // only produced for the live payload.
+        let buffer = null;
+
         // When image is sent from Homey
         if (data.imageUrl) {
-            const base64Image = await getBase64Image(data.imageUrl);
-            data.base64Image = `data:image/jpeg;base64,${base64Image}`;
+            buffer = await fetchImageBuffer(data.imageUrl);
         }
 
         // When image is received from Whatsapp
         if (data.m && data.hasImage) {
-            const imageBuffer = await this.WhatsappClient.downloadMediaMsg(data.m);
-            const base64Image = imageBuffer ? imageBuffer.toString('base64') : null;
-            data.base64Image = base64Image ? `data:image/jpeg;base64,${base64Image}` : null;
+            buffer = await this.WhatsappClient.downloadMediaMsg(data.m);
         }
 
-        const { text, from, fromMe, timeStamp, hasImage, base64Image } = data;
+        const stored = buffer && buffer.length ? await this.storeWidgetImage(data.originalRecipient, buffer) : null;
+        const base64Image = stored ? `data:${stored.mime};base64,${buffer.toString('base64')}` : null;
+
+        const { text, from, fromMe, timeStamp, hasImage } = data;
         const saveData = {
             text,
             from,
             ...(fromMe && { fromMe }),
             timeStamp,
             ...(hasImage && { hasImage }),
+            // Only the hashed filename is persisted, never the bytes.
+            ...(stored && { imageFile: stored.file }),
             deviceId: this.getId(),
             dataId: data.originalRecipient
         };
 
-        // The live payload carries the image so the widget renders it straight away.
+        // The live payload carries the image so an open dashboard renders it straight away.
         this.homey.api.realtime(`${this.getId()}-chat`, { ...saveData, ...(base64Image && { base64Image }) });
 
-        // The persisted history deliberately does not. A data: URL of a JPEG is
-        // ~1.33x the file size, setWidgetInstance keeps the last 15 entries, and
-        // the whole store value is re-serialised on every single message — so an
-        // image-heavy chat could hold megabytes of base64 in the device store and
-        // rewrite all of it on each new message.
-        //
-        // hasImage IS kept, so the widget can say an image was here rather than
-        // silently dropping it. The widget gates its <img> on the image itself;
-        // gating on hasImage is what produced broken-image icons in 3.0.12.
+        // The persisted history carries only imageFile; getWidgetInstance reads the
+        // file back and re-attaches base64, so reopening the dashboard shows the
+        // image again. hasImage is still kept, so an entry whose file has been
+        // pruned can say so rather than rendering a broken icon.
         this.setWidgetInstance(null, data.originalRecipient, saveData);
+    }
+
+    widgetImageRoot() {
+        return path.join(this.homey.app.getDataPath(), WIDGET_IMAGE_DIR);
+    }
+
+    // /userdata/widget-images/<sha256(dataId)>/<sha256(bytes)>.<ext>
+    //
+    // The directory is hashed so a phone number or group invite link never lands
+    // on disk as a readable path. The file is hashed on its contents, so the same
+    // image sent twice is stored once and a rewrite is a no-op.
+    async storeWidgetImage(dataId, buffer) {
+        try {
+            const type = imageTypeFromBuffer(buffer);
+            if (!type) {
+                this.homey.app.log(`[Device] ${this.getName()} - storeWidgetImage - not an image, skipped`);
+                return null;
+            }
+
+            const file = `${toConsistentId(dataId)}/${sha256(buffer)}.${type.ext}`;
+            const absolute = path.join(this.widgetImageRoot(), file);
+
+            await fs.mkdir(path.dirname(absolute), { recursive: true });
+            await fs.writeFile(absolute, buffer);
+
+            return { file, mime: type.type };
+        } catch (error) {
+            this.homey.app.error(`[Device] ${this.getName()} - storeWidgetImage failed`, error);
+            return null;
+        }
+    }
+
+    async readWidgetImage(file) {
+        try {
+            const buffer = await fs.readFile(path.join(this.widgetImageRoot(), file));
+            const type = imageTypeFromBuffer(buffer);
+            return `data:${type ? type.type : 'image/jpeg'};base64,${buffer.toString('base64')}`;
+        } catch (error) {
+            return null;
+        }
+    }
+
+    // The history keeps the last 15 messages, so images fall out of it
+    // continuously and would otherwise accumulate on disk for ever. Called after
+    // the store write, with the entries that survived the trim.
+    async pruneWidgetImages(dataId, entries) {
+        const directory = path.join(this.widgetImageRoot(), toConsistentId(dataId));
+
+        let names;
+        try {
+            names = await fs.readdir(directory);
+        } catch (error) {
+            return; // nothing stored for this chat yet
+        }
+
+        const keep = new Set(
+            (entries || []).map((entry) => entry && entry.imageFile).filter(Boolean).map((f) => f.split('/').pop())
+        );
+
+        let removed = 0;
+        for (const name of names) {
+            if (keep.has(name)) continue;
+            try {
+                await fs.unlink(path.join(directory, name));
+                removed++;
+            } catch (error) {
+                /* already gone */
+            }
+        }
+
+        if (removed) {
+            this.homey.app.log(`[Device] ${this.getName()} - pruneWidgetImages - removed ${removed}`);
+        }
     }
 
     async getWidgetInstance(dataId, getData = true, convertJid = false) {
@@ -596,7 +678,21 @@ export default class Whatsapp extends Homey.Device {
         this.homey.app.log(`[Device] ${this.getName()} - getWidgetInstance instance exists:`, !!instance);
 
         if (getData) {
-            return instance?.data || null;
+            const entries = instance?.data || null;
+            if (!entries) return null;
+
+            // Re-attach the images from /userdata, so reopening the dashboard shows
+            // them instead of "image no longer available". Entries whose file has
+            // been pruned, and entries written by 3.0.12-3.0.16 which have no file
+            // at all, simply come back without one.
+            return Promise.all(
+                entries.map(async (entry) => {
+                    if (!entry || !entry.imageFile) return entry;
+
+                    const base64Image = await this.readWidgetImage(entry.imageFile);
+                    return base64Image ? { ...entry, base64Image } : entry;
+                })
+            );
         }
 
         return !!instance;
@@ -629,6 +725,8 @@ export default class Whatsapp extends Homey.Device {
             this.homey.app.log(`[Device] ${this.getName()} - setWidgetInstance - ${!!instance ? 'Updating' : 'Creating'} store item`, { storeKey, dataId, widgets, data: data.length });
 
             await this.setStoreValue(storeKey, { dataId, lastSeen: Date.now(), data, widgets });
+
+            await this.pruneWidgetImages(dataId, data);
 
             return true;
         } catch (error) {
