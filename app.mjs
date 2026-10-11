@@ -47,6 +47,10 @@ export default class App extends Homey.App {
         // that crash are image-heavy ones that get a reading on every send anyway.
         this.logMemory('startup');
 
+        // Prove the readings are real. Without this the log showed "rss=?" and looked
+        // like working instrumentation.
+        this.log(`[memory] source: ${this.memorySnapshot() ? 'process.memoryUsage' : 'unavailable'}`);
+
         this.sendNotifications();
     }
 
@@ -98,14 +102,31 @@ export default class App extends Homey.App {
     // so an image being downloaded and encrypted shows up in arrayBuffers/external, not in
     // heapUsed. Never allowed to throw — this is diagnostics, not function.
     memorySnapshot() {
+        const mb = (bytes) => Math.round(bytes / 1048576);
+
         try {
             const m = process.memoryUsage();
-            const mb = (bytes) => Math.round(bytes / 1048576);
 
             return `rss=${mb(m.rss)}MB heap=${mb(m.heapUsed)}/${mb(m.heapTotal)}MB ` +
                 `ext=${mb(m.external)}MB ab=${mb(m.arrayBuffers)}MB`;
         } catch (error) {
-            return 'rss=?';
+            // Homey's sandbox refuses process.memoryUsage() — on a real Homey this
+            // threw on every call and printed "rss=?" with no reason, so the
+            // instrumentation looked like it worked and reported nothing.
+            //
+            // rss() is a separate binding and may survive where the full call does
+            // not, so try it before giving up. Say why, once, rather than on every
+            // line, and otherwise contribute nothing to the log.
+            try {
+                return `rss=${mb(process.memoryUsage.rss())}MB`;
+            } catch (rssError) {
+                if (!this._memoryUnavailable) {
+                    this._memoryUnavailable = true;
+                    this.log(`[memory] unavailable in this sandbox: ${error.message}`);
+                }
+
+                return '';
+            }
         }
     }
 
