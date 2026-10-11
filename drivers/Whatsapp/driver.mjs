@@ -1,5 +1,5 @@
 import Homey from 'homey';
-import { GetGUID, sleep } from '../../lib/helpers/index.mjs';
+import { GetGUID, sleep, clientTag } from '../../lib/helpers/index.mjs';
 import whatsappClient from '../../lib/com.whatsapp.api/index.mjs';
 import { parsePhoneNumberWithError } from 'libphonenumber-js';
 
@@ -54,7 +54,7 @@ export default class mainDriver extends Homey.Driver {
         const client = this.WhatsappClients[guid];
         if (!client) return;
 
-        this.homey.app.log(`[Driver] ${this.id} - destroying orphaned pairing client`, { guid });
+        this.homey.app.log(`[Driver] ${this.id} - destroying orphaned pairing client`, { client: clientTag(guid) });
 
         try {
             await client.deleteDevice();
@@ -80,7 +80,7 @@ export default class mainDriver extends Homey.Driver {
 
         ctx._checkInterval = ctx.homey.setInterval(async () => {
             try {
-                ctx.homey.app.log(`[Driver] ${ctx.id} - setCheckInterval - poll`, { guid });
+                ctx.homey.app.log(`[Driver] ${ctx.id} - setCheckInterval - poll`, { client: clientTag(guid) });
 
                 if (!ctx.WhatsappClients[guid]) {
                     ctx.homey.app.log(`[Driver] ${ctx.id} - setCheckInterval - client gone, stopping`);
@@ -93,7 +93,11 @@ export default class mainDriver extends Homey.Driver {
                 // getData() returns false while the client is still starting up.
                 if (!data || data.clientID !== guid) return;
 
-                ctx.homey.app.log(`[Driver] ${ctx.id} - setCheckInterval - ${data.type}`, data);
+                // data carries the real clientID — the /userdata/auth directory name. Tag it.
+                ctx.homey.app.log(`[Driver] ${ctx.id} - setCheckInterval - ${data.type}`, {
+                    ...data,
+                    clientID: clientTag(data.clientID)
+                });
 
                 if (data.type === 'READY') {
                     ctx.stopCheckInterval(ctx);
@@ -192,7 +196,7 @@ export default class mainDriver extends Homey.Driver {
             }
 
             if (view === 'whatsapp_pairing_code') {
-                this.homey.app.log(`[Driver] ${this.id} - pairing code view`, { guid: this.guid, hasCode: !!this.code });
+                this.homey.app.log(`[Driver] ${this.id} - pairing code view`, { client: clientTag(this.guid), hasCode: !!this.code });
 
                 // Best-effort push. The view pulls via `get_pairing_code` as
                 // soon as its script runs, which is the path we actually rely
@@ -230,7 +234,10 @@ export default class mainDriver extends Homey.Driver {
                     }
                 ];
 
-                this.homey.app.log(`[Driver] ${this.id} - Found devices - `, this.results);
+                this.homey.app.log(
+                    `[Driver] ${this.id} - Found devices - `,
+                    this.results.map((result) => ({ name: result.name, client: clientTag(result.data.id) }))
+                );
 
                 if (this.results.length && this.type === 'repair') {
                     if (this.device) {
