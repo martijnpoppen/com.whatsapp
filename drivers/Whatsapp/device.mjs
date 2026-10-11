@@ -1,6 +1,6 @@
 import Homey from 'homey';
 import { parsePhoneNumberWithError } from 'libphonenumber-js';
-import { validateUrl, sleep, toConsistentId, parseGroupInvite, probeImageUrl, imageTypeFromBuffer, sha256, fetchImageBuffer } from '../../lib/helpers/index.mjs';
+import { validateUrl, sleep, toConsistentId, parseGroupInvite, probeImageUrl, imageTypeFromBuffer, sha256, randomId, fetchImageBuffer } from '../../lib/helpers/index.mjs';
 import path from 'path';
 import fs from 'fs/promises';
 
@@ -619,7 +619,7 @@ export default class Whatsapp extends Homey.Device {
         let salt = await this.getStoreValue(WIDGET_IMAGE_SALT_KEY);
 
         if (!salt) {
-            salt = sha256(`${this.getId()}:${Date.now()}:${Math.random()}`);
+            salt = randomId(32);
             await this.setStoreValue(WIDGET_IMAGE_SALT_KEY, salt);
         }
 
@@ -630,10 +630,14 @@ export default class Whatsapp extends Homey.Device {
         return sha256(`${await this.widgetImageSalt()}:${dataId}`);
     }
 
-    // /userdata/widget-images/<sha256(salt + dataId)>/<sha256(bytes)>.<ext>
+    // /userdata/widget-images/<sha256(salt + dataId)>/<random>.<ext>
     //
-    // The file is hashed on its contents, so the same image sent twice is stored
-    // once and a rewrite is a no-op.
+    // The filename is random, not a hash of the contents. /userdata is served
+    // over HTTP, and a content hash is guessable by anyone holding the same
+    // bytes — users forward publicly-sourced images (a chart, a meme), so
+    // sha256(bytes) is a name an outsider can compute and then fetch. Random
+    // names cost us the dedupe of storing the same image once; the prune and
+    // sweep below already keep the directory bounded.
     async storeWidgetImage(dataId, buffer) {
         try {
             const type = imageTypeFromBuffer(buffer);
@@ -642,7 +646,7 @@ export default class Whatsapp extends Homey.Device {
                 return null;
             }
 
-            const file = `${await this.widgetImageDirectory(dataId)}/${sha256(buffer)}.${type.ext}`;
+            const file = `${await this.widgetImageDirectory(dataId)}/${randomId()}.${type.ext}`;
             const absolute = path.join(this.widgetImageRoot(), file);
 
             await fs.mkdir(path.dirname(absolute), { recursive: true });
