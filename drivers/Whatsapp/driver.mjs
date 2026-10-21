@@ -283,7 +283,6 @@ export default class mainDriver extends Homey.Driver {
 
         session.setHandler('set_phone', async ({ number }) => {
             const phoneNumber = parsePhoneNumberWithError(number);
-            console.log(parsePhoneNumberWithError(number));
             if (!phoneNumber.isValid()) {
                 return false;
             }

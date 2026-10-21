@@ -196,7 +196,7 @@ export default class Whatsapp extends Homey.Device {
     }
 
     async getRecipient(recipient, isGroup) {
-        if (recipient.includes('@g.us') || recipient.includes('@s.whatsapp.net') || recipient.includes('@newsletter')) {
+        if (recipient.includes('@g.us') || recipient.includes('@s.whatsapp.net') || recipient.includes('@lid') || recipient.includes('@newsletter')) {
             this.homey.app.log(`[Device] ${this.getName()} - getRecipient - already a JID`, recipient);
             return recipient;
         }
@@ -257,7 +257,7 @@ export default class Whatsapp extends Homey.Device {
                 hasImage: false,
                 imageUrl: null,
                 base64Image: null
-            });
+            }).catch((error) => this.homey.app.error(`[Device] ${this.getName()} - sendToWidget failed`, error));
 
             data = await this.WhatsappClient.sendText(recipient, message, options);
         } else if (recipient && msgType) {
@@ -283,7 +283,7 @@ export default class Whatsapp extends Homey.Device {
                 hasImage: msgType === 'image',
                 imageUrl: fileUrl,
                 base64Image: null
-            });
+            }).catch((error) => this.homey.app.error(`[Device] ${this.getName()} - sendToWidget failed`, error));
 
             // Compact on purpose. This used to spread `params`, which dragged the Homey Image
             // object — and through it ManagerImages and Homey itself — into the log: ~18
@@ -661,7 +661,7 @@ export default class Whatsapp extends Homey.Device {
         // file back and re-attaches base64, so reopening the dashboard shows the
         // image again. hasImage is still kept, so an entry whose file has been
         // pruned can say so rather than rendering a broken icon.
-        this.setWidgetInstance(null, data.originalRecipient, saveData);
+        await this.setWidgetInstance(null, data.originalRecipient, saveData);
     }
 
     widgetImageRoot() {
