@@ -54,3 +54,9 @@ Currently has support for:
 Technical Info:
 
 - This app uses WhiskeySockets/Baileys as a Whatsapp client. This client is based on the WhatsApp Web API. This client is not affiliated with WhatsApp Inc. in any way.
+
+---
+
+## License
+
+[Apache-2.0](./LICENSE). Contributions are accepted under the same license (inbound = outbound).
