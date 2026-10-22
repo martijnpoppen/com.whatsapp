@@ -229,7 +229,14 @@ export default class Whatsapp extends Homey.Device {
         const recipient = await this.getRecipient(params.recipient, isGroup);
 
         if (recipient) {
-            const data = await this.sendMessage(recipient, message, type, params, isGroup, params.recipient);
+            const data = await this.sendMessage(
+                recipient,
+                message,
+                type,
+                params,
+                isGroup,
+                this.widgetKeyFor(params.recipient, recipient, isGroup)
+            );
 
             this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage`, Object.keys(data).length, this.homey.app.memorySnapshot());
 
@@ -237,6 +244,30 @@ export default class Whatsapp extends Homey.Device {
         }
 
         return false;
+    }
+
+    // getPNForLID answers with a device-specific JID — '31648480852:0@s.whatsapp.net'
+    // in a 3.0.19 log. Sending to that addresses one session of the account
+    // rather than the account, so drop the ':<device>' part.
+    normalizeJid(jid) {
+        if (typeof jid !== 'string' || !jid.includes('@')) return jid;
+
+        const [user, domain] = jid.split('@');
+
+        return `${user.split(':')[0]}@${domain}`;
+    }
+
+    // The widget keys a 1:1 chat the way the receive path does: '+<number>' when
+    // the number is known, the '<id>@lid' JID when it is not. A flow sending to
+    // a JID (replyTo of a LID chat) used to pass that JID through as the widget
+    // key, which matched nothing — so your own outgoing messages never showed up
+    // in the widget for those chats. A typed number is left exactly as it was,
+    // so no existing chat gets re-keyed.
+    widgetKeyFor(input, recipient, isGroup) {
+        if (isGroup || typeof input !== 'string' || !input.includes('@')) return input;
+        if (typeof recipient !== 'string' || recipient.endsWith('@lid')) return recipient;
+
+        return this.getParsedPhoneNumber(recipient);
     }
 
     async getRecipient(recipient, isGroup) {
@@ -249,7 +280,7 @@ export default class Whatsapp extends Homey.Device {
 
             this.homey.app.log(`[Device] ${this.getName()} - getRecipient - lid`, { resolved: !!pn });
 
-            return pn || recipient;
+            return pn ? this.normalizeJid(pn) : recipient;
         }
 
         if (recipient.includes('@g.us') || recipient.includes('@s.whatsapp.net') || recipient.includes('@newsletter')) {
