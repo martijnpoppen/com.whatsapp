@@ -817,19 +817,28 @@ export default class Whatsapp extends Homey.Device {
             const keys = (await this.getStoreKeys()).filter((key) => key.startsWith('widgetInstance-'));
             const expected = new Map();
 
+            // Keep a directory because a stored entry points into it, not because
+            // it matches the chat's current dataId. A LID chat whose history was
+            // migrated from the old `+<lid>` key still references files under the
+            // directory that key produced, and deriving the expected set from
+            // dataId alone would delete exactly those.
+            const keep = (directory, name) => {
+                if (!expected.has(directory)) expected.set(directory, new Set());
+                if (name) expected.get(directory).add(name);
+            };
+
             for (const key of keys) {
                 const instance = await this.getStoreValue(key);
                 if (!instance || !instance.dataId) continue;
 
-                const directory = await this.widgetImageDirectory(instance.dataId);
-                const files = new Set(
-                    (instance.data || [])
-                        .map((entry) => entry && entry.imageFile)
-                        .filter(Boolean)
-                        .map((file) => file.split('/').pop())
-                );
+                keep(await this.widgetImageDirectory(instance.dataId), null);
 
-                expected.set(directory, files);
+                for (const entry of instance.data || []) {
+                    if (!entry || !entry.imageFile) continue;
+
+                    const [directory, name] = entry.imageFile.split('/');
+                    if (directory && name) keep(directory, name);
+                }
             }
 
             let removedFiles = 0;
@@ -869,11 +878,39 @@ export default class Whatsapp extends Homey.Device {
         }
     }
 
+    // 3.0.18 and earlier keyed a LID chat's widget history on `+<lid digits>` —
+    // the phone-number-shaped value the old receive path produced for a LID with
+    // no mapping. The key is the JID itself now, which would orphan that history
+    // and leave a placed widget bound to a store entry nothing writes to any
+    // more. So on the first miss, look under the old name and move it across.
+    // Once per chat: the old key is removed, and a later miss costs one store
+    // read that finds nothing.
+    async migrateLidWidgetInstance(dataId) {
+        if (typeof dataId !== 'string' || !dataId.endsWith('@lid')) return null;
+
+        const legacyKey = `widgetInstance-${toConsistentId(`+${dataId.split('@')[0]}`)}`;
+        const legacy = await this.getStoreValue(legacyKey);
+
+        if (!legacy) return null;
+
+        const migrated = { ...legacy, dataId };
+
+        await this.setStoreValue(`widgetInstance-${toConsistentId(dataId)}`, migrated);
+        await this.unsetStoreValue(legacyKey);
+
+        this.homey.app.log(`[Device] ${this.getName()} - migrated LID widget history`, {
+            entries: (legacy.data || []).length,
+            widgets: (legacy.widgets || []).length
+        });
+
+        return migrated;
+    }
+
     async getWidgetInstance(dataId, getData = true, convertJid = false) {
         this.homey.app.log(`[Device] ${this.getName()} - getWidgetInstance`, dataId);
 
         const storeKey = `widgetInstance-${toConsistentId(dataId)}`;
-        const instance = await this.getStoreValue(storeKey);
+        const instance = (await this.getStoreValue(storeKey)) || (await this.migrateLidWidgetInstance(dataId));
 
         this.homey.app.log(`[Device] ${this.getName()} - getWidgetInstance instance exists:`, !!instance);
 
@@ -906,7 +943,10 @@ export default class Whatsapp extends Homey.Device {
 
             // there can be multiple widgets for one dataId, but we want to make a list of widgets
             // check if storeKey already exists
-            const instance = (await this.getStoreValue(storeKey)) || { data: [], widgets: [] };
+            const instance =
+                (await this.getStoreValue(storeKey)) ||
+                (await this.migrateLidWidgetInstance(dataId)) ||
+                { data: [], widgets: [] };
             let widgets = instance.widgets;
             let data = instance.data;
 
