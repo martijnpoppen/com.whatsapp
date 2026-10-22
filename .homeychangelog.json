@@ -457,5 +457,8 @@
   },
   "3.0.18": {
     "en": "FIX: app crashing and high memory usage in chats with images | FIX: images in the chat widget stay visible after reopening the dashboard"
+  },
+  "3.0.19": {
+    "en": "FIX: incoming messages that never reached the new_message trigger"
   }
 }
