@@ -141,10 +141,13 @@ export default class Whatsapp extends Homey.Device {
 
             const result = await this.WhatsappClient.startup();
 
-            // `true` is the old boolean contract; keep accepting it so a stale
-            // vendored api build cannot silently park the device.
+            // The api is vendored and gitignored here, so this code can run
+            // against an older build of it that still answers with a bare
+            // boolean. Then `false` carries no reason and the old meaning —
+            // "re-pair" — is the safe reading: retrying forever would mean the
+            // user is never told their device needs linking again.
             const ok = result === true || !!(result && result.ok);
-            const reason = (result && result.reason) || 'ERROR';
+            const reason = result === false ? 'CODE' : (result && result.reason) || 'ERROR';
 
             if (ok) {
                 await sleep(2000);
