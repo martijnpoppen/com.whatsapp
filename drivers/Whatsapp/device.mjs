@@ -3,6 +3,7 @@ import { parsePhoneNumberWithError } from 'libphonenumber-js';
 import { validateUrl, sleep, toConsistentId, parseGroupInvite, probeImageUrl, imageTypeFromBuffer, sha256, randomId, fetchImageBuffer } from '../../lib/helpers/index.mjs';
 import path from 'path';
 import fs from 'fs/promises';
+import { normalizeMessageContent } from 'baileys';
 
 // v1/v2 kept the whole Baileys auth state in the Homey device store, keyed
 // `<clientId>:...`. v3 keeps it on the filesystem, so after copyFromStoreToFileSystem
@@ -191,7 +192,7 @@ export default class Whatsapp extends Homey.Device {
     }
 
     async getRecipient(recipient, isGroup) {
-        if (recipient.includes('@g.us') || recipient.includes('@s.whatsapp.net') || recipient.includes('@newsletter')) {
+        if (recipient.includes('@g.us') || recipient.includes('@s.whatsapp.net') || recipient.includes('@lid') || recipient.includes('@newsletter')) {
             this.homey.app.log(`[Device] ${this.getName()} - getRecipient - already a JID`, recipient);
             return recipient;
         }
@@ -252,7 +253,7 @@ export default class Whatsapp extends Homey.Device {
                 hasImage: false,
                 imageUrl: null,
                 base64Image: null
-            });
+            }).catch((error) => this.homey.app.error(`[Device] ${this.getName()} - sendToWidget failed`, error));
 
             data = await this.WhatsappClient.sendText(recipient, message, options);
         } else if (recipient && msgType) {
@@ -278,7 +279,7 @@ export default class Whatsapp extends Homey.Device {
                 hasImage: msgType === 'image',
                 imageUrl: fileUrl,
                 base64Image: null
-            });
+            }).catch((error) => this.homey.app.error(`[Device] ${this.getName()} - sendToWidget failed`, error));
 
             // Compact on purpose. This used to spread `params`, which dragged the Homey Image
             // object — and through it ManagerImages and Homey itself — into the log: ~18
@@ -398,13 +399,12 @@ export default class Whatsapp extends Homey.Device {
     }
 
     // ------------- Triggers -------------
-    // Replace lines 394-451 (messageHelper) in drivers/Whatsapp/device.mjs
-
-    // ------------- Triggers -------------
     async messageHelper(msg) {
         try {
-            if (!this.getAvailable()) return false;
-
+            // No availability gate here. onInit marks the device unavailable and
+            // setWhatsappClient only flips it back two seconds after startup, so a
+            // message that arrived in that window was dropped without a log line.
+            // If the client is delivering messages, the connection is up.
             const settings = await this.getSettings();
 
             // Sequential instead of forEach(async) — prevents fanout of unhandled
@@ -423,6 +423,19 @@ export default class Whatsapp extends Homey.Device {
         }
     }
 
+    // The sender's phone number, or '' when WhatsApp only gave us a LID and no
+    // mapping is known yet. A LID is not a phone number: prefixing it with '+'
+    // produced a "number" that no fromNumber condition can ever match.
+    async getSenderNumber(fromJid, alternateJid) {
+        const isPn = (jid) => typeof jid === 'string' && jid.endsWith('@s.whatsapp.net');
+
+        if (isPn(fromJid)) return this.getParsedPhoneNumber(fromJid);
+        if (isPn(alternateJid)) return this.getParsedPhoneNumber(alternateJid);
+
+        const pn = fromJid && fromJid.endsWith('@lid') ? await this.WhatsappClient.getPNForLID(fromJid).catch(() => null) : null;
+        return pn ? this.getParsedPhoneNumber(pn) : '';
+    }
+
     async processMessage(m, settings) {
         // Skip envelopes with no usable content. Failed decryptions and
         // protocol messages (receipts, status updates, etc.) have either
@@ -437,8 +450,28 @@ export default class Whatsapp extends Homey.Device {
         // remoteJid is the chat (group JID or 1:1 JID). This is the correct
         // value for "replyTo" — i.e. where to send a reply.
         const jid = m.key && m.key.remoteJid;
-        if (!jid || typeof jid !== 'string') {
+        if (!jid || typeof jid !== 'string' || !m.key.id) {
             this.homey.app.log(`[messageHelper] skipping message with no remoteJid`);
+            return;
+        }
+
+        // Status updates (status@broadcast) carry a participant too, so they used
+        // to come through as group messages. Only real chats trigger flows.
+        const group = jid.endsWith('@g.us');
+        if (!group && !jid.endsWith('@s.whatsapp.net') && !jid.endsWith('@lid')) {
+            this.homey.app.log(`[messageHelper] skipping non-chat message`);
+            return;
+        }
+
+        // Disappearing, view-once and edited messages wrap the real content one
+        // level down (ephemeralMessage.message.conversation, ...). Reading only
+        // the top level gave those an empty text and failed every text condition.
+        const body = normalizeMessageContent(m.message);
+
+        // Reactions, deletes/edits (protocolMessage), poll votes and bare
+        // sender-key distributions are not messages anyone wrote to the Homey.
+        if (!body || body.protocolMessage || body.reactionMessage || body.pollUpdateMessage || (body.senderKeyDistributionMessage && Object.keys(body).length === 1)) {
+            this.homey.app.log(`[messageHelper] ignoring protocol message or update`);
             return;
         }
 
@@ -446,35 +479,23 @@ export default class Whatsapp extends Homey.Device {
         newDate.setTime(m.messageTimestamp * 1000);
         const dateString = newDate.toUTCString();
 
-        const group = !!(m.key && m.key.participant);
         const groupCode = group ? await this.WhatsappClient.getGroupInviteById(jid).catch(() => null) : null;
 
         const from = m.pushName;
-        const fromJid = m.key.participant || jid;
-
-        // Resolve the sender's phone number. May be unavailable (LID without
-        // mapping yet). That's fine — fromNumber falls back to the raw JID
-        // identifier.
-        const pn = (await this.WhatsappClient.getPNForLID(fromJid).catch(() => null)) || m.key.participantPn;
-        const fromNumber = (pn && this.getParsedPhoneNumber(pn)) || `+${fromJid.split('@')[0]}`;
+        const fromJid = group ? m.key.participant : jid;
+        const fromNumber = await this.getSenderNumber(fromJid, group ? m.key.participantAlt || m.key.participantPn : m.key.remoteJidAlt);
 
         const fromMe = m.key && m.key.fromMe;
         const triggerAllowed = (fromMe && settings.trigger_own_message) || !fromMe;
-        const hasImage = !!(m.message && m.message.imageMessage);
-        const isPollUpdate = !!(m.message && m.message.pollUpdateMessage);
+        const hasImage = !!body.imageMessage;
 
-        if (isPollUpdate) {
-            this.homey.app.log(`[messageHelper] ignoring poll update`);
-            return;
-        }
-
-        let text = (m.message && m.message.conversation) || '';
-        if (!text) {
-            text = (m.message && m.message.extendedTextMessage && m.message.extendedTextMessage.text) || '';
-        }
-        if (hasImage) {
-            text = (m.message && m.message.imageMessage && m.message.imageMessage.caption) || '';
-        }
+        const text =
+            body.conversation ||
+            (body.extendedTextMessage && body.extendedTextMessage.text) ||
+            (body.imageMessage && body.imageMessage.caption) ||
+            (body.videoMessage && body.videoMessage.caption) ||
+            (body.documentMessage && body.documentMessage.caption) ||
+            '';
 
         const tokens = {
             replyTo: jid,
@@ -494,7 +515,8 @@ export default class Whatsapp extends Homey.Device {
             try {
                 await this.new_message.trigger(this, tokens, state);
             } catch (e) {
-                this.homey.app.error(`[messageHelper] new_message.trigger failed`, e, { tokens });
+                // No tokens here: they carry the message text and the sender's number.
+                this.homey.app.error(`[messageHelper] new_message.trigger failed`, e);
             }
         }
 
@@ -509,8 +531,9 @@ export default class Whatsapp extends Homey.Device {
                 hasImage,
                 imgUrl: null,
                 base64Image: null,
-                m,
-                originalRecipient: groupCode ? `https://chat.whatsapp.com/${groupCode}` : fromNumber
+                // Unwrapped, so the image of a disappearing message can be downloaded too.
+                m: { ...m, message: body },
+                originalRecipient: groupCode ? `https://chat.whatsapp.com/${groupCode}` : fromNumber || jid
             });
         } catch (e) {
             this.homey.app.error(`[messageHelper] sendToWidget failed`, e);
@@ -606,7 +629,7 @@ export default class Whatsapp extends Homey.Device {
         // file back and re-attaches base64, so reopening the dashboard shows the
         // image again. hasImage is still kept, so an entry whose file has been
         // pruned can say so rather than rendering a broken icon.
-        this.setWidgetInstance(null, data.originalRecipient, saveData);
+        await this.setWidgetInstance(null, data.originalRecipient, saveData);
     }
 
     widgetImageRoot() {
