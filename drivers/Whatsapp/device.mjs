@@ -40,6 +40,14 @@ const WIDGET_IMAGE_DIR = 'widget-images';
 // read the folder.
 const WIDGET_IMAGE_SALT_KEY = '_widget_image_salt';
 
+// startup() reasons that only the user can resolve: WhatsApp wants the device
+// linked again. Everything else ('TIMEOUT', 'ERROR', 'CANCELLED') is transient
+// and gets retried — a slow first connect used to park the device for the whole
+// app run and tell the user to re-pair for nothing.
+const PAIRING_REQUIRED_REASONS = new Set(['QR', 'CODE']);
+const STARTUP_RETRY_BASE_MS = 30 * 1000;
+const STARTUP_RETRY_MAX_MS = 15 * 60 * 1000;
+
 export default class Whatsapp extends Homey.Device {
     async onInit() {
         try {
@@ -95,6 +103,10 @@ export default class Whatsapp extends Homey.Device {
             this.homey.clearTimeout(this._cleanupTimeout);
             this._cleanupTimeout = null;
         }
+        if (this._startupTimeout) {
+            this.homey.clearTimeout(this._startupTimeout);
+            this._startupTimeout = null;
+        }
     }
 
     async setTriggers() {
@@ -129,17 +141,53 @@ export default class Whatsapp extends Homey.Device {
 
             const result = await this.WhatsappClient.startup();
 
-            if (result) {
+            // The api is vendored and gitignored here, so this code can run
+            // against an older build of it that still answers with a bare
+            // boolean. Then `false` carries no reason and the old meaning —
+            // "re-pair" — is the safe reading: retrying forever would mean the
+            // user is never told their device needs linking again.
+            const ok = result === true || !!(result && result.ok);
+            const reason = result === false ? 'CODE' : (result && result.reason) || 'ERROR';
+
+            if (ok) {
                 await sleep(2000);
                 this.setAvailable();
-            } else {
+                this._startupAttempt = 0;
+            } else if (PAIRING_REQUIRED_REASONS.has(reason)) {
                 await this.new_pairing_code.trigger(this);
                 await this.setUnavailable('New pairing code is needed. Please try to repair the device.');
                 await this.homey.notifications.createNotification({ excerpt: `[WhatsApp] - (${settings.phonenumber}) - New pairing code is needed. Please try to repair the device.` });
+            } else {
+                // The session is fine, the connection just was not up yet.
+                await this.setUnavailable('Connecting to WhatsApp');
+                this.scheduleStartupRetry(reason);
             }
         } catch (error) {
             this.homey.app.log(`[Device] ${this.getName()} - setWhatsappClient - error =>`, error);
         }
+    }
+
+    // setAvailable() used to be reachable exactly once, from the single
+    // setWhatsappClient() call in onInit — so one failed start meant no further
+    // attempt for the life of the app. Back off instead: 30s, then doubling to a
+    // 15 minute ceiling, for as long as the app runs.
+    scheduleStartupRetry(reason) {
+        this._startupAttempt = (this._startupAttempt || 0) + 1;
+
+        const delay = Math.min(STARTUP_RETRY_BASE_MS * 2 ** (this._startupAttempt - 1), STARTUP_RETRY_MAX_MS);
+
+        this.homey.app.log(
+            `[Device] ${this.getName()} - startup failed (${reason}), retry ${this._startupAttempt} in ${Math.round(delay / 1000)}s`
+        );
+
+        if (this._startupTimeout) this.homey.clearTimeout(this._startupTimeout);
+
+        this._startupTimeout = this.homey.setTimeout(() => {
+            this._startupTimeout = null;
+            this.setWhatsappClient().catch((error) =>
+                this.homey.app.error(`[Device] ${this.getName()} - startup retry failed`, error)
+            );
+        }, delay);
     }
 
     async removeWhatsappClient() {
@@ -192,7 +240,19 @@ export default class Whatsapp extends Homey.Device {
     }
 
     async getRecipient(recipient, isGroup) {
-        if (recipient.includes('@g.us') || recipient.includes('@s.whatsapp.net') || recipient.includes('@lid') || recipient.includes('@newsletter')) {
+        // replyTo hands back the chat JID, which for a 1:1 chat WhatsApp has
+        // moved to LID addressing is '<id>@lid'. Sending to that works, but the
+        // phone-number JID is what every other path here uses, so prefer it
+        // whenever the mapping is already known.
+        if (recipient.includes('@lid')) {
+            const pn = await this.WhatsappClient.getPNForLID(recipient).catch(() => null);
+
+            this.homey.app.log(`[Device] ${this.getName()} - getRecipient - lid`, { resolved: !!pn });
+
+            return pn || recipient;
+        }
+
+        if (recipient.includes('@g.us') || recipient.includes('@s.whatsapp.net') || recipient.includes('@newsletter')) {
             this.homey.app.log(`[Device] ${this.getName()} - getRecipient - already a JID`, recipient);
             return recipient;
         }
@@ -401,10 +461,22 @@ export default class Whatsapp extends Homey.Device {
     // ------------- Triggers -------------
     async messageHelper(msg) {
         try {
-            // No availability gate here. onInit marks the device unavailable and
-            // setWhatsappClient only flips it back two seconds after startup, so a
-            // message that arrived in that window was dropped without a log line.
-            // If the client is delivering messages, the connection is up.
+            // No availability gate here. A message only reaches this method over a
+            // live socket, so a device still marked unavailable is carrying a stale
+            // flag from a start that had not finished — not a real outage. The old
+            // `if (!this.getAvailable()) return false` dropped those messages
+            // silently; clear the flag instead, and stop any pending retry, since
+            // the thing it was retrying evidently works.
+            if (!this.getAvailable()) {
+                this.homey.app.log(`[Device] ${this.getName()} - message while unavailable, marking available`);
+                this.setAvailable().catch(() => {});
+                this._startupAttempt = 0;
+                if (this._startupTimeout) {
+                    this.homey.clearTimeout(this._startupTimeout);
+                    this._startupTimeout = null;
+                }
+            }
+
             const settings = await this.getSettings();
 
             // Sequential instead of forEach(async) — prevents fanout of unhandled
