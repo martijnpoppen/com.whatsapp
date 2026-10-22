@@ -240,7 +240,19 @@ export default class Whatsapp extends Homey.Device {
     }
 
     async getRecipient(recipient, isGroup) {
-        if (recipient.includes('@g.us') || recipient.includes('@s.whatsapp.net') || recipient.includes('@lid') || recipient.includes('@newsletter')) {
+        // replyTo hands back the chat JID, which for a 1:1 chat WhatsApp has
+        // moved to LID addressing is '<id>@lid'. Sending to that works, but the
+        // phone-number JID is what every other path here uses, so prefer it
+        // whenever the mapping is already known.
+        if (recipient.includes('@lid')) {
+            const pn = await this.WhatsappClient.getPNForLID(recipient).catch(() => null);
+
+            this.homey.app.log(`[Device] ${this.getName()} - getRecipient - lid`, { resolved: !!pn });
+
+            return pn || recipient;
+        }
+
+        if (recipient.includes('@g.us') || recipient.includes('@s.whatsapp.net') || recipient.includes('@newsletter')) {
             this.homey.app.log(`[Device] ${this.getName()} - getRecipient - already a JID`, recipient);
             return recipient;
         }
