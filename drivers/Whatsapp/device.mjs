@@ -40,11 +40,18 @@ const WIDGET_IMAGE_DIR = 'widget-images';
 // read the folder.
 const WIDGET_IMAGE_SALT_KEY = '_widget_image_salt';
 
-// startup() reasons that only the user can resolve: WhatsApp wants the device
-// linked again. Everything else ('TIMEOUT', 'ERROR', 'CANCELLED') is transient
-// and gets retried — a slow first connect used to park the device for the whole
-// app run and tell the user to re-pair for nothing.
+// startup() reasons that only the user can resolve. 'QR' and 'CODE' mean
+// WhatsApp is waiting to be linked; the two patterns mean the link is gone —
+// 'login failed: 401' is WhatsApp having logged the device out, and a pairing
+// timeout means the code was never completed. All four need the user, so they
+// fire new_pairing_code and park the device.
+//
+// 3.0.19 classified a logout as transient, because the api answered every
+// auth_failure with a bare 'ERROR'. The device then retried quietly every 30s
+// to 15 minutes and never told anyone its session was gone — which is how a
+// WhatsApp-side logout turned into "it just stopped working".
 const PAIRING_REQUIRED_REASONS = new Set(['QR', 'CODE']);
+const PAIRING_REQUIRED_PATTERNS = [/login failed/i, /pairing/i];
 const STARTUP_RETRY_BASE_MS = 30 * 1000;
 const STARTUP_RETRY_MAX_MS = 15 * 60 * 1000;
 
@@ -148,12 +155,14 @@ export default class Whatsapp extends Homey.Device {
             // user is never told their device needs linking again.
             const ok = result === true || !!(result && result.ok);
             const reason = result === false ? 'CODE' : (result && result.reason) || 'ERROR';
+            const needsPairing =
+                PAIRING_REQUIRED_REASONS.has(reason) || PAIRING_REQUIRED_PATTERNS.some((pattern) => pattern.test(reason));
 
             if (ok) {
                 await sleep(2000);
                 this.setAvailable();
                 this._startupAttempt = 0;
-            } else if (PAIRING_REQUIRED_REASONS.has(reason)) {
+            } else if (needsPairing) {
                 await this.new_pairing_code.trigger(this);
                 await this.setUnavailable('New pairing code is needed. Please try to repair the device.');
                 await this.homey.notifications.createNotification({ excerpt: `[WhatsApp] - (${settings.phonenumber}) - New pairing code is needed. Please try to repair the device.` });
@@ -229,7 +238,14 @@ export default class Whatsapp extends Homey.Device {
         const recipient = await this.getRecipient(params.recipient, isGroup);
 
         if (recipient) {
-            const data = await this.sendMessage(recipient, message, type, params, isGroup, params.recipient);
+            const data = await this.sendMessage(
+                recipient,
+                message,
+                type,
+                params,
+                isGroup,
+                this.widgetKeyFor(params.recipient, recipient, isGroup)
+            );
 
             this.homey.app.log(`[Device] ${this.getName()} - onCapability_SendMessage`, Object.keys(data).length, this.homey.app.memorySnapshot());
 
@@ -237,6 +253,30 @@ export default class Whatsapp extends Homey.Device {
         }
 
         return false;
+    }
+
+    // getPNForLID answers with a device-specific JID — '31648480852:0@s.whatsapp.net'
+    // in a 3.0.19 log. Sending to that addresses one session of the account
+    // rather than the account, so drop the ':<device>' part.
+    normalizeJid(jid) {
+        if (typeof jid !== 'string' || !jid.includes('@')) return jid;
+
+        const [user, domain] = jid.split('@');
+
+        return `${user.split(':')[0]}@${domain}`;
+    }
+
+    // The widget keys a 1:1 chat the way the receive path does: '+<number>' when
+    // the number is known, the '<id>@lid' JID when it is not. A flow sending to
+    // a JID (replyTo of a LID chat) used to pass that JID through as the widget
+    // key, which matched nothing — so your own outgoing messages never showed up
+    // in the widget for those chats. A typed number is left exactly as it was,
+    // so no existing chat gets re-keyed.
+    widgetKeyFor(input, recipient, isGroup) {
+        if (isGroup || typeof input !== 'string' || !input.includes('@')) return input;
+        if (typeof recipient !== 'string' || recipient.endsWith('@lid')) return recipient;
+
+        return this.getParsedPhoneNumber(recipient);
     }
 
     async getRecipient(recipient, isGroup) {
@@ -249,7 +289,7 @@ export default class Whatsapp extends Homey.Device {
 
             this.homey.app.log(`[Device] ${this.getName()} - getRecipient - lid`, { resolved: !!pn });
 
-            return pn || recipient;
+            return pn ? this.normalizeJid(pn) : recipient;
         }
 
         if (recipient.includes('@g.us') || recipient.includes('@s.whatsapp.net') || recipient.includes('@newsletter')) {

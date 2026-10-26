@@ -463,5 +463,8 @@
   },
   "3.0.20": {
     "en": "FIX: incoming messages that never reached the new_message trigger"
+  },
+  "3.0.21": {
+    "en": "FIX: you get notified again when WhatsApp logs out the connection | FIX: replying to an incoming chat | FIX: your own messages missing from the chat widget"
   }
 }
