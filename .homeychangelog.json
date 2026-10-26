@@ -469,5 +469,8 @@
   },
   "3.0.22": {
     "en": "FIX: you get notified again when WhatsApp logs out the connection"
+  },
+  "3.0.23": {
+    "en": "FIX: flow cards failing with a \"sendText of null\" error after repairing | FIX: app crash when capabilities were updated twice | FIX: replying to an incoming chat | FIX: your own messages missing from the chat widget"
   }
 }
