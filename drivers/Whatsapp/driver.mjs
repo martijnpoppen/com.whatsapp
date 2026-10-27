@@ -101,6 +101,14 @@ export default class mainDriver extends Homey.Driver {
 
                 if (data.type === 'READY') {
                     ctx.stopCheckInterval(ctx);
+
+                    // Hand the device its client back here, not only from the
+                    // loading2 view below: the user's phone reports the link a
+                    // moment before this dialog advances, and closing the dialog
+                    // then left the device with a null client and every flow card
+                    // throwing. This runs whether or not the dialog is still open.
+                    if (ctx.device) ctx.device.attachWhatsappClient();
+
                     if (session) return session.showView('loading2');
                 }
 

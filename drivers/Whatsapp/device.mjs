@@ -199,6 +199,36 @@ export default class Whatsapp extends Homey.Device {
         }, delay);
     }
 
+    // The driver owns the live client objects; the device just holds a reference.
+    // removeWhatsappClient() nulls ours, and until 3.0.22 only the pair dialog's
+    // loading2 view put it back — so a user who closes the dialog the moment their
+    // phone reports the device linked ended up with a working session and a null
+    // reference, and every flow card failed with "Cannot read properties of null
+    // (reading 'sendText')". Re-take it from the driver instead of depending on a
+    // dialog the user is free to close.
+    attachWhatsappClient() {
+        const client = this.driver.WhatsappClients[this.getData().id];
+
+        if (client && client !== this.WhatsappClient) {
+            this.WhatsappClient = client;
+            this.homey.app.log(`[Device] ${this.getName()} - client re-attached from driver`);
+        }
+
+        return this.WhatsappClient;
+    }
+
+    // Every flow path goes through this, so a missing client fails the card with
+    // something a user can act on rather than a TypeError.
+    whatsappClient() {
+        const client = this.WhatsappClient || this.attachWhatsappClient();
+
+        if (!client) {
+            throw new Error('WhatsApp is not connected. Open the device and run Repair if this keeps happening.');
+        }
+
+        return client;
+    }
+
     async removeWhatsappClient() {
         this.setUnavailable(`Repairing...`);
 
@@ -285,7 +315,7 @@ export default class Whatsapp extends Homey.Device {
         // phone-number JID is what every other path here uses, so prefer it
         // whenever the mapping is already known.
         if (recipient.includes('@lid')) {
-            const pn = await this.WhatsappClient.getPNForLID(recipient).catch(() => null);
+            const pn = await this.whatsappClient().getPNForLID(recipient).catch(() => null);
 
             this.homey.app.log(`[Device] ${this.getName()} - getRecipient - lid`, { resolved: !!pn });
 
@@ -316,7 +346,7 @@ export default class Whatsapp extends Homey.Device {
             this.homey.app.log(`[Device] ${this.getName()} - getRecipient - fetching group JID from store: `, recipient);
 
             if (!recipient) {
-                recipient = (await this.WhatsappClient.getGroupWithInvite(inviteCode)) || null;
+                recipient = (await this.whatsappClient().getGroupWithInvite(inviteCode)) || null;
                 this.homey.app.log(`[Device] ${this.getName()} - getRecipient - fetching group JID from WhatsappClient`, recipient);
 
                 if (recipient) {
@@ -355,7 +385,7 @@ export default class Whatsapp extends Homey.Device {
                 base64Image: null
             }).catch((error) => this.homey.app.error(`[Device] ${this.getName()} - sendToWidget failed`, error));
 
-            data = await this.WhatsappClient.sendText(recipient, message, options);
+            data = await this.whatsappClient().sendText(recipient, message, options);
         } else if (recipient && msgType) {
             let fileUrl = params.droptoken || params.file || null;
 
@@ -412,18 +442,18 @@ export default class Whatsapp extends Homey.Device {
                     );
                 }
 
-                data = await this.WhatsappClient.sendMedia(recipient, fileUrl, message, msgType, options);
+                data = await this.whatsappClient().sendMedia(recipient, fileUrl, message, msgType, options);
             } else if (msgType === 'audio') {
                 throw new Error('Audio is not supported yet');
             } else if (msgType === 'document') {
-                data = await this.WhatsappClient.sendFile(recipient, fileUrl, options);
+                data = await this.whatsappClient().sendFile(recipient, fileUrl, options);
             } else if (msgType === 'location') {
                 const { lat } = params;
 
                 const splittedParam = lat.split(',');
 
                 if (splittedParam.length > 1) {
-                    ((data = await this.WhatsappClient.sendLocation(recipient, splittedParam[0], splittedParam[1], message)), options);
+                    ((data = await this.whatsappClient().sendLocation(recipient, splittedParam[0], splittedParam[1], message)), options);
                 } else {
                     throw new Error('Invalid location, use comma separated Latitude,Longitude');
                 }
@@ -443,7 +473,7 @@ export default class Whatsapp extends Homey.Device {
                     throw new Error('Please provide at least 2 poll values');
                 }
 
-                data = await this.WhatsappClient.sendPoll(recipient, message, values, selectableCount || 1);
+                data = await this.whatsappClient().sendPoll(recipient, message, values, selectableCount || 1);
             }
         }
 
@@ -463,7 +493,7 @@ export default class Whatsapp extends Homey.Device {
 
                     this.homey.app.log(`[Device] ${this.getName()} - getOptions - found mention`, match[1]);
 
-                    const pn = await this.WhatsappClient.getPNForLID(`${match[1]}@lid`);
+                    const pn = await this.whatsappClient().getPNForLID(`${match[1]}@lid`);
                     const parsedPn = pn ? this.getParsedPhoneNumber(pn) : undefined;
                     const phoneNumber = parsedPn ? parsePhoneNumberWithError(parsedPn) : parsePhoneNumberWithError(`+${match[1]}`);
 
@@ -544,7 +574,7 @@ export default class Whatsapp extends Homey.Device {
         if (isPn(fromJid)) return this.getParsedPhoneNumber(fromJid);
         if (isPn(alternateJid)) return this.getParsedPhoneNumber(alternateJid);
 
-        const pn = fromJid && fromJid.endsWith('@lid') ? await this.WhatsappClient.getPNForLID(fromJid).catch(() => null) : null;
+        const pn = fromJid && fromJid.endsWith('@lid') ? await this.whatsappClient().getPNForLID(fromJid).catch(() => null) : null;
         return pn ? this.getParsedPhoneNumber(pn) : '';
     }
 
@@ -591,7 +621,7 @@ export default class Whatsapp extends Homey.Device {
         newDate.setTime(m.messageTimestamp * 1000);
         const dateString = newDate.toUTCString();
 
-        const groupCode = group ? await this.WhatsappClient.getGroupInviteById(jid).catch(() => null) : null;
+        const groupCode = group ? await this.whatsappClient().getGroupInviteById(jid).catch(() => null) : null;
 
         const from = m.pushName;
         const fromJid = group ? m.key.participant : jid;
@@ -672,13 +702,19 @@ export default class Whatsapp extends Homey.Device {
             const newC = driverCapabilities.filter((d) => !deviceCapabilities.includes(d));
             const oldC = deviceCapabilities.filter((d) => !driverCapabilities.includes(d));
 
+            // Awaited, one at a time, and inside the try/catch. forEach with an
+            // async body left these promises unhandled: two overlapping onInit
+            // runs both call addCapability('send_data'), the loser rejects with
+            // capability_already_exists (409), and an unhandled rejection takes
+            // the whole app down — which is the 409 crash in the 3.0.20 reports.
+            // hasCapability() makes the duplicate a no-op rather than a race.
             if (oldC.length) {
                 this.homey.app.log(`[Device] ${this.getName()} - Got old capabilities =>`, oldC);
 
-                oldC.forEach((c) => {
+                for (const c of oldC) {
                     this.homey.app.log(`[Device] ${this.getName()} - updateCapabilities => Remove `, c);
-                    this.removeCapability(c);
-                });
+                    if (this.hasCapability(c)) await this.removeCapability(c);
+                }
 
                 await sleep(2000);
             }
@@ -686,10 +722,11 @@ export default class Whatsapp extends Homey.Device {
             if (newC.length) {
                 this.homey.app.log(`[Device] ${this.getName()} - Got new capabilities =>`, newC);
 
-                newC.forEach((c) => {
+                for (const c of newC) {
                     this.homey.app.log(`[Device] ${this.getName()} - updateCapabilities => Add `, c);
-                    this.addCapability(c);
-                });
+                    if (!this.hasCapability(c)) await this.addCapability(c);
+                }
+
                 await sleep(2000);
             }
         } catch (error) {
@@ -715,7 +752,7 @@ export default class Whatsapp extends Homey.Device {
 
         // When image is received from Whatsapp
         if (data.m && data.hasImage) {
-            buffer = await this.WhatsappClient.downloadMediaMsg(data.m);
+            buffer = await this.whatsappClient().downloadMediaMsg(data.m);
         }
 
         const stored = buffer && buffer.length ? await this.storeWidgetImage(data.originalRecipient, buffer) : null;
