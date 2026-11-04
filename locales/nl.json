@@ -7,5 +7,8 @@
     "widget": {
         "image_expired": "afbeelding niet meer beschikbaar",
         "setup": "Om deze widget in te stellen, stuurt u de onderstaande code in de groepschat die u met deze widget wilt verbinden."
+    },
+    "pair": {
+        "code_not_entered": "De code is nog niet ingevoerd. Voer de code in WhatsApp in en houd dit scherm open — het gaat automatisch verder."
     }
 }
