@@ -153,14 +153,17 @@ jobs:
       - name: Install
         run: npm ci --no-audit --no-fund
 
-      # The Homey CLI is not a dependency of this app, so install it for this run only.
-      # --no-save keeps it out of package.json, and the CLI bundles production dependencies, so
-      # it cannot end up in the published app either way.
+      # The Homey CLI is not a dependency of this app, so install it for this run only — and
+      # into its own prefix, NOT the app's node_modules. Installed alongside the app it drops
+      # its own ~360 packages (@anthropic-ai/sdk, @grpc/*, @balena/dockerignore, ...) in there,
+      # and `homey app publish` then runs a dependency check on the app, finds all of them
+      # extraneous plus sharp's platform packages invalid, and refuses to upload with
+      # "This error may be fixed by running npm install in your app".
       - name: Install the Homey CLI
-        run: npm install --no-save --no-audit --no-fund 'homey@${{ inputs.cli_version }}'
+        run: npm install --prefix "$RUNNER_TEMP/homey-cli" --no-audit --no-fund 'homey@${{ inputs.cli_version }}'
 
       - name: Validate
-        run: ./node_modules/.bin/homey app validate --level=publish
+        run: "$RUNNER_TEMP/homey-cli/node_modules/.bin/homey app validate --level=publish"
 
       # HOMEY_HEADLESS skips the interactive version and changelog prompts, which the separate
       # Update Homey App Version workflow has already answered in .homeychangelog.json.
@@ -168,7 +171,7 @@ jobs:
         env:
           HOMEY_HEADLESS: '1'
           HOMEY_PAT: ${{ secrets.HOMEY_PAT }}
-        run: ./node_modules/.bin/homey app publish
+        run: "$RUNNER_TEMP/homey-cli/node_modules/.bin/homey app publish"
 
       - name: URL
         run: |
