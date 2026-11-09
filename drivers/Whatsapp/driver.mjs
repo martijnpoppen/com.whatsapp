@@ -230,6 +230,32 @@ export default class mainDriver extends Homey.Driver {
             }
 
             if (view === 'loading2') {
+                // Only arrive here with a linked session. The pairing-code view
+                // unlocks its Continue button as soon as the code is on screen,
+                // so a user can reach this view while WhatsApp is still waiting
+                // for that code to be entered — and this handler would then tell
+                // the device it was paired and show "done", leaving a device that
+                // says "No response". Check the real state and send them back.
+                const client = this.WhatsappClients[this.guid];
+                const current = client ? await client.getData().catch(() => null) : null;
+
+                if (!current || current.type !== 'READY') {
+                    this.homey.app.log(`[Driver] ${this.id} - loading2 before the link completed`, {
+                        client: clientTag(this.guid),
+                        type: current ? current.type : 'none'
+                    });
+
+                    this.pairError = this.homey.__('pair.code_not_entered');
+                    this.codeShown = false;
+
+                    if (session) {
+                        session.emit('pair_error', this.pairError);
+                        return session.showView('whatsapp_pairing_code');
+                    }
+
+                    return;
+                }
+
                 this.results = [
                     {
                         name: `Whatsapp`,

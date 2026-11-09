@@ -472,5 +472,8 @@
   },
   "3.0.23": {
     "en": "FIX: flow cards failing with a \"sendText of null\" error after repairing | FIX: app crash when capabilities were updated twice | FIX: replying to an incoming chat | FIX: your own messages missing from the chat widget"
+  },
+  "3.0.24": {
+    "en": "FIX: pairing could finish as \"done\" while the code had not been entered yet, leaving a device with no response"
   }
 }
