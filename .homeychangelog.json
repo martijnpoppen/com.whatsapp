@@ -475,5 +475,8 @@
   },
   "3.0.24": {
     "en": "FIX: pairing could finish as \"done\" while the code had not been entered yet, leaving a device with no response"
+  },
+  "3.0.25": {
+    "en": "FIX: flow cards failing with an error after repairing the device | FIX: pairing could finish before the code was entered | FIX: app crash when capabilities were updated twice | FIX: you get notified again when WhatsApp logs out the connection"
   }
 }
