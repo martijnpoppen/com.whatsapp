@@ -78,6 +78,11 @@ export default class mainDriver extends Homey.Driver {
         // interval there used to reset the poll on every re-render.
         if (ctx._checkInterval) return;
 
+        // A failed attempt is final for this pair session. Without this the
+        // pairing-code view, re-shown below to report the failure, would start
+        // the poll again, see ERROR again and re-show itself every 4s.
+        if (ctx.pairFailed) return;
+
         ctx._checkInterval = ctx.homey.setInterval(async () => {
             try {
                 ctx.homey.app.log(`[Driver] ${ctx.id} - setCheckInterval - poll`, { client: clientTag(guid) });
@@ -140,9 +145,8 @@ export default class mainDriver extends Homey.Driver {
                 }
 
                 if (data.type === 'ERROR') {
-                    ctx.pairError = data.msg || 'Pairing failed';
                     ctx.stopCheckInterval(ctx);
-                    if (session) session.emit('pair_error', ctx.pairError);
+                    ctx.failPairing(ctx, session, data.msg);
                     return;
                 }
 
@@ -157,12 +161,42 @@ export default class mainDriver extends Homey.Driver {
         }, 4000);
     }
 
-    async onPair(session) {
-        this.type = 'pair';
-        this.device = null;
+    // The pairing attempt is dead: the code expired, WhatsApp closed the
+    // socket, or the reconnect after linking gave up. Only the pairing-code view
+    // can show that — the `loading` / `loading2` views are Homey's own spinner
+    // template and ignore `pair_error`, so a failure that landed while one of
+    // them was up left the user watching a spinner that never stops. Always
+    // move to the pairing-code view and let it show the reason.
+    failPairing(ctx, session, reason) {
+        ctx.homey.app.log(`[Driver] ${ctx.id} - pairing failed`, { reason });
+
+        ctx.pairFailed = true;
+        ctx.pairError = `${ctx.homey.__('pair.failed')} (${reason || 'unknown error'})`;
+        // The old code is useless now; the view must not show it over the error.
+        ctx.code = null;
+        ctx.codeShown = true;
+
+        if (!session) return;
+
+        // Push for a pairing-code view that is already mounted, then show the
+        // view for every other case. A (re)loaded view pulls the error itself.
+        session.emit('pair_failed', ctx.pairError);
+        session.showView('whatsapp_pairing_code').catch((error) =>
+            ctx.homey.app.error(`[Driver] ${ctx.id} - showView after pairing failure`, error)
+        );
+    }
+
+    resetPairState() {
         this.code = null;
         this.codeShown = false;
         this.pairError = null;
+        this.pairFailed = false;
+    }
+
+    async onPair(session) {
+        this.type = 'pair';
+        this.device = null;
+        this.resetPairState();
 
         this.stopCheckInterval(this);
 
@@ -174,9 +208,7 @@ export default class mainDriver extends Homey.Driver {
         this.type = 'repair';
         this.device = device;
         this.phonenumber = settings.phonenumber;
-        this.code = null;
-        this.codeShown = false;
-        this.pairError = null;
+        this.resetPairState();
 
         // Clear any running check interval from a previous pairing/repair
         this.stopCheckInterval(this);
@@ -216,9 +248,7 @@ export default class mainDriver extends Homey.Driver {
             }
 
             if (view === 'loading') {
-                this.code = null;
-                this.codeShown = false;
-                this.pairError = null;
+                this.resetPairState();
 
                 await this.setWhatsappClient(this.guid, this.device); // don't send device during repair. we need a fresh client
 
@@ -236,6 +266,13 @@ export default class mainDriver extends Homey.Driver {
                 // for that code to be entered — and this handler would then tell
                 // the device it was paired and show "done", leaving a device that
                 // says "No response". Check the real state and send them back.
+                // Continue after a failure: nothing to finish. Go back and keep
+                // the real reason on screen instead of replacing it below.
+                if (this.pairFailed) {
+                    if (session) return session.showView('whatsapp_pairing_code');
+                    return;
+                }
+
                 const client = this.WhatsappClients[this.guid];
                 const current = client ? await client.getData().catch(() => null) : null;
 
@@ -293,7 +330,7 @@ export default class mainDriver extends Homey.Driver {
         // happens before the view finished loading is silently lost; pulling
         // removes that race entirely.
         session.setHandler('get_pairing_code', async () => {
-            return { code: this.code || null, error: this.pairError || null };
+            return { code: this.code || null, error: this.pairError || null, failed: !!this.pairFailed };
         });
 
         session.setHandler('disconnect', async () => {

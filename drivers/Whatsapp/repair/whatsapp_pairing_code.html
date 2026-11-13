@@ -58,6 +58,7 @@
         var $next = document.querySelector('#hy-nav-continue');
 
         var rendered = false;
+        var failed = false;
         var pollTimer = null;
 
         function stopPolling() {
@@ -68,7 +69,7 @@
         }
 
         function renderCode(code) {
-            if (rendered || !code) return;
+            if (rendered || failed || !code) return;
             rendered = true;
             stopPolling();
 
@@ -92,14 +93,28 @@
             enableContinue();
         }
 
+        function showMessage(message) {
+            if (!$error || !message) return;
+            $error.textContent = message;
+            $error.classList.remove('hidden');
+        }
+
+        // The attempt is dead (code expired, WhatsApp closed the connection,
+        // the reconnect after linking failed). Drop the code — it no longer
+        // works — and say why, so nobody keeps typing it in.
         function showError(message) {
+            failed = true;
             stopPolling();
             $group.innerHTML = '';
-            if ($error) {
-                $error.textContent = message || 'Pairing failed. Please close this screen and try again.';
-                $error.classList.remove('hidden');
-            }
+            showMessage(message || 'Pairing failed. Please close this screen and try again.');
             enableContinue();
+        }
+
+        // A hint, not a failure (e.g. Continue pressed before the code was
+        // entered): keep the code on screen and show the message under it.
+        function showHint(message) {
+            if (failed) return;
+            showMessage(message);
         }
 
         var continueEnabled = false;
@@ -122,7 +137,8 @@
         // Push path: only lands if this view was already mounted when the code
         // arrived.
         Homey.on('code', renderCode);
-        Homey.on('pair_error', showError);
+        Homey.on('pair_error', showHint);
+        Homey.on('pair_failed', showError);
 
         // Pull path: this is the reliable one. session.emit() on the driver is
         // fire-and-forget with no buffering, so a code produced while this view
@@ -130,8 +146,9 @@
         function poll() {
             Homey.emit('get_pairing_code', null, function (err, result) {
                 if (err || !result) return;
-                if (result.code) return renderCode(result.code);
-                if (result.error) return showError(result.error);
+                if (result.failed) return showError(result.error);
+                if (result.code) renderCode(result.code);
+                if (result.error) showHint(result.error);
             });
         }
 
