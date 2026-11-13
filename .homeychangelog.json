@@ -478,5 +478,8 @@
   },
   "3.0.25": {
     "en": "FIX: flow cards failing with an error after repairing the device | FIX: pairing could finish before the code was entered | FIX: app crash when capabilities were updated twice | FIX: you get notified again when WhatsApp logs out the connection"
+  },
+  "3.0.26": {
+    "en": "FIX: a failed pairing now shows the reason instead of an endless spinner"
   }
 }
