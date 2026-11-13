@@ -9,6 +9,7 @@
         "setup": "Om deze widget in te stellen, stuurt u de onderstaande code in de groepschat die u met deze widget wilt verbinden."
     },
     "pair": {
-        "code_not_entered": "De code is nog niet ingevoerd. Voer de code in WhatsApp in en houd dit scherm open — het gaat automatisch verder."
+        "code_not_entered": "De code is nog niet ingevoerd. Voer de code in WhatsApp in en houd dit scherm open — het gaat automatisch verder.",
+        "failed": "Koppelen is mislukt. Sluit dit scherm en voeg het apparaat opnieuw toe voor een nieuwe code."
     }
 }
