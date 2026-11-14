@@ -8,6 +8,12 @@ import { parsePhoneNumberWithError } from 'libphonenumber-js';
 // and it has to be registered before we can tell "abandoned" from "just paired".
 const ORPHAN_SWEEP_DELAY_MS = 15000;
 
+// How long Continue (loading2) and the device list wait for WhatsApp to
+// confirm the link. The unregistered socket gives up on its own after ~3 min
+// (QR refs exhausted -> auth_failure), which ends the wait earlier with the
+// reason.
+const LINK_WAIT_MS = 120000;
+
 export default class mainDriver extends Homey.Driver {
     async onInit() {
         this.homey.app.log('[Driver] - init', this.id);
@@ -122,7 +128,9 @@ export default class mainDriver extends Homey.Driver {
                     // Homey dropped that nested showView: report cdf9bd81 has
                     // READY, loading2, "Found devices" — then nothing until the
                     // user closed a spinner that would never stop.
-                    await ctx.finishPairing(ctx, session);
+                    await ctx.finishPairing(ctx);
+                    // Nothing to navigate: the pairing-code view sees `linked`
+                    // on its next poll and moves on itself.
                     return;
                 }
 
@@ -201,7 +209,7 @@ export default class mainDriver extends Homey.Driver {
         this.pairError = null;
         this.pairFailed = false;
         this.pairFinished = false;
-        this.listOpened = false;
+        this._finishing = null;
         this.results = [];
     }
 
@@ -216,57 +224,87 @@ export default class mainDriver extends Homey.Driver {
         }, delay);
     }
 
-    // WhatsApp confirmed the link (READY). Build the result and leave the
-    // spinner — once, whichever of the poll or the loading2 view gets here first.
-    async finishPairing(ctx, session) {
+    // WhatsApp confirmed the link (READY). Build the result once, whichever of
+    // the poll, the loading2 view or the device list gets here first. No
+    // navigation here: a session.showView() from the driver is silently ignored
+    // while the user is on the custom pairing-code view (report c4ef28a8: four
+    // showView('list_devices') calls, no error, the list never opened). The
+    // views move on themselves — see nextView() and the pairing-code view.
+    async finishPairing(ctx) {
         if (ctx.pairFinished) return;
-        ctx.pairFinished = true;
-        ctx.stopCheckInterval(ctx);
+        if (ctx._finishing) return ctx._finishing;
 
-        ctx.results = [
-            {
-                name: `Whatsapp`,
-                data: {
-                    id: ctx.guid
-                },
-                settings: {
-                    phonenumber: ctx.phonenumber
+        ctx._finishing = (async () => {
+            ctx.stopCheckInterval(ctx);
+
+            ctx.results = [
+                {
+                    name: `Whatsapp`,
+                    data: {
+                        id: ctx.guid
+                    },
+                    settings: {
+                        phonenumber: ctx.phonenumber
+                    }
                 }
-            }
-        ];
+            ];
 
-        ctx.homey.app.log(
-            `[Driver] ${ctx.id} - Found devices - `,
-            ctx.results.map((result) => ({ name: result.name, client: clientTag(result.data.id) }))
-        );
+            ctx.homey.app.log(
+                `[Driver] ${ctx.id} - Found devices - `,
+                ctx.results.map((result) => ({ name: result.name, client: clientTag(result.data.id) }))
+            );
 
-        if (ctx.type === 'repair') {
-            if (ctx.device) {
+            if (ctx.type === 'repair' && ctx.device) {
                 await ctx.device.setSettings({ phonenumber: ctx.phonenumber }).catch((error) =>
                     ctx.homey.app.error(`[Driver] ${ctx.id} - repair setSettings`, error)
                 );
                 await ctx.device.setWhatsappClient();
             }
 
-            ctx.navigate(session, 'done');
-            return;
+            ctx.pairFinished = true;
+        })();
+
+        try {
+            await ctx._finishing;
+        } finally {
+            ctx._finishing = null;
+        }
+    }
+
+    nextView() {
+        return this.type === 'repair' ? 'done' : 'list_devices';
+    }
+
+    // Wait until WhatsApp confirmed the link (true), the attempt failed
+    // (throws with the reason) or the timeout passed (false). Used by the views
+    // a user can reach before the link is done: Continue (loading2) and the
+    // device list. Checks the client itself, so it works even when the poll
+    // interval has stopped.
+    async waitForLink(session, timeoutMs = LINK_WAIT_MS) {
+        const deadline = Date.now() + timeoutMs;
+
+        while (Date.now() < deadline) {
+            if (this.pairFinished) return true;
+            if (this.pairFailed) throw new Error(this.pairError || 'Pairing failed');
+
+            const client = this.WhatsappClients[this.guid];
+            const current = client ? await client.getData().catch(() => null) : null;
+
+            if (current && current.type === 'READY') {
+                await this.finishPairing(this);
+                return true;
+            }
+
+            if (current && current.type === 'ERROR') {
+                this.stopCheckInterval(this);
+                this.failPairing(this, session, current.msg);
+                throw new Error(this.pairError);
+            }
+
+            await sleep(1000);
         }
 
-        ctx.navigate(session, 'list_devices');
-
-        // Belt and braces: if the device list has not asked for its data a
-        // few seconds later, the navigation was lost — ask again. The linked
-        // session is real at this point; losing the dialog would make the
-        // orphan sweep delete it.
-        let attempts = 0;
-        const retry = () => {
-            if (ctx.listOpened || ctx.pairFailed || attempts >= 3) return;
-            attempts += 1;
-            ctx.homey.app.log(`[Driver] ${ctx.id} - device list did not open, retry ${attempts}`);
-            ctx.navigate(session, 'list_devices', 0);
-            ctx.homey.setTimeout(retry, 5000);
-        };
-        ctx.homey.setTimeout(retry, 5000);
+        return false;
     }
 
     async onPair(session) {
@@ -336,43 +374,37 @@ export default class mainDriver extends Homey.Driver {
             }
 
             if (view === 'loading2') {
-                // Only arrive here with a linked session. The pairing-code view
-                // unlocks its Continue button as soon as the code is on screen,
-                // so a user can reach this view while WhatsApp is still waiting
-                // for that code to be entered — and this handler would then tell
-                // the device it was paired and show "done", leaving a device that
-                // says "No response". Check the real state and send them back.
-                // Continue after a failure: nothing to finish. Go back and keep
-                // the real reason on screen instead of replacing it below.
+                // Reached by pressing Continue on the pairing-code view —
+                // possibly before WhatsApp confirmed the link, possibly after.
+                // This is Homey's own spinner template, and from here a
+                // driver-side showView does work, so wait for the link and move
+                // on. Report c4ef28a8 ended here: the link was already done,
+                // this handler returned without navigating, and the spinner
+                // never stopped.
                 if (this.pairFailed) {
                     this.navigate(session, 'whatsapp_pairing_code');
                     return;
                 }
 
-                // The poll already finished this attempt and is navigating.
-                if (this.pairFinished) return;
+                this.homey.app.log(`[Driver] ${this.id} - loading2, waiting for the link`, { linked: !!this.pairFinished });
 
-                const client = this.WhatsappClients[this.guid];
-                const current = client ? await client.getData().catch(() => null) : null;
-
-                if (!current || current.type !== 'READY') {
-                    this.homey.app.log(`[Driver] ${this.id} - loading2 before the link completed`, {
-                        client: clientTag(this.guid),
-                        type: current ? current.type : 'none'
-                    });
-
-                    this.pairError = this.homey.__('pair.code_not_entered');
-                    this.codeShown = false;
-
-                    if (session) {
-                        session.emit('pair_error', this.pairError);
-                        this.navigate(session, 'whatsapp_pairing_code');
-                    }
-
+                let linked = false;
+                try {
+                    linked = await this.waitForLink(session);
+                } catch (error) {
+                    // failPairing already recorded the reason.
+                    this.navigate(session, 'whatsapp_pairing_code');
                     return;
                 }
 
-                await this.finishPairing(this, session);
+                if (!linked) {
+                    this.homey.app.log(`[Driver] ${this.id} - loading2 timed out waiting for the link`);
+                    this.pairError = this.homey.__('pair.code_not_entered');
+                    this.navigate(session, 'whatsapp_pairing_code');
+                    return;
+                }
+
+                this.navigate(session, this.nextView());
             }
         });
 
@@ -381,7 +413,14 @@ export default class mainDriver extends Homey.Driver {
         // happens before the view finished loading is silently lost; pulling
         // removes that race entirely.
         session.setHandler('get_pairing_code', async () => {
-            return { code: this.code || null, error: this.pairError || null, failed: !!this.pairFailed };
+            return {
+                code: this.code || null,
+                error: this.pairError || null,
+                failed: !!this.pairFailed,
+                // The view navigates itself once this is true.
+                linked: !!this.pairFinished,
+                next: this.nextView()
+            };
         });
 
         session.setHandler('disconnect', async () => {
@@ -400,8 +439,13 @@ export default class mainDriver extends Homey.Driver {
         });
 
         session.setHandler('list_devices', async () => {
-            this.listOpened = true;
-            this.homey.app.log(`[Driver] ${this.id} - list_devices requested`, { count: (this.results || []).length });
+            this.homey.app.log(`[Driver] ${this.id} - list_devices requested`, { linked: !!this.pairFinished });
+
+            // Safety net: if the list opens before the link is confirmed, wait
+            // for it here — the template shows its own spinner meanwhile.
+            const linked = await this.waitForLink(session);
+            if (!linked) throw new Error(this.homey.__('pair.code_not_entered'));
+
             return this.results;
         });
 

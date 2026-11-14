@@ -71,7 +71,8 @@
         function renderCode(code) {
             if (rendered || failed || !code) return;
             rendered = true;
-            stopPolling();
+            // Keep polling: the same call tells us when WhatsApp confirmed the
+            // link, and then this view moves on by itself.
 
             $group.innerHTML = '';
 
@@ -143,9 +144,23 @@
         // Pull path: this is the reliable one. session.emit() on the driver is
         // fire-and-forget with no buffering, so a code produced while this view
         // was still loading is lost. Ask for it ourselves until we have it.
+        var leaving = false;
+
+        // Navigation happens here, in the view. A session.showView() from the
+        // driver is ignored while this custom view is open, which left users on
+        // a spinner after WhatsApp had already linked.
+        function goNext(view) {
+            if (leaving) return;
+            leaving = true;
+            stopPolling();
+            Homey.showView(view || 'list_devices');
+        }
+
         function poll() {
+            if (leaving) return;
             Homey.emit('get_pairing_code', null, function (err, result) {
                 if (err || !result) return;
+                if (result.linked) return goNext(result.next);
                 if (result.failed) return showError(result.error);
                 if (result.code) renderCode(result.code);
                 if (result.error) showHint(result.error);
@@ -153,7 +168,7 @@
         }
 
         poll();
-        pollTimer = setInterval(poll, 1000);
+        pollTimer = setInterval(poll, 2000);
 
         Homey.getOptions(function (err, options) {
             if (err) return Homey.error(err);
