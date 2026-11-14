@@ -230,7 +230,9 @@ export default class Whatsapp extends Homey.Device {
     }
 
     async removeWhatsappClient() {
-        this.setUnavailable(`Repairing...`);
+        // Not awaited, so it must not reject unhandled: during onDeleted the
+        // device is already gone and Homey answers device_not_found.
+        this.setUnavailable(`Repairing...`).catch(() => {});
 
         // Stop the background timers so they don't compete with the repair for
         // store IO (and don't get duplicated when onInit runs again).

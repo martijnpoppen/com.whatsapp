@@ -101,7 +101,10 @@ export default class mainDriver extends Homey.Driver {
                 // data carries the real clientID — the /userdata/auth directory name. Tag it.
                 ctx.homey.app.log(`[Driver] ${ctx.id} - setCheckInterval - ${data.type}`, {
                     ...data,
-                    clientID: clientTag(data.clientID)
+                    clientID: clientTag(data.clientID),
+                    // The phone number rides along in data; diagnostics reports
+                    // are not the place for it.
+                    usePairingCode: !!data.usePairingCode
                 });
 
                 if (data.type === 'READY') {
@@ -114,7 +117,13 @@ export default class mainDriver extends Homey.Driver {
                     // throwing. This runs whether or not the dialog is still open.
                     if (ctx.device) ctx.device.attachWhatsappClient();
 
-                    if (session) return session.showView('loading2');
+                    // Straight to the result. This used to hop through
+                    // loading2 and let its showView handler navigate on, and
+                    // Homey dropped that nested showView: report cdf9bd81 has
+                    // READY, loading2, "Found devices" — then nothing until the
+                    // user closed a spinner that would never stop.
+                    await ctx.finishPairing(ctx, session);
+                    return;
                 }
 
                 if (data.type === 'CODE') {
@@ -191,6 +200,73 @@ export default class mainDriver extends Homey.Driver {
         this.codeShown = false;
         this.pairError = null;
         this.pairFailed = false;
+        this.pairFinished = false;
+        this.listOpened = false;
+        this.results = [];
+    }
+
+    // Never call session.showView() from inside the showView handler and wait
+    // on it: Homey can drop a navigation issued while it is still switching to
+    // the view whose handler is running. Run it after the handler returned.
+    navigate(session, view, delay = 500) {
+        if (!session) return;
+
+        this.homey.setTimeout(() => {
+            session.showView(view).catch((error) => this.homey.app.error(`[Driver] ${this.id} - showView ${view} failed`, error));
+        }, delay);
+    }
+
+    // WhatsApp confirmed the link (READY). Build the result and leave the
+    // spinner — once, whichever of the poll or the loading2 view gets here first.
+    async finishPairing(ctx, session) {
+        if (ctx.pairFinished) return;
+        ctx.pairFinished = true;
+        ctx.stopCheckInterval(ctx);
+
+        ctx.results = [
+            {
+                name: `Whatsapp`,
+                data: {
+                    id: ctx.guid
+                },
+                settings: {
+                    phonenumber: ctx.phonenumber
+                }
+            }
+        ];
+
+        ctx.homey.app.log(
+            `[Driver] ${ctx.id} - Found devices - `,
+            ctx.results.map((result) => ({ name: result.name, client: clientTag(result.data.id) }))
+        );
+
+        if (ctx.type === 'repair') {
+            if (ctx.device) {
+                await ctx.device.setSettings({ phonenumber: ctx.phonenumber }).catch((error) =>
+                    ctx.homey.app.error(`[Driver] ${ctx.id} - repair setSettings`, error)
+                );
+                await ctx.device.setWhatsappClient();
+            }
+
+            ctx.navigate(session, 'done');
+            return;
+        }
+
+        ctx.navigate(session, 'list_devices');
+
+        // Belt and braces: if the device list has not asked for its data a
+        // few seconds later, the navigation was lost — ask again. The linked
+        // session is real at this point; losing the dialog would make the
+        // orphan sweep delete it.
+        let attempts = 0;
+        const retry = () => {
+            if (ctx.listOpened || ctx.pairFailed || attempts >= 3) return;
+            attempts += 1;
+            ctx.homey.app.log(`[Driver] ${ctx.id} - device list did not open, retry ${attempts}`);
+            ctx.navigate(session, 'list_devices', 0);
+            ctx.homey.setTimeout(retry, 5000);
+        };
+        ctx.homey.setTimeout(retry, 5000);
     }
 
     async onPair(session) {
@@ -269,9 +345,12 @@ export default class mainDriver extends Homey.Driver {
                 // Continue after a failure: nothing to finish. Go back and keep
                 // the real reason on screen instead of replacing it below.
                 if (this.pairFailed) {
-                    if (session) return session.showView('whatsapp_pairing_code');
+                    this.navigate(session, 'whatsapp_pairing_code');
                     return;
                 }
+
+                // The poll already finished this attempt and is navigating.
+                if (this.pairFinished) return;
 
                 const client = this.WhatsappClients[this.guid];
                 const current = client ? await client.getData().catch(() => null) : null;
@@ -287,41 +366,13 @@ export default class mainDriver extends Homey.Driver {
 
                     if (session) {
                         session.emit('pair_error', this.pairError);
-                        return session.showView('whatsapp_pairing_code');
+                        this.navigate(session, 'whatsapp_pairing_code');
                     }
 
                     return;
                 }
 
-                this.results = [
-                    {
-                        name: `Whatsapp`,
-                        data: {
-                            id: this.guid
-                        },
-                        settings: {
-                            phonenumber: this.phonenumber
-                        }
-                    }
-                ];
-
-                this.homey.app.log(
-                    `[Driver] ${this.id} - Found devices - `,
-                    this.results.map((result) => ({ name: result.name, client: clientTag(result.data.id) }))
-                );
-
-                if (this.results.length && this.type === 'repair') {
-                    if (this.device) {
-                        this.device.setSettings({
-                            phonenumber: this.phonenumber
-                        });
-
-                        await this.device.setWhatsappClient();
-                    }
-                    if (session) session.showView('done');
-                } else {
-                    if (session) session.showView('list_devices');
-                }
+                await this.finishPairing(this, session);
             }
         });
 
@@ -349,6 +400,8 @@ export default class mainDriver extends Homey.Driver {
         });
 
         session.setHandler('list_devices', async () => {
+            this.listOpened = true;
+            this.homey.app.log(`[Driver] ${this.id} - list_devices requested`, { count: (this.results || []).length });
             return this.results;
         });
 
