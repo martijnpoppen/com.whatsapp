@@ -141,14 +141,7 @@
           "ru": "Перейдите по ссылке на устройство. Нажмите на добавить новое устройство. Нажмите на 'добавить вместо телефонного номера' внизу экрана.",
           "pl": "Przejdź do linku urządzenia. Kliknij dodaj nowe urządzenie. Kliknij „dodaj zamiast numeru telefonu” na dole ekranu."
         }
-      },
-      "navigation": {
-        "next": "loading2"
       }
-    },
-    {
-      "id": "loading2",
-      "template": "loading"
     },
     {
       "id": "list_devices",
