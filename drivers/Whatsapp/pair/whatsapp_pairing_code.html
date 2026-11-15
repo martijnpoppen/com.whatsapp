@@ -55,7 +55,6 @@
         var $text = document.querySelector('#text');
         var $error = document.querySelector('#pairing_error');
         var $group = document.querySelector('#homey-pincode-input-group');
-        var $next = document.querySelector('#hy-nav-continue');
 
         var rendered = false;
         var failed = false;
@@ -88,10 +87,6 @@
                 input.value = chars[i];
                 $group.appendChild(input);
             }
-
-            // The code is live now — let the user move on without waiting out
-            // the 25s fallback timer.
-            enableContinue();
         }
 
         function showMessage(message) {
@@ -108,32 +103,15 @@
             stopPolling();
             $group.innerHTML = '';
             showMessage(message || 'Pairing failed. Please close this screen and try again.');
-            enableContinue();
         }
 
-        // A hint, not a failure (e.g. Continue pressed before the code was
-        // entered): keep the code on screen and show the message under it.
+        // A hint, not a failure: keep the code on screen and show the message
+        // under it.
         function showHint(message) {
             if (failed) return;
             showMessage(message);
         }
 
-        var continueEnabled = false;
-
-        function enableContinue() {
-            continueEnabled = true;
-            if (!$next) return;
-            $next.classList.remove('is-loading');
-            $next.classList.remove('is-disabled');
-            $next.classList.remove('no-click');
-        }
-
-        function disableContinue() {
-            // The code can arrive before this runs (the pull below fires
-            // immediately). Never re-disable a button we already unlocked.
-            if (continueEnabled || !$next) return;
-            $next.classList += ' hy-button-primary hy-button-fill button is-loading is-disabled no-click';
-        }
 
         // Push path: only lands if this view was already mounted when the code
         // arrived.
@@ -176,12 +154,7 @@
             setTimeout(function () {
                 if (options.title) Homey.setTitle(Homey.__(options.title));
                 if (options.text) $text.innerHTML = Homey.__(options.text);
-
-                disableContinue();
             }, 0);
-
-            // Fallback: never leave the user stuck behind a disabled button.
-            setTimeout(enableContinue, 25000);
         });
     })();
 </script>
@@ -197,7 +170,4 @@
         margin-top: var(--homey-su-2, 8px);
     }
 
-    .no-click {
-        pointer-events: none
-    }
 </style>
