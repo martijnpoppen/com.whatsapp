@@ -1,6 +1,6 @@
 import Homey from 'homey';
 import { parsePhoneNumberWithError } from 'libphonenumber-js';
-import { validateUrl, sleep, toConsistentId, parseGroupInvite, probeImageUrl, imageTypeFromBuffer, sha256, randomId, fetchImageBuffer } from '../../lib/helpers/index.mjs';
+import { validateUrl, sleep, toConsistentId, parseGroupInvite, probeImageUrl, imageTypeFromBuffer, sha256, randomId, fetchImageBuffer, WIDGET_IMAGE_MAX_BYTES } from '../../lib/helpers/index.mjs';
 import path from 'path';
 import fs from 'fs/promises';
 import { normalizeMessageContent } from 'baileys';
@@ -31,6 +31,9 @@ const STORE_CLEANUP_PAUSE_MS = 60;
 // fixed that by dropping the images, which lost them as soon as the dashboard
 // was reopened. They now go to /userdata and are re-attached on read.
 const WIDGET_IMAGE_DIR = 'widget-images';
+
+// protobuf int64 fields (fileLength) arrive as a Long object or a number.
+const toNumber = (value) => (value && typeof value.toNumber === 'function' ? value.toNumber() : Number(value) || 0);
 
 // The per-chat directory is keyed on a random per-device salt, not on the phone
 // number alone. sha256 of a phone number is not privacy: the keyspace is tiny,
@@ -409,7 +412,10 @@ export default class Whatsapp extends Homey.Device {
                 text: message,
                 group: isGroup,
                 hasImage: msgType === 'image',
-                imageUrl: fileUrl,
+                // Images only. A video URL used to go down this path too: the whole
+                // file was fetched, stored as an image, base64'd and pushed over
+                // realtime, which ran the app out of memory on a 10MB MP4.
+                imageUrl: msgType === 'image' ? fileUrl : null,
                 base64Image: null
             }).catch((error) => this.homey.app.error(`[Device] ${this.getName()} - sendToWidget failed`, error));
 
@@ -752,9 +758,21 @@ export default class Whatsapp extends Homey.Device {
             buffer = await fetchImageBuffer(data.imageUrl);
         }
 
-        // When image is received from Whatsapp
+        // When image is received from Whatsapp. Above the widget limit, use the
+        // small JPEG thumbnail WhatsApp embeds in the message instead of
+        // downloading the full image.
         if (data.m && data.hasImage) {
-            buffer = await this.whatsappClient().downloadMediaMsg(data.m);
+            const imageMessage = data.m.message && data.m.message.imageMessage;
+            const fileLength = imageMessage ? toNumber(imageMessage.fileLength) : 0;
+
+            if (fileLength > WIDGET_IMAGE_MAX_BYTES) {
+                buffer = imageMessage.jpegThumbnail ? Buffer.from(imageMessage.jpegThumbnail) : null;
+                this.homey.app.log(
+                    `[Device] ${this.getName()} - sendToWidget - image too large (${fileLength} bytes), ${buffer ? 'using thumbnail' : 'skipped'}`
+                );
+            } else {
+                buffer = await this.whatsappClient().downloadMediaMsg(data.m);
+            }
         }
 
         const stored = buffer && buffer.length ? await this.storeWidgetImage(data.originalRecipient, buffer) : null;
@@ -814,6 +832,11 @@ export default class Whatsapp extends Homey.Device {
     // sweep below already keep the directory bounded.
     async storeWidgetImage(dataId, buffer) {
         try {
+            if (buffer.length > WIDGET_IMAGE_MAX_BYTES) {
+                this.homey.app.log(`[Device] ${this.getName()} - storeWidgetImage - too large (${buffer.length} bytes), skipped`);
+                return null;
+            }
+
             const type = imageTypeFromBuffer(buffer);
             if (!type) {
                 this.homey.app.log(`[Device] ${this.getName()} - storeWidgetImage - not an image, skipped`);
@@ -873,6 +896,23 @@ export default class Whatsapp extends Homey.Device {
 
         if (removed) {
             this.homey.app.log(`[Device] ${this.getName()} - pruneWidgetImages - removed ${removed}`);
+        }
+    }
+
+    async isKeepableWidgetImage(file) {
+        let handle;
+        try {
+            const stat = await fs.stat(file);
+            if (!stat.isFile() || stat.size > WIDGET_IMAGE_MAX_BYTES) return false;
+
+            handle = await fs.open(file, 'r');
+            const head = Buffer.alloc(32);
+            const { bytesRead } = await handle.read(head, 0, head.length, 0);
+            return !!imageTypeFromBuffer(head.subarray(0, bytesRead));
+        } catch (error) {
+            return false;
+        } finally {
+            await handle?.close().catch(() => {});
         }
     }
 
@@ -941,8 +981,13 @@ export default class Whatsapp extends Homey.Device {
                 }
 
                 for (const name of names) {
-                    if (keep.has(name)) continue;
-                    await fs.unlink(path.join(absolute, name)).catch(() => {});
+                    const file = path.join(absolute, name);
+                    // Referenced files are kept only if they are a real image within
+                    // the size limit. Earlier versions stored videos (misdetected as
+                    // HEIC) and images of any size; the entry then shows "image no
+                    // longer available" instead of re-reading megabytes on every open.
+                    if (keep.has(name) && (await this.isKeepableWidgetImage(file))) continue;
+                    await fs.unlink(file).catch(() => {});
                     removedFiles++;
                 }
             }
