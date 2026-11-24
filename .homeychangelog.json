@@ -490,5 +490,8 @@
   },
   "3.0.29": {
     "en": "FIX: the pairing screen continues by itself once WhatsApp has linked, no Continue button needed"
+  },
+  "3.0.30": {
+    "en": "Fixed a crash when sending videos; large images are no longer stored for the chat widget."
   }
 }
